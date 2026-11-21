@@ -1,0 +1,22 @@
+COPO-IA 0.6 PASSERELLE — MODE D’EMPLOI MAC
+=========================================
+
+AUCUNE CLE API. AUCUN ABONNEMENT OU LOGICIEL SUPPLEMENTAIRE.
+
+1. Double-clique sur « index.html » (Chrome), ou sur « Démarrer COPO-IA.command ».
+2. Dans l’assistant, ouvre ton fichier .copo ou le projet d’exemple.
+3. Dans « Passerelle ChatGPT », décris ton travail, puis clique
+   « Copier le projet pour ChatGPT ».
+4. Reviens dans notre conversation ChatGPT et colle le texte avec ⌘V.
+5. Je te répondrai avec une commande JSON à copier intégralement.
+6. Colle cette commande dans « Commande JSON préparée par ChatGPT ».
+7. Clique « Vérifier la commande » ; lis la proposition et, uniquement
+   si tu es d’accord, clique « Confirmer dans COPO ».
+8. Sauvegarde le projet .copo et vérifie la simulation avant tout usage.
+
+L’état du projet n’est transmis à ChatGPT que lorsque tu le copies et
+le colles toi-même. Sans connexion Internet, les démonstrations locales
+continuent à fonctionner. Aucun G-code n’est envoyé par notre extension.
+
+ATTENTION : NE PAS USINER une pièce réelle sur la base des parcours
+expérimentaux. Outils, vitesses, bridages et origines CNC non validés.

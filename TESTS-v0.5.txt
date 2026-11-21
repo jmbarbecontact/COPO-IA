@@ -1,0 +1,27 @@
+COPO-IA 0.5 — CONTROLES AUTOMATISES (Chromium)
+
+Géométrie de référence : plaque 150 × 100 × 15 mm, poche 80 × 40 × 5 mm,
+quatre oblongs 16 × 8 mm.
+
+1. Chargement du projet de référence : 6 formes ; aucun parcours. OK
+2. Prévisualisation sans modification : poche 5 mm / fraise Ø6 / passes 1 mm,
+   quatre oblongs traversants. OK
+3. Après confirmation : deux parcours / poche 150 mouvements / oblongs 6364. OK
+4. Révision à poche 90 × 50 mm, fraise Ø3,175, 1 mm par passe. OK
+5. Remplacement des parcours existants à la confirmation. OK
+6. Nouveau calcul : poche 350 mouvements / oblongs 6840, Z −5 / −15. OK
+7. Réouverture du fichier après modification : poche 90 × 50 mm et deux
+   parcours sans erreur de calcul. OK
+8. Refus des parcours étrangers / manuels. OK
+9. Refus de fraise non présente dans la bibliothèque du projet. OK
+10. Passerelle HTTP locale : statut sans clé, clé en mémoire, refus de l'origine
+    étrangère, réponse JSON structurée avec appel OpenAI SIMULÉ. OK
+
+Aucun appel réel à l'API OpenAI n'a été réalisé. La connexion HTTP locale
+navigateur > serveur n'a pas pu être lancée dans le navigateur sandboxé de
+l'environnement de test, car les accès réseau localhost sont interdits.
+
+SIMULATION UNIQUEMENT, pas d'usinage réel ni de G-code validé.
+11. Remplacement partiel de parcours refusé. OK
+12. Échec simulé lors du recalcul après modification de géométrie :
+    état précédent restauré intégralement. OK

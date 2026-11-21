@@ -1,0 +1,10 @@
+COPO-IA 0.6 PASSERELLE — RÉSULTATS DE CONTRÔLE
+
+- Vérification syntaxique JavaScript : OK
+- Test contrôlé du panneau : export, import, bloc JSON, commande expirée : OK
+- COPO réel dans Chromium : ouverture du projet d’exemple de 6 formes : OK
+- Commande importée : création des 2 parcours FAO natifs après confirmation : OK
+- Refus d’une ancienne commande après modification du projet : OK
+- Commande importée de révision : poche 80 × 40 vers 90 × 50 mm, fraise Ø6 vers Ø3,175, recalcul des 2 parcours : OK
+- L’ouverture directe par navigation de fichier dans le navigateur automatisé est bloquée par l’environnement ; le même moteur COPO a été testé avec son HTML et ses scripts chargés en mémoire. L’essai par double-clic du fichier reste à valider sur Mac.
+- Aucun export ni envoi G-code par l’extension.

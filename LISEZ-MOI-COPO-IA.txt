@@ -1,0 +1,3 @@
+COPO-IA 0.6 PASSERELLE — SANS API PAYANTE.
+Lire d’abord : 01_LIRE-EN-PREMIER.txt
+Ouvrir index.html dans Chrome pour commencer.
