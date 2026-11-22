@@ -1,0 +1,12 @@
+COPO-IA 0.9 BÊTA — Contrôles réalisés le 22/11/2026
+
+- Affichage adjacent des boutons « 1 · Vérifier la commande » et « 2 · Confirmer dans COPO ».
+- Confirmation désactivée avant vérification et après application.
+- Création de six parcours de poches circulaires Ø8 mm avec fraise Ø6 mm, profondeurs de 3 mm et passes de 1 mm : 586 mouvements par parcours dans le navigateur automatisé.
+- Résultat sauvegardé puis réouvert : huit formes, six parcours conservés.
+- Calcul d'une poche circulaire Ø45 mm, profondeur 5 mm, fraise Ø6 mm : 21 025 mouvements dans le scénario de test.
+- Refus d'une ancienne signature, refus d'un parcours traversant, compatibilité régressive de la poche rectangulaire historique.
+- Aucune erreur JavaScript dans les scénarios automatisés.
+
+Non validé : simulation intégrale du nouvel exemple sur Mac ; paramètres d'usinage réels, outil réel, bridage, origine Z, postprocesseur et machine.
+Aucune exécution de G-code sur machine.

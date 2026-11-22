@@ -1,0 +1,8 @@
+COPO-IA 1.0 BÊTA — VERSION COMPLÈTE
+
+1. Décompresser le ZIP.
+2. Ouvrir COPO-IA-1.0-BETA/index.html avec Chrome.
+3. Dans Assistant COPO-IA, ouvrir la Passerelle ChatGPT.
+4. Lire README.md pour l’exemple multi-FAO.
+
+NE PAS EXECUTER DE G-CODE SUR UNE CNC REELLE.

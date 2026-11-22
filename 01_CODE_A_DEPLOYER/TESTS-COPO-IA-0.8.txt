@@ -1,0 +1,21 @@
+COPO-IA 0.8 BÊTA — BILAN DES ESSAIS (22 novembre 2026)
+
+Contrôles exécutés dans Chromium headless avec le code JavaScript du moteur COPO, ses bibliothèques locales, ses fonctions natives de dessin, d'historique et de sauvegarde. Le navigateur du banc d'essai ne fournit pas l'affichage 3D WebGL 2 ; la simulation 3D reste à vérifier sur le Mac utilisateur.
+
+1. À partir d'un projet vide, création sur brut 220 × 160 × 12 mm :
+   - contour 220 × 160 mm, coins arrondis rayon 12 mm ;
+   - 6 trous de Ø8 mm sur cercle primitif Ø120 mm ;
+   - un trou central Ø45 mm.
+   Résultat : 8 formes natives, avec identifiants persistants.
+
+2. Modification isolée de fixations-01 : Ø8 → Ø10. Les 7 autres formes restent gérées. L'annulation et le rétablissement conservent les géométries.
+
+3. L'ancienne signature du projet est rejetée après une modification. Rechargement de la sauvegarde .copo : les 8 identifiants et leurs données sont conservés.
+
+4. Contrôles négatifs : refus d'un cercle hors du brut, d'un identifiant en double, d'un polygone dégénéré et de la modification d'un identifiant inexistant.
+
+5. Test des formes libres additionnelles : création d'un oblong tourné et d'un polygone, puis suppression individuelle de l'oblong.
+
+6. Régression COPO-IA 0.7.2 : sur une plaque 150 × 100 × 15 mm comportant quatre trous ronds et une poche 80 × 40 × 5 mm, le calcul natif de poche avec fraise Ø6 mm et passes de 1 mm fonctionne (225 mouvements sur le moteur embarqué dans ce test). Parcours natif conservé après réouverture .copo.
+
+Aucun test d'usinage réel. Aucune garantie sur les paramètres de coupe ou postprocesseurs machine. FAO automatique non implémentée sur les nouvelles formes libres 0.8.

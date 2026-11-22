@@ -1,0 +1,22 @@
+COPO-IA 1.0 BÊTA — tests automatisés de compatibilité
+Date : 22 novembre 2026
+
+Fonctions testées dans Chromium avec le moteur natif COPO :
+- Chargement du projet multi-géométrique de test : trois formes libres indépendantes.
+- Création de la poche rectangulaire 70 × 40 mm, profondeur 4 mm, fraise Ø6 mm, 1 mm/passe : 180 mouvements.
+- Création de la poche oblongue 26 × 12 mm, profondeur 3 mm, fraise Ø6 mm, 1 mm/passe : 989 mouvements.
+- Création du profil extérieur sur un rectangle arrondi R12, profondeur non traversante 2 mm, fraise Ø6 mm, 1 mm/passe : 1 128 mouvements.
+- Vérification obligatoire avant application ; aucun parcours présent avant confirmation.
+- Confirmation, sauvegarde du projet .copo et réouverture : 3 géométries et 3 parcours conservés.
+- Refus d'une ancienne signature après modification.
+- Refus d'un remplacement qui supprimerait un parcours existant.
+- Remplacement complet des trois parcours avec changement des profondeurs, sans doublon.
+- Refus des valeurs traversantes, fraises trop grosses / absentes, profondeurs supérieures au brut, profil intérieur et stratégies ne correspondant pas au rôle de la géométrie.
+- Refus d'un profil extérieur sans marge suffisante autour du brut.
+- Fonction feature_cam de la version 0.9 préservée.
+- Fonction historique de poche rectangulaire de la version 0.7.2 préservée.
+- Boutons Vérifier et Confirmer présents côte à côte.
+- Aucune erreur JavaScript dans les tests exécutés.
+
+Non validé : exécution complète de la simulation de l'exemple sur le Mac de l'utilisateur ; origine pièce réelle, matière, bridage, fraise réelle, vitesses, avances, sécurités machine et postprocesseur.
+Toute FAO de ce prototype est réservée à la simulation et nécessite une validation indépendante avant une utilisation sur machine réelle.
