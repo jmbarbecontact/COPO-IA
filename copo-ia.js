@@ -1,5 +1,5 @@
 /*
- * COPO-IA 0.6 PASSERELLE — extension expérimentale de COPO 1.257
+ * COPO-IA 0.7 BÊTA — portage expérimental sur COPO 1.415
  * Copyright (C) 2026. Redistribution sous GNU GPL v3 ou ultérieure.
  * Dessin et édition par ce module ; la FAO de simulation est dans copo-fao.js.
  * Aucune exportation ni envoi de G-code par l'extension.
@@ -26,12 +26,13 @@
  const wrap=document.createElement('div');wrap.innerHTML=`
 <button id="cia-launch" data-notr type="button" aria-controls="cia-root" aria-expanded="false">✦ Assistant COPO-IA</button>
 <section id="cia-root" data-notr role="region" aria-label="Assistant COPO-IA">
- <header class="cia-head"><strong>COPO-IA · Dessin, modifications & FAO</strong><span class="cia-flag">VERSION 0.6</span><button class="cia-plain" id="cia-close" type="button" aria-label="Fermer">×</button></header>
+ <header class="cia-head"><strong>COPO-IA · Dessin, modifications & FAO</strong><span class="cia-flag">VERSION 1.0 BÊTA</span><button class="cia-plain" id="cia-close" type="button" aria-label="Fermer">×</button></header>
  <div class="cia-body">
-  <p>Décris une plaque, des trous ou une poche ; puis demande de <b>modifier la pièce existante</b>. Toutes les dimensions sont en mm.</p>
+  <p>Passerelle ChatGPT : crée et modifie des formes <b>indépendantes</b> (contours, cercles, oblongs, polygones). Les démonstrations locales de plaques restent disponibles. Unités : mm.</p>
   <label for="cia-prompt">Ta demande</label>
-  <textarea id="cia-prompt" spellcheck="true" placeholder="Ajoute une poche centrale de 80 x 40 mm, profondeur 5 mm."></textarea>
-  <div class="cia-actions"><button id="cia-ex-create" type="button">Exemple : créer</button><button id="cia-ex-edit" type="button">Exemple : modifier</button><button id="cia-read" type="button">Lire le dessin</button></div>
+  <textarea id="cia-prompt" spellcheck="true" aria-label="Demande locale à analyser, vide par défaut"></textarea>
+  <div class="cia-note">Zone locale facultative : un champ vide ne contient aucune instruction. Pour discuter avec ChatGPT, utilise la section « Passerelle ChatGPT ».</div>
+  <div class="cia-actions"><button id="cia-ex-create" type="button">Exemple : créer</button><button id="cia-ex-edit" type="button">Exemple : modifier</button><button id="cia-read" type="button">Lire le dessin</button><button id="cia-clear-all" type="button">Vider tous les champs</button></div>
   <div class="cia-actions"><button id="cia-parse" type="button">Analyser (local)</button><button id="cia-apply" type="button" class="cia-primary" disabled>Appliquer dans COPO</button></div>
   <div id="cia-report" class="cia-report" role="status" aria-live="polite">Clique sur « Lire le dessin » pour voir ce que COPO contient.</div>
   <div class="cia-actions"><button id="cia-save" type="button">Enregistrer .copo</button><button id="cia-open" type="button">Ouvrir .copo</button><button id="cia-new" type="button">Nouveau projet vide</button></div>
@@ -258,6 +259,7 @@
  }
  el('cia-parse').onclick=()=>{try{analyzeRaw(localPlan(prompt.value),false);}catch(e){invalidate();setReport(e.message,true);}};
  el('cia-read').onclick=()=>{invalidate();try{setReport(describe());}catch(e){setReport(e.message,true);}};
+ el('cia-clear-all').onclick=()=>{if(typeof window.COPO_IA_CLEAR_FIELDS==='function')window.COPO_IA_CLEAR_FIELDS();else{prompt.value='';invalidate();setReport('Champ vidé. Le projet COPO est intact.');}};
  el('cia-ex-create').onclick=()=>{prompt.value='Crée une plaque de 150 x 100 mm, épaisseur 12 mm, avec quatre trous de diamètre 8 mm à 15 mm des bords.';invalidate();el('cia-parse').click();};
  el('cia-ex-edit').onclick=()=>{prompt.value='Remplace les quatre trous par des trous oblongs de 16 x 8 mm et ajoute une poche centrale de 80 x 40 mm, profondeur 5 mm. Épaisseur 15 mm.';invalidate();el('cia-parse').click();};
  el('cia-apply').onclick=()=>{if(!preview)return;try{
@@ -271,5 +273,5 @@
   catch(e){setReport(e.message,true);}
  };
  // Exposé pour tests automatiques locaux ; aucune clé, aucun accès externe.
- window.COPO_IA_TEST={version:'0.6 PASSERELLE',localPlan,validateTarget,context,describe,managed,apply,summary,snapshot:()=>snapState()};
+ window.COPO_IA_TEST={version:'0.8 BÊTA PASSERELLE',localPlan,validateTarget,context,describe,managed,apply,summary,snapshot:()=>snapState(),resetFields:()=>{prompt.value='';invalidate();setReport('Aucune demande locale. Le projet COPO est intact.');}};
 })();

@@ -1,51 +1,73 @@
-# COPO-IA 0.6 PASSERELLE — ChatGPT ↔ COPO par échange explicite
+# COPO-IA 1.0 bêta — passerelle ChatGPT ↔ COPO
 
-Prototype expérimental, basé sur **COPO 1.257**, GPL-3.0-or-later. Conserve les fonctions de dessin, FAO et simulation de la version 0.5 validée.
+**Extension expérimentale et non officielle** de [COPO](https://github.com/gbulleryahen-hash/copo), logiciel libre de CAO/FAO développé par **gbulleryahen-hash**. Licence **GNU GPL v3** (voir [`LICENSE`](LICENSE)).
+
+COPO-IA permet de décrire des formes et des opérations d’usinage en français dans ChatGPT, puis de transmettre un **plan JSON vérifié** au logiciel COPO. Les échanges se font **manuellement par copier-coller**, sans clé API payante ni compte supplémentaire pour la passerelle. Une vérification et une confirmation distinctes précèdent toute modification du projet.
+
+> **BÊTA / SIMULATION UNIQUEMENT.** Les parcours générés par cette extension ne sont pas qualifiés pour un usinage réel. Ils ne doivent pas être exécutés sur une machine CNC sans validation technique indépendante des géométries, outils, avances, vitesses, origines, dégagements, bridages et postprocesseurs.
+
+## Télécharger et essayer
+
+Pour bénéficier de **tous** les fichiers, notamment la bibliothèque de dessins et de reliefs de COPO, utiliser l’**archive complète** associée à la publication GitHub « `v1.0.0-beta` » dans [Releases](https://github.com/jmbarbecontact/COPO-IA/releases). **Le dépôt de code ne contient volontairement pas les 570 ressources volumineuses de `bibliotheque/`.** Il sert à examiner les sources et l’historique ; pour un essai complet, privilégier l’archive de la publication.
+
+1. Télécharger l’archive complète de la release, puis décompresser son dossier.
+2. Ouvrir `index.html` avec Google Chrome.
+3. Ouvrir **Assistant COPO-IA → Passerelle ChatGPT**.
+4. Charger `Exemple-multiformes-COPO-IA-1.0.copo` via **Ouvrir .copo**.
+5. Dans COPO, saisir sa demande en français, puis **Copier le projet pour ChatGPT**.
+6. Coller cet état dans une conversation ChatGPT ; récupérer la réponse JSON, puis la coller dans **Commande JSON préparée par ChatGPT**.
+7. Cliquer successivement sur **1 · Vérifier la commande** puis, après lecture du rapport, **2 · Confirmer dans COPO**.
+8. Contrôler les trajectoires dans la simulation et sauvegarder le projet en `.copo`.
+
+**Aucun transfert automatique** n’existe entre ChatGPT et le navigateur local. Les commandes comprennent une signature de projet et sont refusées si l’état du projet a changé.
+
+## Fonctionnalités expérimentales
+
+| Famille | Possibilités |
+| --- | --- |
+| Géométrie libre | Rectangle, rectangle à coins arrondis, cercle, oblong, polygone, répétition circulaire de perçages |
+| Édition | Ajout, modification et suppression d’une forme par identifiant stable |
+| FAO circulaire 0.9 | Poches circulaires borgnes identifiées individuellement |
+| **FAO multi-géométrique 1.0** | Poches rectangulaires/arrondies/oblongues/circulaires ; profils extérieurs non traversants sur contours compatibles |
+| Flux de travail | Contrôle de la signature, des paramètres géométriques et de l’outil ; confirmation ; simulation ; conservation dans `.copo` |
+
+Les opérations automatiques 1.0 demandent **explicitement** une profondeur, une fraise présente dans la bibliothèque et une profondeur de passe. Les profils extérieurs traversants et le bridage des pièces détachées ne sont pas pris en charge par la passerelle. Les fonctions natives de COPO ne sont pas remplacées.
+
+## Essais de la version 1.0
+
+**Tests automatisés** dans Chromium avec le moteur natif COPO :
+
+- Poche rectangulaire 70 × 40 mm, profondeur 4 mm, fraise Ø6 mm, passes 1 mm : **180 mouvements**.
+- Poche oblongue 26 × 12 mm, profondeur 3 mm : **989 mouvements**.
+- Profil extérieur R12, profondeur 2 mm : **1 128 mouvements**.
+- Trois parcours créés, enregistrés puis retrouvés à la réouverture.
+- Contrôles de refus : mauvais outil, profondeur traversante, marge insuffisante, commande périmée, remplacement incomplet.
+- Conservation des fonctions de la 0.9 et de la FAO historique.
+
+**Validation utilisateur sur Mac (22 novembre 2026)** : affichage des trois géométries, création des trois parcours depuis une seule commande ChatGPT, simulation 3D menée à terme et sauvegarde/réouverture réussies. Il s’agit de **tests logiciels**, sans qualification industrielle ni essai CNC réel.
+
+Voir [`TESTS-COPO-IA-1.0.txt`](TESTS-COPO-IA-1.0.txt), [`VALIDATION-MAC.md`](VALIDATION-MAC.md) et [`CHANGELOG.md`](CHANGELOG.md).
+
+![Aperçu COPO-IA 1.0 avec trois parcours](apercu-COPO-IA-1.0.png)
 
 ## Architecture
 
-La communication est **manuelle et bidirectionnelle**, par copier/coller, sans clé API, serveur local, Ollama, compte supplémentaire ou facturation API. Le logiciel construit une synthèse structurée de l’état du projet, que l’utilisateur colle lui-même dans ChatGPT. ChatGPT fournit une commande JSON `COPO_CHATGPT_PLAN_V1` liée à une empreinte du projet. L’utilisateur la colle dans COPO, qui vérifie son format, sa correspondance au projet actuel et la validité géométrique/FAO, puis affiche la proposition. **Seul un clic distinct sur « Confirmer dans COPO » applique la commande.**
+- `index.html` : logiciel COPO avec extension intégrée ;
+- `copo-passerelle.js` : copie de l’état du projet et import des plans JSON ;
+- `copo-dialogue.js` : validation et confirmation ;
+- `copo-features.js` : formes libres et identifiants persistants ;
+- `copo-fao-libre.js` : FAO circulaire ;
+- `copo-fao-multiformes.js` : FAO multi-géométrique ;
+- `copo-ia.js` / `copo-fao.js` : fonctionnalités historiques.
 
-- **Exporter** : « Copier le projet pour ChatGPT » exporte dimensions, géométries gérées, outils de fraisage et un résumé des parcours. Aucun fichier privé n’est envoyé automatiquement.
-- **Importer** : « Vérifier la commande » refuse JSON mal formé, mauvais schéma, projet changé, dimensions non compatibles, outils absents, parcours non gérés.
-- **Sauvegarder** : utiliser « Enregistrer .copo » après confirmation.
-- **Fonctionnement hors connexion** : la partie CAO/FAO locale fonctionne sans Internet. Le dialogue par ChatGPT nécessite évidemment l’accès habituel à ChatGPT pour le copier-coller.
+Protocole : `COPO_CHATGPT_PROJECT_V1` → `COPO_CHATGPT_PLAN_V1`, avec empreinte de projet et validation des paramètres. La passerelle **n’autorise pas l’exécution de JavaScript** provenant d’une conversation.
 
-## Limites
+## Origine, attribution et ressources
 
-Cette passerelle ne donne **pas accès directement au navigateur/ordinateur** depuis ChatGPT ; l’utilisateur transfère les données manuellement entre les deux logiciels. Pas d’agent autonomisé. La couverture fonctionnelle reste limitée aux géométries gérées par COPO-IA (plaque, quatre trous, poche centrale) et aux deux opérations FAO expérimentales. Les parcours COPO-IA sont simulés, non validés pour une machine CNC réelle ; aucune exportation ou envoi G-code par l’extension.
+- **Projet original** : [gbulleryahen-hash/copo](https://github.com/gbulleryahen-hash/copo), copyright © 2026 g.bulleryahen.
+- **COPO-IA** : modification expérimentale indépendante, publiée par [jmbarbecontact](https://github.com/jmbarbecontact/COPO-IA), sans affiliation ni approbation revendiquées du projet original.
+- **Licence de la modification logicielle** : GNU GPL v3, texte complet dans `LICENSE` ; `README-COPO-ORIGINAL.md` conservé pour référence.
+- **Bibliothèque de dessins/reliefs** : sa provenance et les licences des ressources individuelles figurent dans `bibliotheque/CREDITS.md`, présent dans l’archive complète.
+- **Polices optionnelles** : certains fichiers de polices décoratives ne sont pas redistribués avec ce paquet ; certaines fonctions typographiques avancées peuvent nécessiter des ressources supplémentaires.
 
-La chaîne d’import et d’export est conçue pour résister aux erreurs usuelles, mais ne constitue pas une validation de sécurité d’usinage industriel. Toujours vérifier la géométrie, les parcours et l’enlèvement de matière en simulation.
-
-## Fichiers
-
-- `index.html` : interface COPO et scripts intégrés.
-- `copo-ia.js` : édition locale des formes.
-- `copo-fao.js` : préparation et simulation des parcours.
-- `copo-dialogue.js` : vérification des plans et confirmation.
-- `copo-passerelle.js` : échange ChatGPT sans API.
-- `Exemple-plaque-COPO-IA.copo` : plaque test sans parcours.
-- `Démarrer COPO-IA.command` : simple ouverture dans Chrome (facultatif).
-- `LICENSE` et les ressources COPO : licences d’origine conservées.
-
-## Polices COPO
-
-Pour éviter de redistribuer des fichiers de polices, cette archive ne fournit pas le dossier optionnel `fonts/`. Les fonctions de dessin, de FAO et la passerelle ne l’utilisent pas pour les essais fournis. Si tu veux ensuite retrouver les polices décoratives et la gravure de textes de la version précédente, récupère simplement le dossier `fonts` de ton propre COPO-IA 0.5 et dépose-le à côté de `index.html`.
-
-
-## Origine et attribution
-
-COPO-IA est une modification expérimentale du logiciel libre **COPO**, développé par **gbulleryahen-hash**.
-
-- Projet original : https://github.com/gbulleryahen-hash/copo
-- Licence du logiciel original et de cette version modifiée : GNU GPL v3 (voir `LICENSE`).
-- Les fonctions ajoutées (interfaces en français, commandes structurées et passerelle ChatGPT) sont expérimentales et ne constituent pas une validation d'usinage réel.
-- Ce dépôt est une expérimentation indépendante, **non officielle** ; il ne doit pas être confondu avec le dépôt de COPO.
-
-### Installation
-
-Télécharger le dépôt avec **Code → Download ZIP**, décompresser, puis ouvrir `index.html` dans Chrome. Le fichier `Démarrer COPO-IA.command` est facultatif. Pour l'échange avec ChatGPT, ouvrir **Passerelle ChatGPT**, copier l'état du projet, le transmettre manuellement dans la conversation, puis coller le plan JSON de réponse et le vérifier avant confirmation.
-
-### Avertissement
-
-Les parcours générés par COPO-IA sont réservés aux essais en simulation. Ne pas exécuter leur G-code sur une machine sans vérification technique indépendante des parcours, outils, origines, bridages, vitesses et avances.
+Ce projet documente une expérience de développement assisté par IA. Il ne constitue ni une garantie de qualité industrielle ni un outil de pilotage CNC validé.

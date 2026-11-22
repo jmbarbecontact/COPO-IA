@@ -65,22 +65,31 @@
     if(!through&&!(slotDepth>0&&slotDepth<=30))fail('Profondeur des oblongs invalide.');
     return {pocketDepth,dia,pass:step,through,slotDepth};
   }
-  function prepared(){
+  function prepared(requireSlots=true){
     if(typeof S==='undefined'||typeof computeTP!=='function'||typeof snapState!=='function')fail('COPO n’est pas chargé.');
     const meta=window.COPO_IA_TEST.managed();
     if(!meta || !meta.pocketId || !meta.pocket)fail('Charge une plaque COPO-IA avec une poche centrale.');
-    if(!meta.hole||meta.hole.mode!=='slot'||!Array.isArray(meta.holeIds)||meta.holeIds.length!==4)fail('La pièce doit posséder exactement quatre oblongs COPO-IA.');
-    const ids=[meta.contourId,meta.pocketId,...meta.holeIds];
+    if(requireSlots && (!meta.hole||meta.hole.mode!=='slot'||!Array.isArray(meta.holeIds)||meta.holeIds.length!==4))
+      fail('Pour usiner les oblongs, la pièce doit posséder exactement quatre oblongs COPO-IA.');
+    if(meta.hole && (!['slot','round'].includes(meta.hole.mode)||!Array.isArray(meta.holeIds)||meta.holeIds.length!==4))
+      fail('Les trous déclarés dans la pièce ne correspondent pas aux quatre formes attendues.');
+    if(!meta.hole && Array.isArray(meta.holeIds) && meta.holeIds.length)
+      fail('Les trous présents ne sont pas identifiés par COPO-IA.');
+    const ids=[meta.contourId,meta.pocketId,...(meta.holeIds||[])];
     if(ids.some(id=>!S.shapes.some(sh=>sh.id===id)))fail('Géométrie modifiée ou incomplète : opération refusée.');
     // Ne pas faire confiance seulement aux métadonnées : comparer les contours réels.
     const b0=bboxOf(meta.contourId);
     if(Math.abs((b0.x1-b0.x0)-meta.w)>.15||Math.abs((b0.y1-b0.y0)-meta.h)>.15)fail('Dimensions réelles de la plaque modifiées : recharge le projet de référence.');
     const bp=bboxOf(meta.pocketId);
     if(Math.abs((bp.x1-bp.x0)-meta.pocket.width)>.15||Math.abs((bp.y1-bp.y0)-meta.pocket.height)>.15)fail('La poche réelle ne correspond plus au projet enregistré.');
-    for(const id of meta.holeIds){const b=bboxOf(id);
-      if(Math.abs((b.x1-b.x0)-meta.hole.length)>.15||Math.abs((b.y1-b.y0)-meta.hole.width)>.15)fail('Un oblong ne correspond plus aux dimensions déclarées.');
-      if(b.x0<b0.x0-.05||b.x1>b0.x1+.05||b.y0<b0.y0-.05||b.y1>b0.y1+.05)fail('Un oblong sort du contour de la plaque.');
-      if(b.x0<bp.x1+.05&&b.x1>bp.x0-.05&&b.y0<bp.y1+.05&&b.y1>bp.y0-.05)fail('Un oblong recoupe la poche centrale.');
+    for(const id of (meta.holeIds||[])){const b=bboxOf(id);
+      if(meta.hole.mode==='slot'){
+        if(Math.abs((b.x1-b.x0)-meta.hole.length)>.15||Math.abs((b.y1-b.y0)-meta.hole.width)>.15)fail('Un oblong ne correspond plus aux dimensions déclarées.');
+      }else if(meta.hole.mode==='round'){
+        if(Math.abs((b.x1-b.x0)-meta.hole.diameter)>.15||Math.abs((b.y1-b.y0)-meta.hole.diameter)>.15)fail('Un trou rond ne correspond plus au diamètre déclaré.');
+      }
+      if(b.x0<b0.x0-.05||b.x1>b0.x1+.05||b.y0<b0.y0-.05||b.y1>b0.y1+.05)fail('Un trou sort du contour de la plaque.');
+      if(b.x0<bp.x1+.05&&b.x1>bp.x0-.05&&b.y0<bp.y1+.05&&b.y1>bp.y0-.05)fail('Un trou recoupe la poche centrale.');
     }
     if(S.tps.length)fail('Un parcours existe déjà dans COPO. Pour éviter les doublons, ouvre le fichier de dessin sans parcours.');
     if(S.dims.length||S.images.length||(S.relief&&S.relief.items.length))fail('Cette démonstration n’usine pas un projet contenant cotes, images ou relief.');
@@ -168,7 +177,7 @@
       pocketDepth:Number(input.pocketDepth),slotDepth:input.slotsDepth==null?null:Number(input.slotsDepth),
       through:input.slotsThrough===true,dia:Number(input.toolDiameter),pass:Number(input.pass)};
     if(!q.pocket&&!q.slots)fail('Aucune opération à simuler : précise poche et/ou oblongs.');
-    const m=prepared();
+    const m=prepared(q.slots);
     if(!Number.isFinite(q.dia)||q.dia<=0||q.dia>50)fail('Diamètre de fraise invalide.');
     if(!Number.isFinite(q.pass)||q.pass<.1||q.pass>5)fail('Passe invalide (entre 0,1 et 5 mm).');
     if(q.pocket){
@@ -224,5 +233,5 @@
     }catch(e){restore(before);throw e;}
     return calcResult.paths.length;
   }
-  window.COPO_IA_FAO_TEST={version:'0.5',parse,prepared,validate,calc,calcStructured,applyStructured,EXAMPLE};
+  window.COPO_IA_FAO_TEST={version:'0.7.2',parse,prepared,validate,calc,calcStructured,applyStructured,EXAMPLE};
 })();

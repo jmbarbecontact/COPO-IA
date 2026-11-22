@@ -3,20 +3,20 @@
  */
 (() => {
  'use strict';
- const G=window.COPO_IA_TEST, F=window.COPO_IA_FAO_TEST;
+ const G=window.COPO_IA_TEST, F=window.COPO_IA_FAO_TEST, X=window.COPO_IA_FEATURES, H=window.COPO_IA_FREE_CAM, M=window.COPO_IA_MULTI_CAM;
  const root=document.getElementById('cia-root');
  if(!G||!F||!root)return;
  const section=document.createElement('section');section.className='cia-dialogue';
- section.innerHTML=`<details id="cia-dialogue-details" open>
-  <summary>✦ Dialogue et FAO · Validation des commandes</summary>
+ section.innerHTML=`<details id="cia-dialogue-details">
+  <summary>✦ Démonstrations et vérification FAO (facultatif)</summary>
   <p>Utilise les deux démonstrations ou importe une proposition préparée avec ChatGPT. <b>Rien ne change sans ton accord</b>.</p>
-  <label for="cia-chat-text">Instruction en français</label>
-  <textarea id="cia-chat-text" rows="4" spellcheck="true" placeholder="Modifie la poche à 90 × 50 mm puis recalcule les deux parcours avec la fraise Ø3,175 mm, passes de 1 mm."></textarea>
+  <label for="cia-chat-text">Texte de démonstration (non envoyé automatiquement à ChatGPT)</label>
+  <textarea id="cia-chat-text" rows="4" spellcheck="true" aria-label="Texte de démonstration, vide par défaut"></textarea>
   <div class="cia-actions">
     <button type="button" id="cia-chat-read">Lire le projet</button>
     <button type="button" id="cia-chat-demo-cam">Démo : 2 parcours</button>
     <button type="button" id="cia-chat-demo-revise">Démo : modifier + recalculer</button>
-    <button type="button" id="cia-chat-clear">Effacer l’échange</button>
+    <button type="button" id="cia-chat-clear">Vider tous les champs</button>
   </div>
   <div class="cia-actions">
     <button type="button" id="cia-chat-apply" class="cia-primary" disabled>Confirmer dans COPO</button>
@@ -36,15 +36,15 @@
  function invalidate(){draft=null;approve.disabled=true;}
  field.addEventListener('input',()=>{invalidate();msg('Instruction modifiée. Relance l’analyse avant de confirmer.');});
  function checkProject(){if(typeof S==='undefined'||typeof snapState!=='function')fail('COPO n’est pas encore chargé.');}
- function ownedToolpaths(){return S.tps.every(t=>t&&t.type==='pocket'&&/^COPO-IA 0\.[345] · /.test(t.name||'')&&Array.isArray(t.shapeIds));}
+ function ownedToolpaths(){return S.tps.every(t=>t&&t.type==='pocket'&&/^COPO-IA 0\.[3457] · /.test(t.name||'')&&Array.isArray(t.shapeIds));}
  function state(){
-   checkProject();const c=G.context();return {...c,
+   checkProject();const c=G.context();return {...c,features:X?X.state():null,
      toolLibrary:S.tools.filter(t=>t.type==='flat').map(t=>({diameter:t.dia,name:t.name})),
      paths:S.tps.map(t=>({name:t.name,depth:t.p?.depth??null,pass:t.p?.pass??null,diameter:S.tools.find(v=>v.id===t.toolId)?.dia??null,shapes:t.shapeIds?.length||0})),
      editability:ownedToolpaths()?'Parcours COPO-IA uniquement':'Parcours étrangers ou manuels : modification automatique interdite'
    };
  }
- function desc(){let text=G.describe();if(S.tps.length&&ownedToolpaths()&&!S.dims.length&&!S.images.length)text=text.replace('⚠ Édition IA interdite tant que des parcours ou éléments liés existent.','⚠ Les commandes de dessin classiques sont verrouillées ; la passerelle peut remplacer les parcours COPO-IA après confirmation.');return text+`\n\nParcours d'outil : ${S.tps.length}.`+
+ function desc(){let text=G.describe();if(X){const fs=X.state();if(fs.items.length)text+='\n\nFormes libres COPO-IA 0.8 : '+fs.items.length+' élément(s).'+fs.items.map(f=>'\n• '+f.id+' ('+f.role+') : '+f.geometry.type).join('');} if(S.tps.length&&ownedToolpaths()&&!S.dims.length&&!S.images.length)text=text.replace('⚠ Édition IA interdite tant que des parcours ou éléments liés existent.','⚠ Les commandes de dessin classiques sont verrouillées ; la passerelle peut remplacer les parcours COPO-IA après confirmation.');return text+`\n\nParcours d'outil : ${S.tps.length}.`+
    S.tps.map(t=>`\n• ${t.name} — profondeur ${nice(t.p.depth)} mm ; fraise Ø${nice(S.tools.find(v=>v.id===t.toolId)?.dia||0)} mm.`).join('')+
    `\nFraises droites disponibles : ${S.tools.filter(t=>t.type==='flat').map(t=>'Ø'+nice(t.dia)).join(', ')} mm.`;
  }
@@ -96,9 +96,33 @@
  }
  function analyze(plan,source){
   invalidate();checkProject();
-  if(!plan||typeof plan!=='object'||!['read','geometry','fao','revise','clarify'].includes(plan.action))fail('Type de demande non reconnu : aucun changement.');
+  if(!plan||typeof plan!=='object'||!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam'].includes(plan.action))fail('Type de demande non reconnu : aucun changement.');
   if(plan.action==='read'){msg(desc());return;}
   if(plan.action==='clarify'){msg('Précision nécessaire : '+(plan.message||'La demande doit être reformulée.'));return;}
+  if(plan.action==='multi_cam'){
+    if(!M)fail('Module multi-FAO 1.0 indisponible.');
+    const multiChecked=M.analyze(plan.multi_cam);
+    draft={signature:snapState(),plan,multiChecked,source};
+    approve.disabled=false;
+    msg('Proposition de FAO multi-géométrique vérifiée par COPO :\n'+multiChecked.summary+'\n\nAucun parcours ajouté avant confirmation.');
+    return;
+  }
+  if(plan.action==='feature_cam'){
+    if(!H)fail('Module FAO des formes libres non chargé.');
+    const camChecked=H.analyze(plan.feature_cam);
+    draft={signature:snapState(),plan,camChecked,source};
+    approve.disabled=false;
+    msg('Proposition de FAO libre vérifiée par COPO :\n'+camChecked.summary+'\n\nAucun parcours ajouté avant confirmation.');
+    return;
+  }
+  if(plan.action==='features'){
+    if(!X)fail('Module de formes libres indisponible.');
+    const featureChecked=X.analyze(plan.features);
+    draft={signature:snapState(),plan,featureChecked,source};
+    approve.disabled=false;
+    msg('Proposition de géométrie libre contrôlée par COPO :\n'+featureChecked.summary+'\n\nAucune modification avant confirmation. Aucun parcours FAO créé.');
+    return;
+  }
   if(['geometry','revise'].includes(plan.action)&&!plan.geometry)fail('La proposition ne contient aucune géométrie exploitable.');
   if(['fao','revise'].includes(plan.action)&&!plan.cam)fail('La proposition ne contient aucun paramètre FAO exploitable.');
   const hasPaths=S.tps.length>0;
@@ -122,6 +146,18 @@
    if(!draft)fail('Commence par analyser la demande.');
    if(draft.signature!==snapState())fail('Le projet a changé depuis la vérification. Relance l’analyse.');
    const d=draft,before=snapState();
+   if(d.multiChecked){
+     try{const result=M.apply(d.multiChecked);invalidate();msg(`✓ ${result.count} parcours multi-géométriques enregistrés dans COPO (${result.moves.join(' + ')} mouvements).\nEnregistre en .copo pour conserver les parcours.\nSIMULATION UNIQUEMENT — G-code non validé.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
+   if(d.camChecked){
+     try{const result=H.apply(d.camChecked);invalidate();msg(`✓ ${result.count} parcours circulaire(s) enregistré(s) dans COPO (${result.moves.join(' + ')} mouvements).\nEnregistre en .copo pour conserver les parcours.\nSIMULATION UNIQUEMENT — G-code non validé.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
+   if(d.featureChecked){
+     try{const n=X.apply(d.featureChecked);invalidate();msg('✓ '+n+' formes indépendantes enregistrées dans COPO.\nEnregistre le fichier .copo pour conserver le résultat.\nAucune FAO automatique pour ces nouvelles formes.');return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
    if(d.wasPaths&&!ownedToolpaths())fail('Parcours non reconnus : refus.');
    try{
      if(d.wasPaths){S.tps=[];S.activeTp=null;S.editTp=null;}
@@ -148,9 +184,10 @@
    }
  };
  $('cia-chat-read').onclick=()=>{invalidate();try{msg(desc());}catch(e){msg(e.message,true);}};
- $('cia-chat-clear').onclick=()=>{invalidate();field.value='';msg('Échange local effacé. Le projet COPO reste intact.');};
+ $('cia-chat-clear').onclick=()=>{if(typeof window.COPO_IA_CLEAR_FIELDS==='function')window.COPO_IA_CLEAR_FIELDS();else resetFields();};
  $('cia-chat-demo-cam').onclick=()=>{try{doDemo('cam');}catch(e){invalidate();msg(e.message,true);}};
  $('cia-chat-demo-revise').onclick=()=>{try{doDemo('revise');}catch(e){invalidate();msg(e.message,true);}};
  $('cia-chat-apply').onclick=()=>{try{commitDraft();}catch(e){invalidate();msg(e.message,true);}};
- window.COPO_IA_DIALOGUE_TEST={version:'0.6 PASSERELLE',state,analyze,commitDraft,normalizedCam,geometryPlan,desc,doDemo};
+ function resetFields(){invalidate();field.value='';msg('Aucune commande en attente. Le projet COPO reste intact.');}
+ window.COPO_IA_DIALOGUE_TEST={version:'1.0 BÊTA PASSERELLE',state,analyze,commitDraft,normalizedCam,geometryPlan,desc,doDemo,resetFields};
 })();
