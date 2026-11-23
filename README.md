@@ -1,73 +1,72 @@
-# COPO-IA 1.0 bêta — passerelle ChatGPT ↔ COPO
+# COPO-IA 1.1.4 BÊTA — CAO/FAO conversationnelle sur COPO 1.418
 
-**Extension expérimentale et non officielle** de [COPO](https://github.com/gbulleryahen-hash/copo), logiciel libre de CAO/FAO développé par **gbulleryahen-hash**. Licence **GNU GPL v3** (voir [`LICENSE`](LICENSE)).
+**Préversion expérimentale, testée en simulation sous Chrome sur Mac le 23 novembre 2026.** Les parcours et le G-code **ne sont pas validés pour une utilisation sur une CNC réelle**.
 
-COPO-IA permet de décrire des formes et des opérations d’usinage en français dans ChatGPT, puis de transmettre un **plan JSON vérifié** au logiciel COPO. Les échanges se font **manuellement par copier-coller**, sans clé API payante ni compte supplémentaire pour la passerelle. Une vérification et une confirmation distinctes précèdent toute modification du projet.
+COPO-IA est une extension **indépendante et non officielle** de [COPO](https://github.com/gbulleryahen-hash/copo), créé et maintenu par **gbulleryahen-hash**. La version présente s'appuie sur les évolutions natives identifiées dans **COPO 1.418** (commit `a867d16`). Code sous licence GNU GPL v3 ou ultérieure, avec les mentions de licences propres aux bibliothèques et ressources tierces.
 
-> **BÊTA / SIMULATION UNIQUEMENT.** Les parcours générés par cette extension ne sont pas qualifiés pour un usinage réel. Ils ne doivent pas être exécutés sur une machine CNC sans validation technique indépendante des géométries, outils, avances, vitesses, origines, dégagements, bridages et postprocesseurs.
+## Télécharger et démarrer
 
-## Télécharger et essayer
+La distribution complète est disponible dans la **[Release v1.1.4-beta](https://github.com/jmbarbecontact/COPO-IA/releases/tag/v1.1.4-beta)** :
 
-Pour bénéficier de **tous** les fichiers, notamment la bibliothèque de dessins et de reliefs de COPO, utiliser l’**archive complète** associée à la publication GitHub « `v1.0.0-beta` » dans [Releases](https://github.com/jmbarbecontact/COPO-IA/releases). **Le dépôt de code ne contient volontairement pas les 570 ressources volumineuses de `bibliotheque/`.** Il sert à examiner les sources et l’historique ; pour un essai complet, privilégier l’archive de la publication.
+**`COPO-IA-1.1.4-BETA-COMPLET-GITHUB.zip`**
 
-1. Télécharger l’archive complète de la release, puis décompresser son dossier.
-2. Ouvrir `index.html` avec Google Chrome.
-3. Ouvrir **Assistant COPO-IA → Passerelle ChatGPT**.
-4. Charger `Exemple-multiformes-COPO-IA-1.0.copo` via **Ouvrir .copo**.
-5. Dans COPO, saisir sa demande en français, puis **Copier le projet pour ChatGPT**.
-6. Coller cet état dans une conversation ChatGPT ; récupérer la réponse JSON, puis la coller dans **Commande JSON préparée par ChatGPT**.
-7. Cliquer successivement sur **1 · Vérifier la commande** puis, après lecture du rapport, **2 · Confirmer dans COPO**.
-8. Contrôler les trajectoires dans la simulation et sauvegarder le projet en `.copo`.
+**Utiliser cet actif ZIP complet, pas seulement l'archive automatique « Source code »** : l'archive complète inclut `bibliotheque/` (570 fichiers), `img/`, `lib/`, les exemples et la documentation. Décompresser intégralement, puis ouvrir `index.html` dans **Google Chrome**.
 
-**Aucun transfert automatique** n’existe entre ChatGPT et le navigateur local. Les commandes comprennent une signature de projet et sont refusées si l’état du projet a changé.
+1. Vérifier le bouton flottant **« ✦ Assistant COPO-IA »** en bas à droite et l'indication **VERSION 1.1.4 BÊTA**.
+2. Créer ou ouvrir un projet `.copo`, puis ouvrir **Passerelle ChatGPT**.
+3. Rédiger une demande en français, copier le dossier JSON structuré et le coller dans ChatGPT.
+4. Coller la réponse de ChatGPT, choisir **1 · Vérifier la commande**, puis examiner la fenêtre de comparaison **AVANT/APRÈS**, y compris ses paramètres et tracés FAO indicatifs.
+5. Après avoir vérifié l'aperçu, choisir **2 · Confirmer dans COPO**.
+6. Simuler dans COPO, puis choisir **« Enregistrer le projet »** ou **« Enregistrer une copie sous… »** (extension `.copo` requise).
+7. Rouvrir le projet `.copo` et vérifier les parcours conservés.
 
-## Fonctionnalités expérimentales
+**Aucun abonnement API, clé payante ou appel réseau de l'extension n'est nécessaire** : le dialogue avec ChatGPT repose sur un **copier-coller manuel**. Le contrôle et la confirmation sont réalisés dans COPO.
 
-| Famille | Possibilités |
-| --- | --- |
-| Géométrie libre | Rectangle, rectangle à coins arrondis, cercle, oblong, polygone, répétition circulaire de perçages |
-| Édition | Ajout, modification et suppression d’une forme par identifiant stable |
-| FAO circulaire 0.9 | Poches circulaires borgnes identifiées individuellement |
-| **FAO multi-géométrique 1.0** | Poches rectangulaires/arrondies/oblongues/circulaires ; profils extérieurs non traversants sur contours compatibles |
-| Flux de travail | Contrôle de la signature, des paramètres géométriques et de l’outil ; confirmation ; simulation ; conservation dans `.copo` |
+## Fonctions principales
 
-Les opérations automatiques 1.0 demandent **explicitement** une profondeur, une fraise présente dans la bibliothèque et une profondeur de passe. Les profils extérieurs traversants et le bridage des pièces détachées ne sont pas pris en charge par la passerelle. Les fonctions natives de COPO ne sont pas remplacées.
+| Fonction | Statut et portée |
+|---|---|
+| **Modification sélective** | Éditer une géométrie nommée ou ses paramètres FAO, recalculer uniquement les parcours concernés et préserver les autres dans les projets reconnus COPO-IA. |
+| **CAO + FAO en une commande** | Ajouter une forme et préparer son parcours dans une même commande `project_11` avec validation préalable. |
+| **Prévisualisation AVANT/APRÈS** | Comparaison des géométries et des parcours simulés : identifiants, ordre, outils, profondeur, passes, mouvements et tracés XY indicatifs. |
+| **Géométries** | Rectangles, rectangles arrondis, cercles, oblongs, polygones, motifs circulaires de perçages. |
+| **FAO simulée** | Poches borgnes circulaires, rectangulaires ou oblongues, profils extérieurs borgnes et profils intérieurs borgnes compatibles. |
+| **Ordonnancement** | Préservation, regroupement par outil ou profondeur, ou ordre explicite des parcours. |
+| **Sauvegarde** | Actualisation du fichier autorisé, ou création d'une copie indépendante sous un nom `.copo`. |
 
-## Essais de la version 1.0
+La 1.1.4 intègre les huit modules de COPO-IA dans `index.html` pour renforcer le démarrage local ; les fichiers JavaScript **restent distribués individuellement** pour l'examen du code. Le programme conserve la source originale créditée et le moteur natif de COPO.
 
-**Tests automatisés** dans Chromium avec le moteur natif COPO :
+**Limites :** pas de fabrication réelle validée ; pas de parcours traversants automatisés, poches complexes avec îlots ni cycles de perçage natifs automatiques dans ce protocole ; pas de garantie de compatibilité avec des versions de COPO postérieures à 1.418. Les parcours manuels non reconnus ne sont pas modifiés automatiquement. L'aperçu XY n'est pas une simulation de collision ou de bridage.
 
-- Poche rectangulaire 70 × 40 mm, profondeur 4 mm, fraise Ø6 mm, passes 1 mm : **180 mouvements**.
-- Poche oblongue 26 × 12 mm, profondeur 3 mm : **989 mouvements**.
-- Profil extérieur R12, profondeur 2 mm : **1 128 mouvements**.
-- Trois parcours créés, enregistrés puis retrouvés à la réouverture.
-- Contrôles de refus : mauvais outil, profondeur traversante, marge insuffisante, commande périmée, remplacement incomplet.
-- Conservation des fonctions de la 0.9 et de la FAO historique.
+## Vérifications réalisées
 
-**Validation utilisateur sur Mac (22 novembre 2026)** : affichage des trois géométries, création des trois parcours depuis une seule commande ChatGPT, simulation 3D menée à terme et sauvegarde/réouverture réussies. Il s’agit de **tests logiciels**, sans qualification industrielle ni essai CNC réel.
+**Essais interactifs communiqués par l'utilisateur, sur Mac et Chrome le 23 novembre 2026 :**
 
-Voir [`TESTS-COPO-IA-1.0.txt`](TESTS-COPO-IA-1.0.txt), [`VALIDATION-MAC.md`](VALIDATION-MAC.md) et [`CHANGELOG.md`](CHANGELOG.md).
+- Démarrage de la 1.1.4, bouton flottant visible, numéro de version et ouverture de l'assistant.
+- Réouverture d'un projet d'essai de **8 géométries et 6 parcours** (deux diamètres de fraises), simulation et regroupement des quatre trous comme une famille d'opérations.
+- Bouton **« Enregistrer une copie sous… »** : fichier distinct créé puis rouvert, sans altérer l'original.
+- Prévisualisation des six parcours et du recalcul d'une seule poche circulaire Ø20, de **3 à 5 mm**, fraise Ø6 et passes de 1 mm : cinq parcours annoncés conservés.
+- Application de la modification et simulations confirmées sur Mac.
 
-![Aperçu COPO-IA 1.0 avec trois parcours](apercu-COPO-IA-1.0.png)
+**Tests exécutables :** 12/12 tests du moteur et de l'aperçu, 6/6 tests de sauvegarde, 7/7 contrôles statiques (adaptés à l'injection des modules de la 1.1.4). Les tests Node utilisent des interfaces simulées et ne remplacent pas la simulation dans le navigateur, ni la validation sur machine.
 
-## Architecture
+```sh
+node tests/test-transaction11.cjs
+node tests/test-save113.cjs
+node tests/test-compatibility11.cjs
+```
 
-- `index.html` : logiciel COPO avec extension intégrée ;
-- `copo-passerelle.js` : copie de l’état du projet et import des plans JSON ;
-- `copo-dialogue.js` : validation et confirmation ;
-- `copo-features.js` : formes libres et identifiants persistants ;
-- `copo-fao-libre.js` : FAO circulaire ;
-- `copo-fao-multiformes.js` : FAO multi-géométrique ;
-- `copo-ia.js` / `copo-fao.js` : fonctionnalités historiques.
+Documentation : [`PROTOCOLE-COPO-IA-1.1.md`](PROTOCOLE-COPO-IA-1.1.md), [`TESTS-COPO-IA-1.1.4.txt`](TESTS-COPO-IA-1.1.4.txt), [`VALIDATION-MAC-1.1.4.md`](VALIDATION-MAC-1.1.4.md) et [`RAPPORT-PORTAGE-COPO-1.418.md`](RAPPORT-PORTAGE-COPO-1.418.md).
 
-Protocole : `COPO_CHATGPT_PROJECT_V1` → `COPO_CHATGPT_PLAN_V1`, avec empreinte de projet et validation des paramètres. La passerelle **n’autorise pas l’exécution de JavaScript** provenant d’une conversation.
+Captures des essais : [`apercu-COPO-IA-1.1.4-FAO.png`](apercu-COPO-IA-1.1.4-FAO.png) et [`apercu-COPO-IA-1.1.4-projet.png`](apercu-COPO-IA-1.1.4-projet.png).
 
-## Origine, attribution et ressources
+## Architecture et licence
 
-- **Projet original** : [gbulleryahen-hash/copo](https://github.com/gbulleryahen-hash/copo), copyright © 2026 g.bulleryahen.
-- **COPO-IA** : modification expérimentale indépendante, publiée par [jmbarbecontact](https://github.com/jmbarbecontact/COPO-IA), sans affiliation ni approbation revendiquées du projet original.
-- **Licence de la modification logicielle** : GNU GPL v3, texte complet dans `LICENSE` ; `README-COPO-ORIGINAL.md` conservé pour référence.
-- **Bibliothèque de dessins/reliefs** : sa provenance et les licences des ressources individuelles figurent dans `bibliotheque/CREDITS.md`, présent dans l’archive complète.
-- **Polices optionnelles** : certains fichiers de polices décoratives ne sont pas redistribués avec ce paquet ; certaines fonctions typographiques avancées peuvent nécessiter des ressources supplémentaires.
+- `index.html`, `guide.html` : COPO avec changements identifiés dans la version 1.418.
+- `copo-ia11.js` : édition transactionnelle, dépendances entre formes et parcours, ordre et aperçu.
+- `copo-features.js` : gestion des géométries libres et identifiants stables.
+- `copo-fao-multiformes.js` : FAO multi-géométrique et profils borgnes.
+- `copo-dialogue.js` et `copo-passerelle.js` : vérification, dialogue JSON, aperçu, sauvegarde.
+- `copo-ia.js`, `copo-fao.js`, `copo-fao-libre.js` : fonctionnalités historiques.
 
-Ce projet documente une expérience de développement assisté par IA. Il ne constitue ni une garantie de qualité industrielle ni un outil de pilotage CNC validé.
+Crédits de COPO : [gbulleryahen-hash](https://github.com/gbulleryahen-hash/copo). Projet dérivé non officiel, sans affiliation ni approbation revendiquée. Voir `LICENSE`, `README-COPO-ORIGINAL.md`, `bibliotheque/CREDITS.md` et `lib/LICENCES.txt`.

@@ -1,0 +1,25 @@
+COPO-IA 1.1.1 BÊTA — CORRECTIF DE PRÉVISUALISATION
+23 novembre 2026
+
+DÉFAUT SIGNALÉ PAR L’UTILISATEUR :
+Le rendu de la comparaison avant/après était ajouté dans la colonne de la passerelle
+sous les messages de vérification, et ne se présentait pas visiblement à l’écran.
+
+CORRECTIF :
+- Fenêtre avant/après indépendante, centrée, 2 SVG et relevé des modifications XY.
+- Ancienne position en tracé fantôme pointillé, nouvelle position mise en évidence.
+- Bouton « Confirmer dans COPO » bloqué tant que l’aperçu n’a pas été accepté.
+- Annuler ferme la fenêtre, invalide la proposition et ne modifie pas le projet.
+- Les modules natifs de calcul FAO et de persistance .copo n’ont pas été modifiés.
+
+VALIDATION EFFECTUÉE DANS CET ENVIRONNEMENT :
+- 9/9 tests unitaires du moteur transactionnel réussis (APIs natives simulées).
+- 7/7 contrôles de compatibilité et syntaxe réussis.
+- Test Chromium d’interface via page.set_content : ouverture du comparateur, deux SVG,
+  contrôle X 178 → 188, verrouillage de la confirmation, acceptation et annulation : réussi.
+- La navigation file:// directe reste bloquée dans cet environnement. Le test Chromium
+  se fait donc avec des APIs de calcul simulées et les vrais scripts de l’interface.
+
+À VÉRIFIER SUR MAC : ouverture du comparateur dans Chrome avec un projet .copo réel,
+confirmation puis simulation, enregistrement et réouverture.
+PAS DE VALIDATION POUR USINAGE CNC RÉEL.

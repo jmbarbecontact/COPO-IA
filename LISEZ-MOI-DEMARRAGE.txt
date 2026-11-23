@@ -1,8 +1,15 @@
-COPO-IA 1.0 BÊTA — VERSION COMPLÈTE
+COPO-IA 1.1.4 BÊTA — DÉMARRAGE RAPIDE
 
-1. Décompresser le ZIP.
-2. Ouvrir COPO-IA-1.0-BETA/index.html avec Chrome.
-3. Dans Assistant COPO-IA, ouvrir la Passerelle ChatGPT.
-4. Lire README.md pour l’exemple multi-FAO.
+1. Décompresser TOUTE cette archive.
+2. Ouvrir index.html dans Google Chrome.
+3. Cliquer sur ✦ Assistant COPO-IA (en bas à droite).
+4. Ouvrir un projet .copo ou commencer un projet vide.
+5. Dans la passerelle : demander une modification, copier l’état JSON dans ChatGPT, puis coller la réponse JSON.
+6. Vérifier la commande et examiner les aperçus AVANT/APRÈS ; confirmer uniquement si le résultat convient.
+7. Vérifier les parcours par simulation.
+8. Enregistrer le projet ou choisir « Enregistrer une copie sous… » avec l'extension .copo.
+9. Rouvrir le fichier et vérifier les parcours.
 
-NE PAS EXECUTER DE G-CODE SUR UNE CNC REELLE.
+Base COPO 1.418. Licence GPL v3. COPO-IA est indépendant et non officiel.
+ATTENTION : simulation logicielle uniquement, aucune validation CNC réelle.
+Voir README.md et les rapports de validation.

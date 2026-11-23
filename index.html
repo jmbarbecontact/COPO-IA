@@ -1756,6 +1756,7 @@ details.vz[open]{display:block}.vz .vz2{display:grid;grid-template-columns:minma
               <label>Diamètre nominal (M) (mm, 0 = celui du cercle)<input data-u="len" type="number" data-f="thD" step="0.5" min="0"></label>
               <label>Sens du filet<select data-f="thHand"><option value="R">À droite (standard)</option><option value="L">À gauche</option></select></label>
               <label>Passes radiales<input type="number" data-f="thPasses" step="1" min="1" max="10"></label>
+              <label title="Creuse plus loin le fond du filet (taraudage) ou amincit la vis, pour qu’elle se visse sans forcer : utile dans le bois. 0 : cotes exactes.">Jeu radial (mm)<input data-u="len" type="number" data-f="thClear" step="0.05" min="0" placeholder="0"></label>
               <label title="Filetage à plusieurs filets (plusieurs entrées) : le filet avance du pas × nombre de filets à chaque tour ; chaque filet est usiné décalé d’un pas">Nombre de filets (entrées)<input type="number" data-f="thStarts" step="1" min="1" max="8"></label>
             </div>
             <p class="hint" id="thInfo"></p>
@@ -2201,6 +2202,10 @@ Object.assign(I18N_EN, {"Proposer une amélioration…": "Suggest an improvement
 Object.assign(I18N_EN, {"{n} trou(s) plus grand(s) que la fraise : percé(s) à Ø{d} au lieu du diamètre dessiné (cochez l’usinage en hélice).": "{n} hole(s) larger than the tool: drilled at Ø{d} instead of the drawn diameter (check helical milling).", "Cycles de perçage G81/G82/G83 (le contrôleur gère les remontées)": "G81/G82/G83 drilling cycles (the controller handles retracts)"});
 Object.assign(I18N_EN, {"grblHAL (pause M0 au changement d'outil, cycles de perçage)": "grblHAL (M0 pause at tool change, drilling cycles)", "FluidNC (pause M0 au changement d'outil)": "FluidNC (M0 pause at tool change)", "FluidNC n’exécute M6 que si config.yaml déclare un changeur d’outil (atc_manual) ; sinon la machine continue sans s’arrêter : choisissez la pause M0": "FluidNC only runs M6 if config.yaml declares a tool changer (atc_manual); otherwise the machine carries on without stopping: choose the M0 pause", "Temporisation au fond (s, 0 = sans)": "Dwell at the bottom (s, 0 = none)"});
 Object.assign(I18N_EN, {"COPO est installé : les fichiers .copo s’ouvrent maintenant d’un double-clic.": "COPO is installed: .copo files now open with a double-click.", "Installer COPO comme application…": "Install COPO as an app…"});
+
+Object.assign(I18N_EN, {"Jeu radial (mm)": "Radial clearance (mm)",
+"Creuse plus loin le fond du filet (taraudage) ou amincit la vis, pour qu’elle se visse sans forcer : utile dans le bois. 0 : cotes exactes.": "Cuts the thread root deeper (tapped hole) or makes the screw thinner, so it screws in without forcing: useful in wood. 0: exact sizes.",
+"M{d} × {p} : perçage préalable Ø{a} ; la fraise creuse le fond du filet jusqu’au Ø{f} (diamètre intérieur théorique de l’écrou : Ø{m}).": "M{d} × {p}: pre-drill Ø{a}; the mill cuts the thread root out to Ø{f} (theoretical nut minor diameter: Ø{m})."});
 Object.assign(I18N_EN, {"Filetage": "Threading", "Fraise à fileter": "Thread mill", "Fraises à fileter": "Thread mills", "Intérieur (taraudage)": "Internal (tapped hole)", "Extérieur (vis)": "External (screw)", "Sens du filet": "Thread hand", "À droite (standard)": "Right-hand (standard)", "À gauche": "Left-hand", "Passes radiales": "Radial passes", "Choisissez une fraise à fileter (type « Fraise à fileter » dans la bibliothèque).": "Choose a thread mill (type “Thread mill” in the library).", "Indiquez la longueur filetée (profondeur de coupe).": "Enter the thread length (cut depth).", "Sélectionnez des cercles : chaque filetage est centré sur un cercle.": "Select circles: each thread is centered on a circle.", "Fraise trop grosse : Ø{t} pour un taraudage Ø{d} au pas de {p} (perçage préalable Ø{a}).": "Tool too large: Ø{t} for a Ø{d} tapped hole at {p} pitch (pre-drill Ø{a}).", "Diamètre de vis trop petit pour ce pas.": "Screw diameter too small for this pitch.", "perçage préalable": "pre-drill", "passes": "passes", "pas": "pitch", "M{d} × {p} : perçage préalable Ø{a} ; la fraise creuse le fond du filet jusqu’au Ø{d} (diamètre intérieur théorique de l’écrou : Ø{m}).": "M{d} × {p}: pre-drill Ø{a}; the mill cuts the thread root out to Ø{d} (theoretical nut minor diameter: Ø{m}).", "Vis Ø{d} × {p} : cylindre au Ø{d}, fond de filet Ø{m}.": "Screw Ø{d} × {p}: cylinder at Ø{d}, root diameter Ø{m}.", "Fraise trop grosse pour ce diamètre.": "Tool too large for this diameter.", "Sélectionnez un cercle ou indiquez le diamètre nominal.": "Select a circle or enter the nominal diameter.", "Angle du filet (°)": "Thread angle (°)", "Monodent, carbure : du M5 au M12 environ.": "Single-form, carbide: about M5 to M12.", "Monodent, carbure : à partir du M10.": "Single-form, carbide: M10 and up."});
 Object.assign(I18N_EN, {"Longueur filetée (C) (mm)": "Thread length (C) (mm)"});
 Object.assign(I18N_EN, {"Dessous": "Bottom", "Avant": "Front", "Arrière": "Back", "Droite": "Right", "Gauche": "Left", "Cube d’orientation : cliquez une face ou un coin": "View cube: click a face or a corner"});
@@ -3245,7 +3250,8 @@ function buildRelief(p, tool, shapes, M) {
 function threadGeo(p, tool, d0) {
   const P = Math.max(0.2, +p.thPitch || 1.25), D = +p.thD > 0 ? +p.thD : d0, rt = tool.dia / 2, inner = p.thSide !== 'out';
   const D1 = D - 1.0825 * P, d3 = D - 1.2269 * P;
-  return { P, D, rt, inner, D1, d3, tap: D - P, r0: inner ? D1 / 2 - rt : D / 2 + rt, rf: inner ? D / 2 - rt : d3 / 2 + rt };
+  const j = Math.max(0, Math.min(P, +p.thClear || 0)); // jeu radial : taraudage plus profond, vis plus maigre
+  return { P, D, rt, inner, D1, d3, j, tap: D - P, r0: inner ? D1 / 2 - rt : D / 2 + rt, rf: inner ? D / 2 - rt + j : d3 / 2 + rt - j };
 }
 function buildThread(p, tool, shapes, M) {
   if (!tool || tool.type !== 'thread') throw new Error('Choisissez une fraise à fileter (type « Fraise à fileter » dans la bibliothèque).');
@@ -4132,7 +4138,7 @@ const S = {
 // outil par défaut : la fraise droite de 6 mm du projet si elle convient, sinon le premier outil qui convient
 const toolDef = ok => S.tools.find(t => ok(t) && t.type === 'flat' && Math.abs(t.dia - 6) < 0.01) || S.tools.find(ok);
 const profDepth = () => S.stock && +S.stock.t > 0 && !(S.stock.rotary && S.stock.rotary.on) ? +(+S.stock.t).toFixed(3) : 6; // profil : par défaut toute l'épaisseur du brut
-const newForm = () => ({ type: 'profile', name: '', vstart: 0, roughTool: '', restFrom: '', toolId: (toolDef(t => t.type === 'flat' || t.type === 'ball') || S.tools[0] || {}).id, side: 'out', depth: profDepth(), pass: '', stepPct: '', allow: 0, finish: 'last', dir: 'climb', entry: 'rampzz', rlEntry: 'rampzz', rampLen: '', arcR: 5, vstep: 0.1, clrTool: '', peck: 0, dwell: 0, openSide: 'on', face: 'auto', tabs: false, proj: false, coneW: false, npass: 1, over: 40, tabN: 4, tabL: 8, tabH: 2, tabShape: 'rect', tabMode: 'auto', tabPts: null, strategy: 'rings', rasterAng: 0, rest: false, restTool: '', helixPitch: '', helixD: '', helixHoles: false, thSide: 'in', thPitch: 1.25, thD: 0, thHand: 'R', thPasses: 2, thStarts: 1, rlOp: 'rough', rlStep: 40, rlAng: 0, rlAllow: 0.5, rlCross: false, rlBound: 'model', rlOff: 0, rlRStrat: 'z', rlFStrat: 'raster', rlDir: 'climb', rlFrom: 'out', rlItems: null, rlEdge: 'inside' });
+const newForm = () => ({ type: 'profile', name: '', vstart: 0, roughTool: '', restFrom: '', toolId: (toolDef(t => t.type === 'flat' || t.type === 'ball') || S.tools[0] || {}).id, side: 'out', depth: profDepth(), pass: '', stepPct: '', allow: 0, finish: 'last', dir: 'climb', entry: 'rampzz', rlEntry: 'rampzz', rampLen: '', arcR: 5, vstep: 0.1, clrTool: '', peck: 0, dwell: 0, openSide: 'on', face: 'auto', tabs: false, proj: false, coneW: false, npass: 1, over: 40, tabN: 4, tabL: 8, tabH: 2, tabShape: 'rect', tabMode: 'auto', tabPts: null, strategy: 'rings', rasterAng: 0, rest: false, restTool: '', helixPitch: '', helixD: '', helixHoles: false, thSide: 'in', thPitch: 1.25, thD: 0, thHand: 'R', thPasses: 2, thStarts: 1, thClear: 0, rlOp: 'rough', rlStep: 40, rlAng: 0, rlAllow: 0.5, rlCross: false, rlBound: 'model', rlOff: 0, rlRStrat: 'z', rlFStrat: 'raster', rlDir: 'climb', rlFrom: 'out', rlItems: null, rlEdge: 'inside' });
 
 // ---------- calques et formes ----------
 const layerOf = s => S.layers.find(l => l.id === s.layer) || S.layers[0];
@@ -8371,7 +8377,7 @@ function ipMake() {
   toast(err ? err : tr(wantTp ? 'Incrustation créée : poche femelle et pièce rapportée (calque à part), les deux parcours sont visibles.' : 'Incrustation créée : contours de la poche et de la pièce rapportée, sans parcours (calques « Incrustation en poche »).') + (mb.x1 > S.stock.w ? ' ' + tr('La pièce rapportée dépasse du brut : déplacez-la si besoin.') : ''));
 }
 // ---------- signaler un bug ----------
-const COPO_VERSION = '1.417', BUG_REPO = 'https://github.com/gbulleryahen-hash/copo';
+const COPO_VERSION = '1.418', BUG_REPO = 'https://github.com/gbulleryahen-hash/copo';
 const ERRLOG = [];
 window.addEventListener('error', e => { ERRLOG.push((e.message || 'Erreur') + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '')); if (ERRLOG.length > 5) ERRLOG.shift(); });
 window.addEventListener('unhandledrejection', e => { ERRLOG.push('Promise : ' + ((e.reason && e.reason.message) || e.reason)); if (ERRLOG.length > 5) ERRLOG.shift(); });
@@ -8429,20 +8435,50 @@ function projKeep(h) { projHandle = h; if (h && h.name) setCurFile(h.name); try 
 const COPO_TYPES = [{ description: 'Projet COPO', accept: { 'application/x-copo': ['.copo'] } }];
 function projJSON() { const o = JSON.parse(snapState()); const d = {}; for (const im of S.images) if (imgData[im.id]) d[im.id] = imgData[im.id]; if (Object.keys(d).length) o.imgData = d; { const rd = {}; for (const it of S.relief.items) if (relGrid[it.id]) rd[it.id] = relPack(relGrid[it.id]); if (Object.keys(rd).length) o.relData = rd; const rm = {}; for (const it of S.relief.items) if (it.kind === 'stl' && relMesh[it.id]) rm[it.id] = f32ToB64(relMesh[it.id]); if (Object.keys(rm).length) o.relMesh = rm; } return JSON.stringify(o); } // le maillage STL voyage avec le projet
 async function projSave(as) {
-  const txt = projJSON();
-  if (window.showSaveFilePicker && !window.claude) {
-    try { if (!projHandle || as) projKeep(await window.showSaveFilePicker({ suggestedName: projHandle ? projHandle.name : projFileName(), types: COPO_TYPES }));
-      else if (projHandle.queryPermission && (await projHandle.queryPermission({ mode: 'readwrite' })) !== 'granted' && (await projHandle.requestPermission({ mode: 'readwrite' })) !== 'granted') { toast(tr('Autorisation refusée : choisissez où enregistrer.')); projKeep(await window.showSaveFilePicker({ suggestedName: projHandle.name, types: COPO_TYPES })); }
-      const w = await projHandle.createWritable(); await w.write(txt); await w.close(); projDirty(false); toast(trf('Projet enregistré dans « {f} ».', { f: projHandle.name })); return; }
-    catch (e) { if (e && e.name === 'AbortError') return; projKeep(null); setTimeout(() => toast(trf('Écriture directe dans le fichier impossible ({e}) : le projet est téléchargé.', { e: (e && (e.name + (e.message ? ' — ' + e.message : ''))) || '?' })), 1500); }
+  // 1.1.3 : ne jamais remplacer l'exemple à la suite d'un « Enregistrer une copie sous… ».
+  const txt=projJSON(), copyMode=as===true;
+  if(window.showSaveFilePicker && !window.claude){
+    try{
+      let h=projHandle;
+      if(copyMode||!h){
+        const suggestion=copyMode?((projHandle?.name||projFileName()).replace(/\.copo$/i,'')+'-copie.copo'):projFileName();
+        h=await window.showSaveFilePicker({suggestedName:suggestion,types:COPO_TYPES,excludeAcceptAllOption:true});
+      }else if(h.queryPermission&&(await h.queryPermission({mode:'readwrite'}))!=='granted'){
+        if((await h.requestPermission({mode:'readwrite'}))!=='granted'){
+          toast('Accès refusé : aucune modification enregistrée. Utilise « Enregistrer une copie sous… ».');
+          return {saved:false,reason:'permission'};
+        }
+      }
+      // Le sélecteur macOS peut permettre d'omettre le suffixe malgré le type demandé.
+      // Un fichier sans .copo est ensuite invisible dans le filtre « Ouvrir .copo ».
+      if(!/\.copo$/i.test(h.name||'')){
+        toast('Fichier non enregistré : ajoute explicitement « .copo » à son nom et recommence.');
+        return {saved:false,reason:'extension',name:h.name};
+      }
+      const w=await h.createWritable();await w.write(txt);await w.close();
+      // Actualiser le fichier courant seulement APRES l'écriture réussie.
+      projKeep(h);projDirty(false);
+      toast(trf('Projet enregistré dans « {f} ».',{f:h.name}));
+      return {saved:true,method:'direct',name:h.name,copy:copyMode};
+    }catch(e){
+      if(e&&e.name==='AbortError')return {saved:false,reason:'cancel'};
+      toast('Écriture du projet impossible : '+(e?.message||String(e))+'. Aucune copie confirmée.');
+      return {saved:false,reason:'error'};
+    }
   }
-  saveFile(projFileName(), txt, 'Projet COPO'); setCurFile(projFileName()); projDirty(false); if (!window.showSaveFilePicker && !window.claude && !projSave.told) { projSave.told = true; setTimeout(() => toast(tr('Ce navigateur ne permet pas de réécrire le fichier : le projet est téléchargé à chaque enregistrement. Avec Chrome, Edge ou Vivaldi (ou Brave avec l’option « File System Access API » activée), Ctrl+S réécrit directement le même fichier.')), 1800); }
+  // Navigateurs sans File System Access : téléchargement explicite, jamais écriture silencieuse.
+  const name=copyMode?projFileName().replace(/\.copo$/i,'')+'-copie.copo':projFileName();
+  await saveFile(name,txt,'Projet COPO');
+  toast('Téléchargement demandé : vérifie le fichier « '+name+' » avant de poursuivre.');
+  return {saved:true,method:'download',name,copy:copyMode};
 }
 async function projOpen() {
   if (window.showOpenFilePicker && !window.claude) { try { const [h] = await window.showOpenFilePicker({ types: COPO_TYPES.concat([{ description: 'JSON', accept: { 'application/json': ['.json'] } }]), multiple: false }); openProjectText(await (await h.getFile()).text()); projKeep(/\.copo$/i.test(h.name) ? h : null); setCurFile(h.name); } catch (e) { if (!(e && e.name === 'AbortError')) toast(e.message || tr('Fichier illisible.')); } return; }
   projKeep(null); $('#fOpen').click();
 }
 function projFileName() { const n = String((S.meta && S.meta.name) || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim(); return (n || 'projet-copo') + '.copo'; }
+// Interface sûre utilisée par la passerelle COPO-IA ; les commandes natives restent disponibles.
+window.COPO_IA_PROJECT_IO={save:()=>projSave(false),saveCopy:()=>projSave(true),current:()=>({name:projHandle?.name||curFile||projFileName(),linked:!!projHandle,dirty:!!projDirtyV})};
 async function saveFile(name, data, title) {
   if (DL) { try { await DL.save({ filename: name, data }); toast('Fichier enregistré.'); return; } catch (e) { if (e && e.code === 'declined') return; if (e && e.code === 'rate_limited') { toast('Un enregistrement est déjà en attente.'); return; } } }
   if (!window.claude) { try { const url = URL.createObjectURL(new Blob([data], { type: 'application/octet-stream' })), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); toast('Fichier « ' + name + ' » téléchargé.'); return; } catch (e) { } }
@@ -8564,7 +8600,7 @@ function renderForm() { setTimeout(tpTypeSync, 0); { const d = $('#tpAdvR'); if 
   root.querySelectorAll('[data-entry]').forEach(el => { const ok = { ramp: ['ramp', 'rampzz'], arc: ['arc', 'arcramp'], helix: ['helix'] }[el.dataset.entry] || []; el.hidden = !ok.includes(F.entry); });
   $('#rasterAngRow').hidden = (F.strategy !== 'raster' && F.strategy !== 'zigzag') || !!F.rest; if (F.type === 'pocket' && F.strategy === 'zigzag' && !F.rest) $('#allowRow').hidden = true; /* aller-retour seul : aucune passe sur le bord, donc pas de surépaisseur */ $('#restPrevRow').hidden = !F.rest; { const ht = S.tools.find(x => x.id === F.toolId), flat = !!ht && ht.type === 'flat'; if (F.type === 'drill' && !flat) $('#helixHolesRow').hidden = true; $('#drillPitchRow').hidden = F.helixHoles === false || !flat;
     let nb = 0; if (F.type === 'drill' && flat && F.helixHoles === false) { const ids = S.editTp ? ((S.tps.find(t => t.id === S.editTp) || {}).shapeIds || []) : [...S.sel]; for (const sh of ids.map(shapeById).filter(x => x && x.closed && x.pts && x.pts.length > 2)) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (const q of sh.pts) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); } if (Math.max(x1 - x0, y1 - y0) > ht.dia * 1.05) nb++; } }
-    if (F.type === 'thread') { const ti = $('#thInfo'), tl = S.tools.find(x => x.id === F.toolId), ids = S.editTp ? ((S.tps.find(t => t.id === S.editTp) || {}).shapeIds || []) : [...S.sel], sh = ids.map(shapeById).find(x => x && x.closed && x.pts && x.pts.length > 2); let d0 = 0; if (sh) { let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity; for (const q of sh.pts) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); } d0 = Math.max(x1 - x0, y1 - y0); } const G = threadGeo(F, tl || { dia: 0 }, d0); ti.textContent = G.D > 0 ? (G.inner ? trf('M{d} × {p} : perçage préalable Ø{a} ; la fraise creuse le fond du filet jusqu’au Ø{d} (diamètre intérieur théorique de l’écrou : Ø{m}).', { d: fr(G.D, 2).replace(/,?0+$/, ''), p: String(+G.P.toFixed(3)).replace('.', ','), a: fr(G.tap, 2).replace(/,?0+$/, ''), m: fr(G.D1, 2) }) : trf('Vis Ø{d} × {p} : cylindre au Ø{d}, fond de filet Ø{m}.', { d: fr(G.D, 2).replace(/,?0+$/, ''), p: String(+G.P.toFixed(3)).replace('.', ','), m: fr(G.d3, 2) })) + (tl && G.inner && tl.dia >= G.D1 ? ' ' + tr('Fraise trop grosse pour ce diamètre.') : '') : tr('Sélectionnez un cercle ou indiquez le diamètre nominal.'); }
+    if (F.type === 'thread') { const ti = $('#thInfo'), tl = S.tools.find(x => x.id === F.toolId), ids = S.editTp ? ((S.tps.find(t => t.id === S.editTp) || {}).shapeIds || []) : [...S.sel], sh = ids.map(shapeById).find(x => x && x.closed && x.pts && x.pts.length > 2); let d0 = 0; if (sh) { let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity; for (const q of sh.pts) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); } d0 = Math.max(x1 - x0, y1 - y0); } const G = threadGeo(F, tl || { dia: 0 }, d0); ti.textContent = G.D > 0 ? (G.inner ? trf('M{d} × {p} : perçage préalable Ø{a} ; la fraise creuse le fond du filet jusqu’au Ø{f} (diamètre intérieur théorique de l’écrou : Ø{m}).', { d: fr(G.D, 2).replace(/,?0+$/, ''), f: fr(G.D + 2 * G.j, 2).replace(/,?0+$/, ''), p: String(+G.P.toFixed(3)).replace('.', ','), a: fr(G.tap, 2).replace(/,?0+$/, ''), m: fr(G.D1, 2) }) : trf('Vis Ø{d} × {p} : cylindre au Ø{d}, fond de filet Ø{m}.', { d: fr(G.D, 2).replace(/,?0+$/, ''), p: String(+G.P.toFixed(3)).replace('.', ','), m: fr(G.d3 - 2 * G.j, 2) })) + (tl && G.inner && tl.dia >= G.D1 ? ' ' + tr('Fraise trop grosse pour ce diamètre.') : '') : tr('Sélectionnez un cercle ou indiquez le diamètre nominal.'); }
     if (F.type === 'relief') { const fin = F.rlOp === 'finish', fo = fin && F.rlFStrat === 'offset'; $('#rlPassRow').hidden = fin; $('#rlAllowRow').hidden = fin; $('#rlEntryRow').hidden = fin; $('#rlRampRow').hidden = fin || F.rlEntry !== 'rampzz'; $('#rlHelixRow').hidden = $('#rlHelixDRow').hidden = fin || F.rlEntry !== 'helix'; $('#rlCrossRow').hidden = !fin || fo; $('#rlUnderRow').hidden = !fin; $('#rlUnderDRow').hidden = !fin || !F.rlUnder; $('#rlRStratRow').hidden = fin; $('#rlFStratRow').hidden = !fin; $('#rlDirRow').hidden = !fo; $('#rlFromRow').hidden = !fo; $('#rlAngRow').hidden = fo;
       { const box = $('#rlItemsBox'), its = S.relief.items.filter(i => relGrid[i.id]); box.innerHTML = ''; if (!its.length) box.innerHTML = '<span class="hint">' + tr('Aucun relief : importez-le dans l’onglet Relief.') + '</span>';
         for (const it of its) { const l = document.createElement('label'); l.className = 'chk'; const c = document.createElement('input'); c.type = 'checkbox'; c.checked = !Array.isArray(F.rlItems) || F.rlItems.includes(it.id); c.disabled = !it.visible; c.onchange = () => { const all = its.map(i => i.id); let cur = Array.isArray(F.rlItems) ? F.rlItems.slice() : all.slice(); cur = c.checked ? [...new Set([...cur, it.id])] : cur.filter(x => x !== it.id); F.rlItems = all.every(x => cur.includes(x)) ? null : cur; }; l.append(c, ' ' + it.name + (it.visible ? '' : ' (' + tr('masqué') + ')')); box.appendChild(l); } }
@@ -8653,7 +8689,7 @@ $('#tpForm').addEventListener('input', e => { const k = e.target.dataset.f; if (
 $('#tpForm').addEventListener('change', e => { if (e.target.dataset.f) renderForm(); });
 function applyForm() {
   const F = S.form, ids = [...S.sel], rids = F.type === 'profile' ? [...(S.tpRels || [])].filter(id => S.relief.items.some(x => x.id === id)) : [];
-  const p = { side: F.side, depth: +F.depth || 0, pass: F.pass === '' ? '' : +F.pass, stepPct: F.stepPct === '' || F.stepPct == null || !(+F.stepPct > 0) ? '' : Math.max(5, Math.min(95, +F.stepPct)), allow: +F.allow || 0, finish: F.finish, dir: F.dir, entry: F.entry, rlEntry: F.rlEntry || 'plunge', rampLen: F.rampLen === '' ? '' : +F.rampLen || 0, arcR: +F.arcR || 0, vstep: +F.vstep || 0.1, clrTools: F.type === 'vcarve' ? vcClrTools(F).map(t => t.id) : [], clrTool: F.type === 'vcarve' ? ((vcClrTools(F)[0] || {}).id || '') : '', clrExt: F.type === 'vcarve' && !!F.clrExt, vstart: +F.vstart || 0, zrel: 1, peck: +F.peck || 0, dwell: +F.dwell || 0, openSide: F.openSide || 'on', tabs: !!F.tabs, proj: !!F.proj, tabN: +F.tabN || 4, tabL: F.tabL === '' ? 8 : +F.tabL, tabH: +F.tabH || 2, tabShape: F.tabShape || 'rect', tabMode: F.tabMode === 'manual' ? 'manual' : 'auto', tabPts: F.tabMode === 'manual' && Array.isArray(F.tabPts) ? clone(F.tabPts) : null, strategy: F.strategy || 'rings', rasterAng: +F.rasterAng || 0, rest: F.type === 'pocket' && !!F.rest, roughTool: F.type === 'pocket' && F.rest ? (F.roughTool || '') : '', restFrom: F.type === 'pocket' && F.rest && F.restFrom !== '__new' ? (F.restFrom || '') : '', restTool: '', restDia: 0, helixPitch: F.helixPitch === '' || F.helixPitch == null ? '' : +F.helixPitch || 1, helixD: F.helixD === '' || F.helixD == null ? '' : +F.helixD, helixHoles: F.helixHoles !== false, thSide: F.thSide === 'out' ? 'out' : 'in', thPitch: Math.max(0.2, +F.thPitch || 1.25), thD: Math.max(0, +F.thD || 0), thHand: F.thHand === 'L' ? 'L' : 'R', thPasses: Math.max(1, Math.min(10, Math.round(+F.thPasses || 1))), thStarts: Math.max(1, Math.min(8, Math.round(+F.thStarts || 1))), rlOp: F.rlOp === 'finish' ? 'finish' : 'rough', rlStep: Math.max(2, Math.min(95, +F.rlStep || 40)), rlAng: +F.rlAng || 0, rlAllow: Math.max(0, +F.rlAllow || 0), rlCross: !!F.rlCross, rlUnder: !!F.rlUnder, rlUnderD: F.rlUnderD === '' || F.rlUnderD == null ? '' : Math.max(0, +F.rlUnderD || 0), rlBound: ['model', 'stock', 'sel'].includes(F.rlBound) ? F.rlBound : 'model', rlOff: +F.rlOff || 0, rlRStrat: F.rlRStrat === 'raster' ? 'raster' : 'z', rlFStrat: F.rlFStrat === 'offset' ? 'offset' : 'raster', rlDir: F.rlDir === 'conv' ? 'conv' : 'climb', rlFrom: F.rlFrom === 'in' ? 'in' : 'out', rlEdge: F.rlEdge === 'center' || F.rlEdge === 'outside' ? F.rlEdge : 'inside', rlItems: Array.isArray(F.rlItems) ? F.rlItems.slice() : null };
+  const p = { side: F.side, depth: +F.depth || 0, pass: F.pass === '' ? '' : +F.pass, stepPct: F.stepPct === '' || F.stepPct == null || !(+F.stepPct > 0) ? '' : Math.max(5, Math.min(95, +F.stepPct)), allow: +F.allow || 0, finish: F.finish, dir: F.dir, entry: F.entry, rlEntry: F.rlEntry || 'plunge', rampLen: F.rampLen === '' ? '' : +F.rampLen || 0, arcR: +F.arcR || 0, vstep: +F.vstep || 0.1, clrTools: F.type === 'vcarve' ? vcClrTools(F).map(t => t.id) : [], clrTool: F.type === 'vcarve' ? ((vcClrTools(F)[0] || {}).id || '') : '', clrExt: F.type === 'vcarve' && !!F.clrExt, vstart: +F.vstart || 0, zrel: 1, peck: +F.peck || 0, dwell: +F.dwell || 0, openSide: F.openSide || 'on', tabs: !!F.tabs, proj: !!F.proj, tabN: +F.tabN || 4, tabL: F.tabL === '' ? 8 : +F.tabL, tabH: +F.tabH || 2, tabShape: F.tabShape || 'rect', tabMode: F.tabMode === 'manual' ? 'manual' : 'auto', tabPts: F.tabMode === 'manual' && Array.isArray(F.tabPts) ? clone(F.tabPts) : null, strategy: F.strategy || 'rings', rasterAng: +F.rasterAng || 0, rest: F.type === 'pocket' && !!F.rest, roughTool: F.type === 'pocket' && F.rest ? (F.roughTool || '') : '', restFrom: F.type === 'pocket' && F.rest && F.restFrom !== '__new' ? (F.restFrom || '') : '', restTool: '', restDia: 0, helixPitch: F.helixPitch === '' || F.helixPitch == null ? '' : +F.helixPitch || 1, helixD: F.helixD === '' || F.helixD == null ? '' : +F.helixD, helixHoles: F.helixHoles !== false, thSide: F.thSide === 'out' ? 'out' : 'in', thPitch: Math.max(0.2, +F.thPitch || 1.25), thD: Math.max(0, +F.thD || 0), thHand: F.thHand === 'L' ? 'L' : 'R', thPasses: Math.max(1, Math.min(10, Math.round(+F.thPasses || 1))), thStarts: Math.max(1, Math.min(8, Math.round(+F.thStarts || 1))), thClear: Math.max(0, +F.thClear || 0), rlOp: F.rlOp === 'finish' ? 'finish' : 'rough', rlStep: Math.max(2, Math.min(95, +F.rlStep || 40)), rlAng: +F.rlAng || 0, rlAllow: Math.max(0, +F.rlAllow || 0), rlCross: !!F.rlCross, rlUnder: !!F.rlUnder, rlUnderD: F.rlUnderD === '' || F.rlUnderD == null ? '' : Math.max(0, +F.rlUnderD || 0), rlBound: ['model', 'stock', 'sel'].includes(F.rlBound) ? F.rlBound : 'model', rlOff: +F.rlOff || 0, rlRStrat: F.rlRStrat === 'raster' ? 'raster' : 'z', rlFStrat: F.rlFStrat === 'offset' ? 'offset' : 'raster', rlDir: F.rlDir === 'conv' ? 'conv' : 'climb', rlFrom: F.rlFrom === 'in' ? 'in' : 'out', rlEdge: F.rlEdge === 'center' || F.rlEdge === 'outside' ? F.rlEdge : 'inside', rlItems: Array.isArray(F.rlItems) ? F.rlItems.slice() : null };
   const autoFace = sh => sh.length && sh.every(x => faceOf(x) === 2) ? 2 : 1, relF = () => { const its = F.type === 'relief' ? S.relief.items.filter(i => i.visible && relGrid[i.id] && (!Array.isArray(p.rlItems) || p.rlItems.includes(i.id))) : rids.map(id => S.relief.items.find(x => x.id === id)).filter(Boolean); return its.length && its.every(i => relFace(i) === 2) ? 2 : 1; },
     faceFor = idl => F.face === 'auto' || !F.face ? (F.type === 'relief' || (!idl.length && rids.length) ? relF() : autoFace(idl.map(shapeById).filter(Boolean))) : +F.face;
   if (S.editTp) { const tp = S.tps.find(t => t.id === S.editTp); if (!tp) return;
@@ -12732,13 +12768,1717 @@ window.COPO_CNC = { K, CF, U, connect, progInfo, checks, LOG, driversOpen, progD
 </script>
 
 
-<!-- COPO-IA 0.7 : portage experimental sur COPO 1.415 ; passerelle manuelle ChatGPT -->
-<script src="copo-ia.js"></script>
-<script src="copo-fao.js"></script>
-<script src="copo-features.js"></script>
-<script src="copo-fao-libre.js"></script>
-<script src="copo-fao-multiformes.js"></script>
-<script src="copo-dialogue.js"></script>
-<script src="copo-passerelle.js"></script>
+<!-- COPO-IA 1.1 : edition transactionnelle + FAO selective ; passerelle manuelle ChatGPT -->
+<script data-copo-ia-module="copo-ia.js">
+/*
+ * COPO-IA 0.7 BÊTA — portage expérimental sur COPO 1.415
+ * Copyright (C) 2026. Redistribution sous GNU GPL v3 ou ultérieure.
+ * Dessin et édition par ce module ; la FAO de simulation est dans copo-fao.js.
+ * Aucune exportation ni envoi de G-code par l'extension.
+ * Echange ChatGPT manuel : aucune API, aucun serveur, aucune cle.
+ */
+(() => {
+ 'use strict';
+ const css = `
+#cia-launch{position:fixed;right:19px;bottom:18px;z-index:2147481000;border:1px solid #5d96ed;background:#1d4f86;color:white;box-shadow:0 5px 20px #0005;padding:10px 15px;border-radius:99px;font:600 13px system-ui,sans-serif;cursor:pointer}
+#cia-root{position:fixed;right:18px;bottom:68px;z-index:2147481001;width:min(430px,calc(100vw - 36px));max-height:min(720px,calc(100vh - 105px));display:none;flex-direction:column;border:1px solid #4d6a89;background:#1e2630;color:#f1f6ff;border-radius:12px;box-shadow:0 12px 44px #0008;font:13px/1.45 system-ui,sans-serif;overflow:hidden}
+#cia-root.cia-open{display:flex}#cia-root *{box-sizing:border-box}#cia-root .cia-head{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#233851;padding:11px 13px;border-bottom:1px solid #45566d}
+#cia-root .cia-head strong{font-size:15px}#cia-root .cia-flag{font:600 10px system-ui;background:#41536a;color:#d5e6ff;border-radius:12px;padding:3px 7px;white-space:nowrap}
+#cia-root .cia-body{padding:13px;display:grid;grid-auto-rows:max-content;gap:10px;min-height:0;overflow-x:hidden;overflow-y:auto}#cia-root p{margin:0;color:#c5d2e1}#cia-root label{font-weight:600}
+#cia-root textarea{width:100%;min-height:88px;max-height:165px;padding:10px;background:#111923;border:1px solid #6c819a;border-radius:7px;color:white;font:13px/1.45 system-ui;resize:vertical}
+#cia-root input[type=password]{width:100%;padding:9px;background:#111923;border:1px solid #6c819a;border-radius:7px;color:white;font:13px system-ui}
+#cia-root button{cursor:pointer;border:1px solid #6785a6;color:#fff;border-radius:7px;background:#33475b;padding:8px 10px;font:600 12px system-ui}#cia-root button:disabled{opacity:.42;cursor:not-allowed}
+#cia-root button.cia-primary{background:#235a91;border-color:#67b1ff}#cia-root button.cia-plain{padding:4px 9px;background:transparent}
+#cia-root .cia-actions{display:flex;gap:6px;flex-wrap:wrap}#cia-root .cia-report{border:1px solid #536b80;background:#17212d;padding:10px;border-radius:8px;white-space:pre-line;overflow-wrap:anywhere;min-height:55px;height:auto;color:#dfe9f9}
+#cia-root .cia-report.cia-error{border-color:#b87070;color:#ffd7d7}#cia-root .cia-note{font-size:11px;color:#b8c8da}#cia-root .cia-divider{border-top:1px solid #425064}
+#cia-root #cia-config-panel{border:1px solid #536b80;padding:10px;border-radius:8px;display:grid;gap:8px}#cia-root [hidden]{display:none!important}
+@media(max-width:700px){#cia-root{bottom:62px;max-height:73vh}}
+ `;
+ const style=document.createElement('style'); style.textContent=css;document.head.appendChild(style);
+ const wrap=document.createElement('div');wrap.innerHTML=`
+<button id="cia-launch" data-notr type="button" aria-controls="cia-root" aria-expanded="false">✦ Assistant COPO-IA</button>
+<section id="cia-root" data-notr role="region" aria-label="Assistant COPO-IA">
+ <header class="cia-head"><strong>COPO-IA · Dessin, modifications & FAO</strong><span class="cia-flag">VERSION 1.1.4 BÊTA</span><button class="cia-plain" id="cia-close" type="button" aria-label="Fermer">×</button></header>
+ <div class="cia-body">
+  <p>Passerelle ChatGPT : crée et modifie des formes <b>indépendantes</b> (contours, cercles, oblongs, polygones). Les démonstrations locales de plaques restent disponibles. Unités : mm.</p>
+  <label for="cia-prompt">Ta demande</label>
+  <textarea id="cia-prompt" spellcheck="true" aria-label="Demande locale à analyser, vide par défaut"></textarea>
+  <div class="cia-note">Zone locale facultative : un champ vide ne contient aucune instruction. Pour discuter avec ChatGPT, utilise la section « Passerelle ChatGPT ».</div>
+  <div class="cia-actions"><button id="cia-ex-create" type="button">Exemple : créer</button><button id="cia-ex-edit" type="button">Exemple : modifier</button><button id="cia-read" type="button">Lire le dessin</button><button id="cia-clear-all" type="button">Vider tous les champs</button></div>
+  <div class="cia-actions"><button id="cia-parse" type="button">Analyser (local)</button><button id="cia-apply" type="button" class="cia-primary" disabled>Appliquer dans COPO</button></div>
+  <div id="cia-report" class="cia-report" role="status" aria-live="polite">Clique sur « Lire le dessin » pour voir ce que COPO contient.</div>
+  <div class="cia-actions"><button id="cia-save" type="button">Enregistrer .copo</button><button id="cia-open" type="button">Ouvrir .copo</button><button id="cia-new" type="button">Nouveau projet vide</button></div>
+  <div class="cia-divider"></div>
+  <div class="cia-note">Passerelle ChatGPT : communication par copier-coller, sans clé API, logiciel externe ni frais supplémentaires liés à COPO-IA.</div>
+  <div class="cia-note">Les modifications sont prévisualisées en texte et exigent ton clic pour être appliquées. L’édition locale classique protège les projets contenant des parcours ; le dialogue 0.5 peut proposer leur remplacement après confirmation et contrôles. Les profondeurs de poche sont des <b>notes de projet</b>, pas des usinages. Les parcours FAO éventuels sont uniquement destinés à la simulation. Ne jamais exécuter de G-code non vérifié.</div>
+ </div>
+</section>`;
+ document.body.append(...wrap.children);
+ const el=id=>document.getElementById(id);
+ const launch=el('cia-launch'),root=el('cia-root'),prompt=el('cia-prompt'),report=el('cia-report'),applyButton=el('cia-apply');
+ let preview=null;
+ function show(v){root.classList.toggle('cia-open',v);launch.setAttribute('aria-expanded',String(v));if(v)prompt.focus();}
+ launch.addEventListener('click',()=>show(!root.classList.contains('cia-open')));
+ el('cia-close').addEventListener('click',()=>show(false));
+ const norm=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[×✕]/g,'x').replace(/[øØ]/g,'diametre ').replace(/\s+/g,' ').trim();
+ const n=v=>Number(String(v).replace(',','.'));
+ const nice=v=>String(Number(Number(v).toFixed(3))).replace('.',',');
+ const fail=t=>{throw new Error(t);};
+ const value=(v,name,low=0.01,high=5000)=>{const x=Number(v);if(v==null||!Number.isFinite(x)||x<low||x>high)fail(`${name} : nombre invalide ou hors limites (${low} à ${high} mm).`);return x;};
+ function setReport(m,bad=false){report.textContent=m;report.classList.toggle('cia-error',bad);}
+ function invalidate(){preview=null;applyButton.disabled=true;}
+ prompt.addEventListener('input',()=>{invalidate();setReport('Demande modifiée. Clique sur « Analyser (local) ».');});
+ // La lecture utilise les véritables objets du document COPO.
+ function checkLoaded(){if(typeof S==='undefined'||typeof mkShape!=='function'||typeof commit!=='function'||typeof snapState!=='function')fail('COPO n’est pas encore chargé. Recharge la page.');}
+ function bb(s){return bbox([s]);}
+ function rect(s){return !!(s&&s.closed&&s.nodes.length===4&&s.nodes.every(q=>!q.i&&!q.o));}
+ function circle(s){if(!s||!s.closed||s.nodes.length!==4||!s.nodes.some(q=>q.i||q.o))return false;const b=bb(s);return b.w>0&&Math.abs(b.w-b.h)<Math.max(.1,b.w*.01);}
+ function shape(id){return S.shapes.find(s=>s.id===id);}
+ function managed(){
+   checkLoaded();
+   const m=S.meta&&S.meta.copoIA;
+   if(m&&m.version===2&&m.contourId){
+     const ids=[m.contourId,...(m.holeIds||[]),...(m.pocketId?[m.pocketId]:[])];
+     if(ids.length===S.shapes.length&&ids.every(id=>shape(id))&&rect(shape(m.contourId))) {
+       const b=bb(shape(m.contourId));
+       return {source:'COPO-IA 0.2',x:b.x0,y:b.y0,w:b.w,h:b.h,contourId:m.contourId,holeIds:[...(m.holeIds||[])],hole:m.hole||null,pocketId:m.pocketId||null,pocket:m.pocket||null,stockFull:Math.abs(S.stock.w-b.w)<.1&&Math.abs(S.stock.h-b.h)<.1};
+     }
+     return null; // Méta présente, mais les formes ont été modifiées manuellement.
+   }
+   // Récupération prudente d'une plaque issue du prototype v0.1.
+   const rs=S.shapes.filter(rect),cs=S.shapes.filter(circle);
+   if(!rs.length||rs.length>2||(cs.length!==0&&cs.length!==4)||rs.length+cs.length!==S.shapes.length)return null;
+   const contour=rs.slice().sort((a,b)=>bb(b).w*bb(b).h-bb(a).w*bb(a).h)[0];
+   const b=bb(contour),pocketShape=rs.find(s=>s!==contour);
+   if(pocketShape){const p=bb(pocketShape);if(!(p.x0>=b.x0&&p.y0>=b.y0&&p.x1<=b.x1&&p.y1<=b.y1))return null;}
+   let hole=null;
+   if(cs.length===4){
+     const c=cs.map(s=>{const d=bb(s);return {x:(d.x0+d.x1)/2,y:(d.y0+d.y1)/2,d:d.w};});
+     const dia=c[0].d, xs=c.map(q=>q.x),ys=c.map(q=>q.y),mx=Math.min(...xs)-b.x0,my=Math.min(...ys)-b.y0;
+     const corners=[[b.x0+mx,b.y0+my],[b.x1-mx,b.y0+my],[b.x0+mx,b.y1-my],[b.x1-mx,b.y1-my]];
+     const ok=Math.abs(mx-my)<.15&&c.every(q=>Math.abs(q.d-dia)<.15&&corners.some(([x,y])=>Math.hypot(q.x-x,q.y-y)<.2));
+     if(!ok)return null;
+     hole={mode:'round',diameter:dia,margin:mx};
+   }
+   return {source:'COPO 0.1 ou dessin simple',x:b.x0,y:b.y0,w:b.w,h:b.h,contourId:contour.id,holeIds:cs.map(s=>s.id),hole,pocketId:pocketShape?pocketShape.id:null,pocket:pocketShape?{width:bb(pocketShape).w,height:bb(pocketShape).h,depth:null}:null,stockFull:Math.abs(S.stock.w-b.w)<.1&&Math.abs(S.stock.h-b.h)<.1};
+ }
+ function context(){checkLoaded();const m=managed();return {shapeCount:S.shapes.length,tpCount:S.tps.length,stock:{width:S.stock.w,height:S.stock.h,thickness:S.stock.t},managed:m?{width:m.w,height:m.h,holes:m.hole,pocket:m.pocket,stockFull:m.stockFull}:null,editable:!!m&&S.tps.length===0&&S.dims.length===0&&S.images.length===0&&(!S.relief||S.relief.items.length===0)};}
+ function describe(){
+  checkLoaded();const c=context(),m=managed();
+  let t=`Dessin COPO : ${c.shapeCount} forme(s) ; ${c.tpCount} parcours d'outil.\nBrut : ${nice(S.stock.w)} × ${nice(S.stock.h)} × ${nice(S.stock.t)} mm.`;
+  if(m){t+=`\nPlaque reconnue (${m.source}) : ${nice(m.w)} × ${nice(m.h)} mm.`;
+   if(m.hole){const h=m.hole;t+=h.mode==='round'?`\n4 trous ronds Ø${nice(h.diameter)} mm, centres à ${nice(h.margin)} mm des bords.`:`\n4 trous oblongs ${nice(h.length)} × ${nice(h.width)} mm, orientation horizontale, centres à ${nice(h.margin)} mm des bords.`;}
+   if(m.pocket)t+=`\nPoche géométrique centrale : ${nice(m.pocket.width)} × ${nice(m.pocket.height)} mm${m.pocket.depth?' ; profondeur prévue '+nice(m.pocket.depth)+' mm (non usinée)':''}.`;
+   t+=c.editable?'\n✓ Dessin modifiable par COPO-IA.':'\n⚠ Édition IA interdite tant que des parcours ou éléments liés existent.';
+  }else if(c.shapeCount)t+='\nDessin non reconnu comme une plaque COPO-IA : lecture possible, mais modification automatique refusée.';
+  else t+='\nLe projet est vide : tu peux créer une plaque.';
+  return t+'\nAucun G-code créé par l’assistant.';
+ }
+ function localPlan(text){
+  const s=norm(text);if(!s)fail('Écris une demande.');
+  if(/(?:oblong|lumiere)/.test(s)&&/vertical|rotation|incline|inclinaison/.test(s))fail('Cette version ne crée que des trous oblongs horizontaux. Précise une géométrie prise en charge.');
+  if(/^(decris|resume|lis|lire|que vois|qu.y a|analyse le dessin|montre les cotes)/.test(s))return {action:'read'};
+  const create=/\b(cree|creer|dessine|dessiner|nouveau)\b/.test(s)&&/\b(rectangle|plaque|panneau|brut)\b/.test(s);
+  const action=create?'create':'edit';
+  let cd=null;
+  const dm=s.match(/(?:rectangle|plaque|panneau|brut)[^\d]{0,44}(\d+(?:[.,]\d+)?)\s*(?:mm\s*)?[x*]\s*(\d+(?:[.,]\d+)?)/) || s.match(/(?:dimensions?|taille)\s*(?:a|de)?\s*(\d+(?:[.,]\d+)?)\s*[x*]\s*(\d+(?:[.,]\d+)?)/);
+  if(dm)cd={width:n(dm[1]),height:n(dm[2])};
+  if(action==='create'&&!cd)fail('Commence par « Crée une plaque de 150 x 100 mm ».');
+  let thick=null;
+  const tm=s.match(/(?:epaisseur|epais)\s*(?:du brut\s*)?(?:a|de|=)?\s*(\d+(?:[.,]\d+)?)/);
+  if(tm)thick=n(tm[1]);
+  let holes=null;
+  const mentionsH=/\b(trous?|percages?|oblongs?|lumieres?)\b/.test(s);
+  const four=/(?:4|quatre)\s+(?:trous?|percages?|oblongs?|lumieres?)/.test(s);
+  if(mentionsH){
+    if(/\b(supprime|retire|enleve)\b/.test(s)&&/\b(trous?|percages?|oblongs?|lumieres?)\b/.test(s))holes={mode:'remove'};
+    else if(/\b(oblongs?|lumieres?)\b/.test(s)){
+      const sm=s.match(/(?:oblongs?|lumieres?)[^\d]{0,36}(\d+(?:[.,]\d+)?)\s*(?:mm\s*)?[x*]\s*(\d+(?:[.,]\d+)?)/);
+      if(!sm)fail('Dimensions manquantes pour les trous oblongs : précise leur longueur et leur largeur (ex. 16 x 8 mm).');
+      holes={mode:'slot',length:n(sm[1]),width:n(sm[2])};
+    }else {
+      if(!four)fail('COPO-IA gère quatre trous identiques, pas d’autre quantité.');
+      const hm=s.match(/(?:diametre|diam|\bd\s*=)\s*(?:de\s*)?(\d+(?:[.,]\d+)?)/) || s.match(/(?:trous?|percages?)\s+de\s+(\d+(?:[.,]\d+)?)\s*mm/);
+      if(!hm)fail('Précise le diamètre des quatre trous : exemple « diamètre 8 mm ».');
+      holes={mode:'round',diameter:n(hm[1])};
+    }
+    const mm=s.match(/(?:a|aux?)\s+(\d+(?:[.,]\d+)?)\s*mm\s+des?\s+bords?/);
+    if(mm&&holes&&holes.mode!=='remove')holes.margin=n(mm[1]);
+  }
+  let pocket=null;
+  if(/\bpoche\b/.test(s)){
+    if(/\b(supprime|retire|enleve)\s+(?:la\s+)?poche\b/.test(s))pocket={mode:'remove'};
+    else{
+      if(!/poche\s+centrale/.test(s))fail('Seule une « poche centrale » est prise en charge.');
+      const pm=s.match(/poche[^\d]{0,42}(\d+(?:[.,]\d+)?)\s*(?:mm\s*)?[x*]\s*(\d+(?:[.,]\d+)?)/);
+      if(!pm)fail('Précise les dimensions de la poche centrale, par exemple « poche centrale de 80 x 40 mm ».');
+      const dep=s.match(/(?:profondeur|profond(?:eur)?)\s*(?:de|a|=)?\s*(\d+(?:[.,]\d+)?)/);
+      pocket={mode:'add',width:n(pm[1]),height:n(pm[2]),depth:dep?n(dep[1]):null};
+    }
+  }
+  if(action==='edit'&&!cd&&!holes&&!pocket&&thick==null)fail('Je n’ai reconnu aucune modification. Exemples : « Épaisseur 15 mm » ou « Ajoute une poche centrale de 80 x 40 mm ».');
+  return {action,contour:cd,stock_thickness:thick,holes,pocket,stockFull:/\b(plaque|brut|panneau)\b/.test(s)&&action==='create'};
+ }
+ function validateTarget(raw){
+  checkLoaded();if(!raw||!['create','edit','read','clarify'].includes(raw.action))fail('Instruction non reconnue.');
+  if(raw.action==='read')return {action:'read'};
+  if(raw.action==='clarify')fail(raw.question||'La demande manque de précisions.');
+  if(S.stock.rotary&&S.stock.rotary.on)fail('Mode rotatif actif : désactive-le avant de dessiner.');
+  if(S.tps.length)fail('Un ou plusieurs parcours d’usinage existent. Pour préserver ces parcours, COPO-IA refuse toute modification automatique.');
+  const existing=managed();
+  if(raw.action==='create'&&S.shapes.length)fail('Le projet contient déjà des formes. Pour créer une nouvelle plaque, commence un projet vide. Pour la pièce existante, demande une modification.');
+  if(raw.action==='edit'&&!existing)fail('Aucune plaque COPO-IA reconnue. Pour modifier, charge un projet COPO-IA ou crée une plaque.');
+  if(raw.action==='edit'&&(S.dims.length||S.images.length||(S.relief&&S.relief.items.length)))fail('Édition refusée : le dessin contient des éléments liés (cotes, images ou relief).');
+  const base=existing;
+  const p={action:raw.action,existing:base,w:null,h:null,thickness:null,hole:null,pocket:null,stockFull:raw.action==='create'?!!raw.stockFull:base.stockFull};
+  p.w=value(raw.contour&&raw.contour.width!=null?raw.contour.width:base&&base.w,'Largeur du contour');
+  p.h=value(raw.contour&&raw.contour.height!=null?raw.contour.height:base&&base.h,'Hauteur du contour');
+  p.thickness=value(raw.stock_thickness!=null?raw.stock_thickness:raw.action==='create'?S.stock.t:S.stock.t,'Épaisseur',.1,1000);
+  p.hole=base&&base.hole?{...base.hole}:null;
+  const h=raw.holes;
+  if(h&&h.mode&&h.mode!=='keep'){
+    if(h.mode==='remove')p.hole=null;
+    else if(h.mode==='round')p.hole={mode:'round',diameter:value(h.diameter,'Diamètre du trou'),margin:value(h.margin!=null?h.margin:p.hole&&p.hole.margin!=null?p.hole.margin:15,'Distance des centres aux bords')};
+    else if(h.mode==='slot')p.hole={mode:'slot',length:value(h.length,'Longueur du trou oblong'),width:value(h.width,'Largeur du trou oblong'),margin:value(h.margin!=null?h.margin:p.hole&&p.hole.margin!=null?p.hole.margin:15,'Distance des centres aux bords')};
+    else fail('Type de trou non pris en charge.');
+  }
+  p.pocket=base&&base.pocket?{...base.pocket}:null;
+  const k=raw.pocket;
+  if(k&&k.mode&&k.mode!=='keep'){
+    if(k.mode==='remove')p.pocket=null;
+    else if(k.mode==='add'||k.mode==='change'){
+      const old=p.pocket||{};
+      p.pocket={width:value(k.width!=null?k.width:old.width,'Largeur de poche'),height:value(k.height!=null?k.height:old.height,'Hauteur de poche'),depth:k.depth!=null?value(k.depth,'Profondeur prévue',.01,1000):old.depth||null};
+    }else fail('Opération de poche non reconnue.');
+  }
+  if(p.pocket&&!(p.pocket.width<p.w&&p.pocket.height<p.h))fail('La poche doit tenir entièrement dans le contour.');
+  if(p.pocket&&p.pocket.depth!=null&&p.pocket.depth>=p.thickness)fail('La profondeur de poche doit rester inférieure à l’épaisseur du brut.');
+  if(p.hole){
+    const r=p.hole.mode==='round'?p.hole.diameter/2:p.hole.width/2;
+    if(p.hole.mode==='slot'&&p.hole.length<=p.hole.width)fail('Un trou oblong doit avoir une longueur strictement supérieure à sa largeur.');
+    if(p.hole.margin<=0||p.hole.margin*2>=Math.min(p.w,p.h))fail('La distance des centres aux bords est incompatible avec la plaque.');
+    const hx=p.hole.mode==='round'?r:p.hole.length/2;
+    if(p.hole.margin<hx||p.hole.margin<r||p.w-p.hole.margin<hx||p.h-p.hole.margin<r)fail('Un trou dépasserait du contour. Augmente la marge ou réduis ses dimensions.');
+    if(p.pocket){
+      const px=(p.w-p.pocket.width)/2,py=(p.h-p.pocket.height)/2;
+      for(const cx of [p.hole.margin,p.w-p.hole.margin])for(const cy of [p.hole.margin,p.h-p.hole.margin]){
+        // Distance entre la poche et le segment central d'une capsule (ou un point pour un cercle).
+        const seg=p.hole.mode==='slot'?(p.hole.length-p.hole.width)/2:0;
+        const dx=Math.max(px-(cx+seg),0,(cx-seg)-(px+p.pocket.width));
+        const dy=Math.max(py-cy,0,cy-(py+p.pocket.height));
+        if(Math.hypot(dx,dy)<r-1e-8)fail('La poche recouperait un trou : modifie la poche, les trous ou leurs marges.');
+      }
+    }
+  }
+  p.stockW=p.stockFull?p.w:p.w+40;p.stockH=p.stockFull?p.h:p.h+40;
+  p.x=p.stockFull?0:20;p.y=p.stockFull?0:20;
+  if(raw.action==='edit'&&raw.contour&&raw.contour.width==null&&raw.contour.height==null)fail('Aucune nouvelle dimension de contour fournie.');
+  if(raw.action==='edit'&&raw.contour&&!p.hole&&!p.pocket){} // modification de contour seule autorisée
+  if(raw.action==='edit'&&raw.stock_thickness==null&&!h&&!k&&!raw.contour)fail('Aucune modification à appliquer.');
+  return p;
+ }
+ function summary(p){
+  if(p.action==='read')return describe();
+  let t=`${p.action==='create'?'CRÉATION':'MODIFICATION'} — vérification avant application\nContour : ${nice(p.w)} × ${nice(p.h)} mm ; brut : ${nice(p.stockW)} × ${nice(p.stockH)} × ${nice(p.thickness)} mm.`;
+  if(p.hole){t+=p.hole.mode==='round'?`\n4 trous Ø${nice(p.hole.diameter)} mm, centres à ${nice(p.hole.margin)} mm des bords.`:`\n4 trous oblongs ${nice(p.hole.length)} × ${nice(p.hole.width)} mm, horizontaux, centres à ${nice(p.hole.margin)} mm des bords.`;}
+  if(p.pocket)t+=`\nPoche centrale ${nice(p.pocket.width)} × ${nice(p.pocket.height)} mm${p.pocket.depth!=null?' ; profondeur prévue '+nice(p.pocket.depth)+' mm':''}.`;
+  return t+'\n\n⚠ Géométrie uniquement. La profondeur est une note ; aucun parcours ni G-code n’est généré.\nClique sur « Appliquer dans COPO » pour confirmer.';
+ }
+ function capsuleNodes(cx,cy,length,width){
+  const r=width/2,half=(length-width)/2;
+  const a=arcNodes([cx-half,cy],r,Math.PI/2,Math.PI); // bord gauche
+  const b=arcNodes([cx+half,cy],r,3*Math.PI/2,Math.PI); // bord droit
+  return [...a,...b]; // segments horizontaux entre les deux arcs
+ }
+ function apply(p){
+  if(!p||p.action==='read')fail('Aucune modification à appliquer.');
+  if(p.snapshot&&p.snapshot!==snapState())fail('Le dessin a changé depuis l’analyse : relance « Analyser ».');
+  checkLoaded();const check=validateTarget({...p,contour:{width:p.w,height:p.h},stock_thickness:p.thickness,holes:p.hole,pocket:p.pocket?{mode:'change',...p.pocket}:null,stockFull:p.stockFull});
+  // 'check' ré-évalue les contraintes sur l'état actuel ; le plan initial demeure la source des paramètres.
+  void check;
+  const before=snapState();
+  try{
+    const m=p.existing||null,ids=[];
+    if(p.action==='edit'){
+      const current=managed();if(!current||current.contourId!==m.contourId)fail('Le dessin a changé depuis l’analyse. Relance « Analyser ».');
+    }
+    S.stock.w=p.stockW;S.stock.h=p.stockH;S.stock.t=p.thickness;
+    function upsert(id,nodes){let sh=id&&shape(id);if(sh){sh.nodes=nodes;sh.closed=true;refresh(sh);}else{sh=mkShape(nodes,true);if(!sh)fail('COPO a refusé une forme.');}ids.push(sh.id);return sh.id;}
+    function remove(id){if(id){S.shapes=S.shapes.filter(sh=>sh.id!==id);S.sel.delete(id);}}
+    const contourId=upsert(m&&m.contourId,rectNodes(p.x,p.y,p.x+p.w,p.y+p.h));
+    const oldHoleIds=m?m.holeIds:[];let holeIds=[];
+    if(p.hole){let j=0;for(const dx of [p.hole.margin,p.w-p.hole.margin])for(const dy of [p.hole.margin,p.h-p.hole.margin]){
+      const cx=p.x+dx,cy=p.y+dy;
+      const nodes=p.hole.mode==='round'?ellipseNodes([cx,cy],p.hole.diameter/2,p.hole.diameter/2):capsuleNodes(cx,cy,p.hole.length,p.hole.width);
+      holeIds.push(upsert(oldHoleIds[j++]||null,nodes));
+    }}
+    for(const id of oldHoleIds.slice(holeIds.length))remove(id);
+    let pocketId=null;
+    if(p.pocket){const x=p.x+(p.w-p.pocket.width)/2,y=p.y+(p.h-p.pocket.height)/2;pocketId=upsert(m&&m.pocketId,rectNodes(x,y,x+p.pocket.width,y+p.pocket.height));}
+    else if(m&&m.pocketId)remove(m.pocketId);
+    S.meta=S.meta||{};S.meta.copoIA={version:2,contourId,holeIds,hole:p.hole,pocketId,pocket:p.pocket};
+    if(typeof setTool==='function')setTool('select');
+    S.sel.clear();ids.forEach(id=>S.sel.add(id));
+    if(typeof syncStock==='function')syncStock();
+    if(typeof pjSummary==='function')pjSummary();
+    commit();renderSel();fit();draw();
+    return ids.length;
+  }catch(e){restore(before);throw e;}
+ }
+ function analyzeRaw(raw,origin){
+  invalidate();try{const p=validateTarget(raw);if(p.action==='read'){setReport(describe());return;}preview=p;preview.snapshot=snapState();applyButton.disabled=false;setReport((origin?'Analyse IA :\n':'Analyse locale :\n')+summary(p));}
+  catch(e){setReport(e.message,true);}
+ }
+ el('cia-parse').onclick=()=>{try{analyzeRaw(localPlan(prompt.value),false);}catch(e){invalidate();setReport(e.message,true);}};
+ el('cia-read').onclick=()=>{invalidate();try{setReport(describe());}catch(e){setReport(e.message,true);}};
+ el('cia-clear-all').onclick=()=>{if(typeof window.COPO_IA_CLEAR_FIELDS==='function')window.COPO_IA_CLEAR_FIELDS();else{prompt.value='';invalidate();setReport('Champ vidé. Le projet COPO est intact.');}};
+ el('cia-ex-create').onclick=()=>{prompt.value='Crée une plaque de 150 x 100 mm, épaisseur 12 mm, avec quatre trous de diamètre 8 mm à 15 mm des bords.';invalidate();el('cia-parse').click();};
+ el('cia-ex-edit').onclick=()=>{prompt.value='Remplace les quatre trous par des trous oblongs de 16 x 8 mm et ajoute une poche centrale de 80 x 40 mm, profondeur 5 mm. Épaisseur 15 mm.';invalidate();el('cia-parse').click();};
+ el('cia-apply').onclick=()=>{if(!preview)return;try{
+    const count=apply(preview);invalidate();setReport(`✓ ${count} forme(s) créées ou mises à jour dans COPO.\n${describe()}\n\nEnregistre le projet avec « Enregistrer .copo ».\nPour annuler : ⌘Z (Mac) ou Ctrl+Z.`);
+  }catch(e){invalidate();setReport(e.message,true);}};
+ el('cia-save').onclick=()=>{try{checkLoaded();projSave(false);}catch(e){setReport(e.message,true);}};
+ el('cia-open').onclick=()=>{try{checkLoaded();projOpen();invalidate();setReport('Une fois le fichier ouvert, clique sur « Lire le dessin ».');}catch(e){setReport(e.message,true);}};
+ el('cia-new').onclick=()=>{
+  try{checkLoaded();if(!confirm('Créer un projet vide ? Tout projet non enregistré sera perdu. Enregistre-le avant de continuer.'))return;
+    act('new');act('new');invalidate();setReport('✓ Nouveau projet vide. Clique sur « Exemple : créer » puis « Appliquer dans COPO ».');}
+  catch(e){setReport(e.message,true);}
+ };
+ // Exposé pour tests automatiques locaux ; aucune clé, aucun accès externe.
+ window.COPO_IA_TEST={version:'0.8 BÊTA PASSERELLE',localPlan,validateTarget,context,describe,managed,apply,summary,snapshot:()=>snapState(),resetFields:()=>{prompt.value='';invalidate();setReport('Aucune demande locale. Le projet COPO est intact.');}};
+})();
+
+</script>
+<script data-copo-ia-module="copo-fao.js">
+/* COPO-IA 0.5 — Simulation de deux parcours natifs depuis une demande française.
+   Dérivé de COPO, sous GPL-3.0-or-later.
+   La demande ne pilote jamais une machine, n'exporte aucun G-code.
+*/
+(() => {
+  'use strict';
+  const get = id => document.getElementById(id);
+  const root = get('cia-root');
+  if (!root || !window.COPO_IA_TEST) return;
+  const ui = document.createElement('section');
+  ui.className = 'cia-fao';
+  ui.innerHTML = `
+    <div class="cia-divider"></div>
+    <details id="cia-fao-details" open>
+      <summary>FAO en français · simulation de 2 opérations</summary>
+      <p>Une seule demande pour <b>la poche centrale</b> puis <b>les quatre oblongs</b>. COPO calculera deux parcours distincts, après vérification et confirmation.</p>
+      <label for="cia-fao-prompt">Instruction d'usinage (simulation uniquement)</label>
+      <textarea id="cia-fao-prompt" rows="4" spellcheck="true" aria-label="Instruction FAO"></textarea>
+      <div class="cia-actions">
+        <button id="cia-fao-example" type="button">Exemple de commande</button>
+        <button id="cia-fao-check" type="button">Vérifier les 2 opérations</button>
+        <button id="cia-fao-apply" type="button" class="cia-primary" disabled>Confirmer les 2 parcours</button>
+      </div>
+      <div id="cia-fao-result" class="cia-report" role="status" aria-live="polite">Ouvre d'abord le projet d'exemple, puis clique sur « Exemple de commande ».</div>
+      <p class="cia-note"><b>SIMULATION SEULEMENT.</b> Les oblongs traversants atteignent Z = −épaisseur du brut : une machine réelle exigerait un martyr, un bridage et des réglages validés. Aucun G-code n'est exporté ou envoyé par COPO-IA.</p>
+    </details>`;
+  root.querySelector('.cia-body').insertBefore(ui, get('cia-server-status'));
+  const css=document.createElement('style');
+  css.textContent=`#cia-root .cia-fao details>summary{font-weight:700;cursor:pointer;margin:9px 0}#cia-root .cia-fao p{margin:8px 0}#cia-root #cia-fao-prompt{min-height:94px}#cia-root #cia-fao-result{white-space:pre-line}`;
+  document.head.appendChild(css);
+  const field=get('cia-fao-prompt'),out=get('cia-fao-result'),apply=get('cia-fao-apply');
+  const EXAMPLE='Usine la poche centrale à 5 mm de profondeur avec une fraise Ø6 mm, par passes de 1 mm. Puis usine les quatre oblongs traversants avec la même fraise. Simulation seulement.';
+  let draft=null;
+  const norm=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[×✕]/g,'x').replace(/[øØ]/g,'diametre ').replace(/\s+/g,' ').trim();
+  const mm=t=>Number(String(t).replace(',','.'));
+  const fm=t=>Number(Number(t).toFixed(3)).toString().replace('.',',');
+  const fail=t=>{throw Error(t);};
+  function show(message,bad=false){out.textContent=message;out.classList.toggle('cia-error',bad);}
+  function invalidate(message){draft=null;apply.disabled=true;if(message)show(message);}
+  function parse(instruction){
+    const s=norm(instruction);
+    if(!s)fail('Écris une instruction ou clique sur « Exemple de commande ».');
+    if(/g-?code|postprocesseur|envoi|envoyer|demarre la machine|lancer la machine/.test(s))fail('La v0.4 refuse les commandes machine et la génération de G-code. Simulation seulement.');
+    if(/detourage|contour exterieur|surfacage|percage|filetage|chanfrein|rainure/.test(s))fail('La v0.4 ne programme que la poche et les quatre oblongs. Sépare les autres opérations.');
+    if(!/\bpoche\b/.test(s)||!/\boblong/.test(s))fail('Cette version attend une poche centrale puis les quatre oblongs.');
+    if(!/(?:quatre|4) (?:trous )?oblongs/.test(s))fail('Précise explicitement « les quatre oblongs ».');
+    if(!/poche centrale/.test(s))fail('La commande doit viser explicitement la poche centrale.');
+    const p=s.match(/poche centrale.{0,30}?\b(?:a|de|profondeur(?: de)?)\s*(\d+(?:[.,]\d+)?)\s*mm(?:\s+de\s+profondeur)?/);
+    if(!p)fail('Indique la profondeur de la poche : « poche centrale à 5 mm de profondeur ».');
+    const tool=s.match(/fraise\s*(?:de\s*)?(?:diametre\s*)?(\d+(?:[.,]\d+)?)\s*mm/);
+    if(!tool)fail('Indique le diamètre de fraise : « fraise Ø6 mm ».');
+    const pass=s.match(/\bpasses?\s+(?:de\s*)?(\d+(?:[.,]\d+)?)\s*mm/);
+    if(!pass)fail('Indique la profondeur par passe : « par passes de 1 mm ».');
+    const slot=s.slice(s.search(/\boblong/));
+    if(/non[ -]traversant/.test(slot))fail('Pour un oblong non traversant, précise sa profondeur en mm, sans le mot « traversant ».');
+    const through=/\btraversant/.test(slot);
+    const blind=slot.match(/(?:profondeur\s*(?:de|a)?|\ba)\s*(\d+(?:[.,]\d+)?)\s*mm/);
+    if(!through&&!blind)fail('Précise la profondeur des oblongs, ou écris « oblongs traversants ».');
+    if(through&&blind)fail('Demande ambiguë : « traversants » et une profondeur chiffrée sont tous deux présents.');
+    const pocketDepth=mm(p[1]),dia=mm(tool[1]),step=mm(pass[1]);
+    if(!(pocketDepth>0&&pocketDepth<=30))fail('La profondeur de poche doit être entre 0 et 30 mm.');
+    if(!(dia>0&&dia<=50))fail('Diamètre d’outil invalide.');
+    if(!(step>=0.1&&step<=5))fail('La passe doit être entre 0,1 et 5 mm.');
+    const slotDepth=through?null:mm(blind[1]);
+    if(!through&&!(slotDepth>0&&slotDepth<=30))fail('Profondeur des oblongs invalide.');
+    return {pocketDepth,dia,pass:step,through,slotDepth};
+  }
+  function prepared(requireSlots=true){
+    if(typeof S==='undefined'||typeof computeTP!=='function'||typeof snapState!=='function')fail('COPO n’est pas chargé.');
+    const meta=window.COPO_IA_TEST.managed();
+    if(!meta || !meta.pocketId || !meta.pocket)fail('Charge une plaque COPO-IA avec une poche centrale.');
+    if(requireSlots && (!meta.hole||meta.hole.mode!=='slot'||!Array.isArray(meta.holeIds)||meta.holeIds.length!==4))
+      fail('Pour usiner les oblongs, la pièce doit posséder exactement quatre oblongs COPO-IA.');
+    if(meta.hole && (!['slot','round'].includes(meta.hole.mode)||!Array.isArray(meta.holeIds)||meta.holeIds.length!==4))
+      fail('Les trous déclarés dans la pièce ne correspondent pas aux quatre formes attendues.');
+    if(!meta.hole && Array.isArray(meta.holeIds) && meta.holeIds.length)
+      fail('Les trous présents ne sont pas identifiés par COPO-IA.');
+    const ids=[meta.contourId,meta.pocketId,...(meta.holeIds||[])];
+    if(ids.some(id=>!S.shapes.some(sh=>sh.id===id)))fail('Géométrie modifiée ou incomplète : opération refusée.');
+    // Ne pas faire confiance seulement aux métadonnées : comparer les contours réels.
+    const b0=bboxOf(meta.contourId);
+    if(Math.abs((b0.x1-b0.x0)-meta.w)>.15||Math.abs((b0.y1-b0.y0)-meta.h)>.15)fail('Dimensions réelles de la plaque modifiées : recharge le projet de référence.');
+    const bp=bboxOf(meta.pocketId);
+    if(Math.abs((bp.x1-bp.x0)-meta.pocket.width)>.15||Math.abs((bp.y1-bp.y0)-meta.pocket.height)>.15)fail('La poche réelle ne correspond plus au projet enregistré.');
+    for(const id of (meta.holeIds||[])){const b=bboxOf(id);
+      if(meta.hole.mode==='slot'){
+        if(Math.abs((b.x1-b.x0)-meta.hole.length)>.15||Math.abs((b.y1-b.y0)-meta.hole.width)>.15)fail('Un oblong ne correspond plus aux dimensions déclarées.');
+      }else if(meta.hole.mode==='round'){
+        if(Math.abs((b.x1-b.x0)-meta.hole.diameter)>.15||Math.abs((b.y1-b.y0)-meta.hole.diameter)>.15)fail('Un trou rond ne correspond plus au diamètre déclaré.');
+      }
+      if(b.x0<b0.x0-.05||b.x1>b0.x1+.05||b.y0<b0.y0-.05||b.y1>b0.y1+.05)fail('Un trou sort du contour de la plaque.');
+      if(b.x0<bp.x1+.05&&b.x1>bp.x0-.05&&b.y0<bp.y1+.05&&b.y1>bp.y0-.05)fail('Un trou recoupe la poche centrale.');
+    }
+    if(S.tps.length)fail('Un parcours existe déjà dans COPO. Pour éviter les doublons, ouvre le fichier de dessin sans parcours.');
+    if(S.dims.length||S.images.length||(S.relief&&S.relief.items.length))fail('Cette démonstration n’usine pas un projet contenant cotes, images ou relief.');
+    if(S.stock.rotary&&S.stock.rotary.on)fail('Le mode rotatif n’est pas pris en charge.');
+    if(S.stock.originZ!=='top')fail('Le zéro Z doit être réglé sur le dessus du brut.');
+    if(!(Number(S.stock.t)>0&&Number(S.stock.t)<=50))fail('Épaisseur de brut invalide.');
+    if(!(Number(S.machine.safeZ)>Number(S.machine.clearZ) && Number(S.machine.clearZ)>0))fail('Vérifie les hauteurs de sécurité et de dégagement.');
+    return meta;
+  }
+  function validate(q){
+    const m=prepared();
+    if(Math.abs(q.pocketDepth-Number(m.pocket.depth))>0.001)fail(`Le dessin prévoit une poche de ${fm(m.pocket.depth)} mm, pas ${fm(q.pocketDepth)} mm. Modifie d’abord le dessin.`);
+    if(!(q.pocketDepth<S.stock.t))fail('Une poche non traversante doit rester moins profonde que le brut.');
+    const depth=q.through?Number(S.stock.t):q.slotDepth;
+    if(depth>S.stock.t)fail('La profondeur des oblongs dépasse le brut.');
+    if(!(depth>0))fail('Profondeur des oblongs absente.');
+    if(q.pass>q.pocketDepth||q.pass>depth)fail('La profondeur de passe doit être inférieure ou égale à chacune des profondeurs.');
+    const tool=S.tools.find(t=>t.type==='flat'&&Math.abs(Number(t.dia)-q.dia)<.01);
+    if(!tool)fail(`Aucune fraise droite Ø${fm(q.dia)} mm dans la bibliothèque du projet. Utilise une fraise existante.`);
+    if(![tool.feed,tool.plunge,tool.rpm].every(v=>Number.isFinite(+v)&&+v>0))fail('Paramètres de fraise incomplets.');
+    if(!(q.dia<Math.min(m.pocket.width,m.pocket.height)))fail('Fraise trop grosse pour la poche.');
+    if(!(q.dia<m.hole.width))fail(`Fraise Ø${fm(q.dia)} trop grosse pour les oblongs de largeur ${fm(m.hole.width)} mm.`);
+    return {m,depth,tool,q};
+  }
+  function tpOf(t,label,shapeIds,depth,pass){
+    const p={...newForm(),type:'pocket',depth,pass,toolId:t.tool.id,allow:0,finish:'last',dir:'climb',entry:'rampzz',rampLen:20,strategy:'rings',rest:false,vstart:0,zrel:1};
+    return {id:uid(),name:`COPO-IA 0.4 · ${label} · SIMULATION`,type:'pocket',toolId:t.tool.id,shapeIds,relIds:[],p,visible:true,face:1};
+  }
+  function checkMoves(tp,depth,radius,inside){
+    if(tp.err)fail(`COPO refuse le parcours « ${tp.name} » : ${tp.err}`);
+    if(!Array.isArray(tp.moves)||tp.moves.length<2)fail(`COPO n'a produit aucun mouvement pour « ${tp.name} ».`);
+    if(tp.moves.length>30000)fail('Parcours trop complexe pour cette démonstration.');
+    if(tp.moves.some(v=>![v.x,v.y,v.z].every(Number.isFinite)))fail('Un mouvement contient une coordonnée invalide.');
+    const lower=Math.min(...tp.moves.map(v=>v.z));
+    if(Math.abs(lower+depth)>.015)fail(`Profondeur incohérente : attendu -${fm(depth)} mm, obtenu ${fm(lower)} mm.`);
+    const tol=.18;
+    for(const v of tp.moves){if(v.z>=-.015)continue;if(!inside(v.x,v.y,radius,tol))fail(`Une trajectoire de coupe sort de la géométrie prévue dans « ${tp.name} ». Parcours refusé.`);}
+  }
+  function bboxOf(id){const sh=S.shapes.find(s=>s.id===id);if(!sh||!sh.closed||!sh.pts||!sh.pts.length)fail('Forme fermée introuvable.');const X=sh.pts.map(p=>p[0]),Y=sh.pts.map(p=>p[1]);return {x0:Math.min(...X),x1:Math.max(...X),y0:Math.min(...Y),y1:Math.max(...Y)};}
+  function calc(raw){
+    const q=parse(raw),t=validate(q),r=Number(t.tool.dia)/2;
+    const pocket=tpOf(t,'Poche centrale 5 mm',[t.m.pocketId],q.pocketDepth,q.pass);
+    computeTP(pocket);
+    const b=bboxOf(t.m.pocketId);
+    checkMoves(pocket,q.pocketDepth,r,(x,y,R,tol)=>x>=b.x0+R-tol&&x<=b.x1-R+tol&&y>=b.y0+R-tol&&y<=b.y1-R+tol);
+    const slots=tpOf(t,`4 oblongs ${q.through?'traversants':'profondeur '+fm(t.depth)+' mm'}`,t.m.holeIds,t.depth,q.pass);
+    // Les oblongs très étroits génèrent beaucoup de segments en anneaux.
+    // Balayage avec tour de finition, prévu par le moteur natif de COPO.
+    slots.p.strategy='raster'; slots.p.rasterAng=0;
+    computeTP(slots);
+    const boxes=t.m.holeIds.map(bboxOf);
+    checkMoves(slots,t.depth,r,(x,y,R,tol)=>boxes.some(b=>{
+      const center=(b.y0+b.y1)/2,rad=(b.y1-b.y0)/2,from=b.x0+rad,to=b.x1-rad;
+      const dd=Math.hypot(x-Math.max(from,Math.min(to,x)),y-center);
+      return dd<=rad-R+tol;
+    }));
+    if(pocket.warns&&pocket.warns.length)fail('Avertissement COPO sur la poche : '+pocket.warns.join(' ; '));
+    if(slots.warns&&slots.warns.length)fail('Avertissement COPO sur les oblongs : '+slots.warns.join(' ; '));
+    return {q,t,pocket,slots,snapshot:snapState()};
+  }
+  get('cia-fao-example').onclick=()=>{field.value=EXAMPLE;invalidate('Exemple chargé. Clique sur « Vérifier les 2 opérations ».');};
+  field.addEventListener('input',()=>invalidate('Commande modifiée : relance la vérification.'));
+  get('cia-fao-check').onclick=()=>{try{
+    const v=calc(field.value);draft=v;apply.disabled=false;
+    show(`✓ 2 parcours calculés par COPO, non encore appliqués.\n1. Poche centrale ${fm(v.t.m.pocket.width)} × ${fm(v.t.m.pocket.height)} mm — profondeur ${fm(v.q.pocketDepth)} mm — ${Math.ceil(v.q.pocketDepth/v.q.pass)} passes, ${v.pocket.moves.length} mouvements.\n2. Quatre oblongs ${fm(v.t.m.hole.length)} × ${fm(v.t.m.hole.width)} mm — ${v.q.through?'TRAVERSANTS':('profondeur '+fm(v.t.depth)+' mm')} — ${Math.ceil(v.t.depth/v.q.pass)} passes, ${v.slots.moves.length} mouvements.\nFraise : ${v.t.tool.name} (Ø${fm(v.q.dia)} mm) ; passe ${fm(v.q.pass)} mm.\nParamètres enregistrés pour simulation : broche ${fm(v.t.tool.rpm)} tr/min, avance ${fm(v.t.tool.feed)} mm/min — NON VALIDÉS POUR LA MACHINE.\n${v.q.through?'⚠ Les oblongs atteignent Z = −'+fm(v.t.depth)+' mm (fond du brut). Pour une machine réelle, prévoir martyr et bridage adaptés.\n':''}Clique sur « Confirmer les 2 parcours » pour les intégrer au projet de simulation. Aucune commande machine.`);
+  }catch(e){invalidate();show(e.message||String(e),true);}};
+  get('cia-fao-apply').onclick=()=>{try{
+    if(!draft)fail('Commence par vérifier les parcours.');
+    if(draft.snapshot!==snapState())fail('Le projet a changé depuis l’analyse. Relance la vérification.');
+    const parsed=parse(field.value);const cur=validate(parsed);
+    if(cur.m.pocketId!==draft.t.m.pocketId||cur.m.holeIds.join('|')!==draft.t.m.holeIds.join('|'))fail('Les formes ont changé depuis le calcul.');
+    const before=snapState();
+    try{
+      if(S.tps.length)fail('Un parcours existe déjà.');
+      S.tps.push(draft.pocket,draft.slots);S.activeTp=draft.pocket.id;S.editTp=null;S.sel.clear();
+      commit(false);gcDirty=true;renderTpList();setTab('parcours');draw();
+    }catch(err){restore(before);throw err;}
+    show(`✓ Deux parcours natifs ajoutés au projet COPO.\n1. Poche : ${draft.pocket.moves.length} mouvements.\n2. Quatre oblongs : ${draft.slots.moves.length} mouvements.\nOuvre « Simulation de l’usinage » pour observer leur exécution successive.\nEnregistre le projet en .copo pour conserver les deux opérations.\n⚠ SIMULATION SEULEMENT : zéro pièce/machine, bridage, martyr, outil, matière, avance, vitesses et postprocesseur non validés. NE PAS exécuter de G-code.`);
+    invalidate();
+  }catch(e){invalidate();show(e.message||String(e),true);}};
+  // API FAO structurée et contrôlée, exclusivement pour les simulations du dialogue 0.5.
+  // Cette voie ne transforme jamais une phrase reçue de l'IA en code exécutable.
+  function calcStructured(input) {
+    const q={pocket:input.pocket===true,slots:input.slots===true,
+      pocketDepth:Number(input.pocketDepth),slotDepth:input.slotsDepth==null?null:Number(input.slotsDepth),
+      through:input.slotsThrough===true,dia:Number(input.toolDiameter),pass:Number(input.pass)};
+    if(!q.pocket&&!q.slots)fail('Aucune opération à simuler : précise poche et/ou oblongs.');
+    const m=prepared(q.slots);
+    if(!Number.isFinite(q.dia)||q.dia<=0||q.dia>50)fail('Diamètre de fraise invalide.');
+    if(!Number.isFinite(q.pass)||q.pass<.1||q.pass>5)fail('Passe invalide (entre 0,1 et 5 mm).');
+    if(q.pocket){
+      if(!Number.isFinite(q.pocketDepth)||q.pocketDepth<=0||q.pocketDepth>=S.stock.t)fail('Profondeur de poche incorrecte par rapport au brut.');
+      if(Math.abs(q.pocketDepth-Number(m.pocket.depth))>.001)fail('La profondeur de poche demandée diffère de la géométrie COPO-IA. Modifie d’abord le dessin.');
+      if(q.pass>q.pocketDepth)fail('La passe dépasse la profondeur de poche.');
+    }
+    let slotDepth=null;
+    if(q.slots){
+      slotDepth=q.through?Number(S.stock.t):q.slotDepth;
+      if(!(slotDepth>0&&slotDepth<=Number(S.stock.t)))fail('Profondeur des oblongs absente ou invalide.');
+      if(q.pass>slotDepth)fail('La passe dépasse la profondeur des oblongs.');
+      if(!q.through&&q.slotDepth==null)fail('Précise la profondeur des oblongs non traversants.');
+    }
+    const tool=S.tools.find(t=>t.type==='flat'&&Math.abs(Number(t.dia)-q.dia)<.01);
+    if(!tool)fail(`Fraise droite Ø${fm(q.dia)} mm absente de la bibliothèque COPO.`);
+    if(![tool.feed,tool.plunge,tool.rpm].every(v=>Number.isFinite(+v)&&+v>0))fail('Paramètres de fraise incomplets.');
+    if(q.pocket&&!(q.dia<Math.min(m.pocket.width,m.pocket.height)))fail('Fraise trop grosse pour la poche.');
+    if(q.slots&&!(q.dia<m.hole.width))fail('Fraise trop grosse pour la largeur des oblongs.');
+    const radius=q.dia/2,paths=[];
+    if(q.pocket){
+      const obj=tpOf({tool},`Poche centrale ${fm(q.pocketDepth)} mm`,[m.pocketId],q.pocketDepth,q.pass);
+      obj.name=obj.name.replace('COPO-IA 0.4', 'COPO-IA 0.5');
+      computeTP(obj);
+      const b=bboxOf(m.pocketId);
+      checkMoves(obj,q.pocketDepth,radius,(x,y,R,tol)=>x>=b.x0+R-tol&&x<=b.x1-R+tol&&y>=b.y0+R-tol&&y<=b.y1-R+tol);
+      if(obj.warns?.length)fail('COPO signale un problème de poche : '+obj.warns.join(' ; '));
+      paths.push(obj);
+    }
+    if(q.slots){
+      const obj=tpOf({tool},`4 oblongs ${q.through?'traversants':fm(slotDepth)+' mm'}`,m.holeIds,slotDepth,q.pass);
+      obj.name=obj.name.replace('COPO-IA 0.4', 'COPO-IA 0.5');
+      obj.p.strategy='raster';obj.p.rasterAng=0;
+      computeTP(obj);
+      const boxes=m.holeIds.map(bboxOf);
+      checkMoves(obj,slotDepth,radius,(x,y,R,tol)=>boxes.some(b=>{
+        const y0=(b.y0+b.y1)/2,r0=(b.y1-b.y0)/2,x0=b.x0+r0,x1=b.x1-r0;
+        return Math.hypot(x-Math.max(x0,Math.min(x1,x)),y-y0)<=r0-R+tol;
+      }));
+      if(obj.warns?.length)fail('COPO signale un problème sur les oblongs : '+obj.warns.join(' ; '));
+      paths.push(obj);
+    }
+    return {q,paths,meta:m,tool,snapshot:snapState()};
+  }
+  function applyStructured(calcResult){
+    if(!calcResult||!calcResult.paths?.length)fail('Aucun parcours vérifié.');
+    if(calcResult.snapshot!==snapState())fail('Le projet a changé depuis le calcul. Relance la vérification.');
+    if(S.tps.length)fail('Des parcours sont déjà présents : remplacement non préparé.');
+    const before=snapState();
+    try{
+      S.tps.push(...calcResult.paths);S.activeTp=calcResult.paths[0].id;S.editTp=null;S.sel.clear();
+      commit(false);gcDirty=true;renderTpList();setTab('parcours');draw();
+    }catch(e){restore(before);throw e;}
+    return calcResult.paths.length;
+  }
+  window.COPO_IA_FAO_TEST={version:'0.7.2',parse,prepared,validate,calc,calcStructured,applyStructured,EXAMPLE};
+})();
+
+</script>
+<script data-copo-ia-module="copo-features.js">
+/* COPO-IA 0.8 BÊTA — formes indépendantes, nommées et modifiables.
+ * GNU GPL-3.0-or-later. Géométrie uniquement ; aucun G-code ni FAO automatique sur ces formes.
+ * Toutes les mutations sont soumises à validation et confirmation manuelle.
+ */
+(() => {
+ 'use strict';
+ const fail=m=>{throw new Error(m);};
+ const isObj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const v=(x,label,lo=.001,hi=5000)=>{
+   if(typeof x!=='number'||!Number.isFinite(x)||x<lo||x>hi)fail(`${label} : valeur numérique hors limites (${lo} à ${hi} mm).`);
+   return x;
+ };
+ const idCheck=x=>{if(typeof x!=='string'||!/^[A-Za-z][A-Za-z0-9_-]{0,39}$/.test(x))fail('Identifiant requis : 1 à 40 caractères, lettres, chiffres, tiret ou souligné, en commençant par une lettre.');return x;};
+ const roleCheck=r=>{if(!['contour','hole','pocket','geometry'].includes(r))fail('Rôle invalide. Utilise contour, hole, pocket ou geometry.');return r;};
+ const meta=()=>S.meta&&S.meta.copoIAFeatures;
+ const shapeBy=id=>S.shapes.find(s=>s.id===id);
+ const round=x=>Math.round(x*1000000)/1000000;
+ const point=(x,y)=>NODE(round(x),round(y));
+ const rotate=(node,cx,cy,angle)=>{
+   const a=angle*Math.PI/180,co=Math.cos(a),si=Math.sin(a),dx=node.x-cx,dy=node.y-cy;
+   const r=clone(node);r.x=round(cx+dx*co-dy*si);r.y=round(cy+dx*si+dy*co);
+   for(const k of ['i','o'])if(r[k]){const [hx,hy]=r[k];r[k]=[round(hx*co-hy*si),round(hx*si+hy*co)];}
+   return r;
+ };
+ function geometryNodes(g,stock){
+   if(!isObj(g)||typeof g.type!=='string')fail('Chaque forme doit préciser geometry.type.');
+   let nodes=[];
+   if(g.type==='rectangle'||g.type==='rounded_rectangle'){
+     const x=v(g.x,'X du rectangle',0),y=v(g.y,'Y du rectangle',0),w=v(g.width,'Largeur'),h=v(g.height,'Hauteur');
+     if(g.type==='rectangle')nodes=rectNodes(x,y,x+w,y+h);
+     else{
+       const r=v(g.radius,'Rayon de coin',.001,Math.min(w,h)/2);
+       if(r>=Math.min(w,h)/2)fail('Le rayon de coin doit être strictement inférieur à la moitié de chaque côté.');
+       nodes=[...arcNodes([x+w-r,y+r],r,-Math.PI/2,Math.PI/2),
+              ...arcNodes([x+w-r,y+h-r],r,0,Math.PI/2),
+              ...arcNodes([x+r,y+h-r],r,Math.PI/2,Math.PI/2),
+              ...arcNodes([x+r,y+r],r,Math.PI,Math.PI/2)];
+     }
+   }else if(g.type==='circle'){
+     const cx=v(g.cx,'Centre X du cercle',0),cy=v(g.cy,'Centre Y du cercle',0),dia=v(g.diameter,'Diamètre');
+     nodes=ellipseNodes([cx,cy],dia/2,dia/2);
+   }else if(g.type==='slot'){
+     const cx=v(g.cx,'Centre X oblong',0),cy=v(g.cy,'Centre Y oblong',0),l=v(g.length,'Longueur oblong'),w=v(g.width,'Largeur oblong');
+     if(l<=w)fail('Un oblong doit être plus long que large.');
+     const angle=g.angle_deg===undefined?0:g.angle_deg;
+     if(typeof angle!=='number'||!Number.isFinite(angle)||Math.abs(angle)>3600)fail('Angle oblong invalide.');
+     const half=(l-w)/2,r=w/2;
+     nodes=[...arcNodes([cx-half,cy],r,Math.PI/2,Math.PI),...arcNodes([cx+half,cy],r,3*Math.PI/2,Math.PI)].map(n=>rotate(n,cx,cy,angle));
+   }else if(g.type==='polygon'){
+     if(!Array.isArray(g.points)||g.points.length<3||g.points.length>64)fail('Polygone : de 3 à 64 sommets requis.');
+     nodes=g.points.map((p,i)=>{
+       if(!Array.isArray(p)||p.length!==2)fail('Chaque sommet doit être une paire [x,y].');
+       return point(v(p[0],`X sommet ${i+1}`,0),v(p[1],`Y sommet ${i+1}`,0));
+     });
+     const signed=nodes.reduce((sum,p,i)=>{const q=nodes[(i+1)%nodes.length];return sum+p.x*q.y-q.x*p.y;},0)/2;
+     if(Math.abs(signed)<.001)fail('Le polygone a une surface nulle.');
+     const ccw=(a,b,c)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+     const on=(a,b,c)=>Math.min(a.x,b.x)-1e-8<=c.x&&c.x<=Math.max(a.x,b.x)+1e-8&&Math.min(a.y,b.y)-1e-8<=c.y&&c.y<=Math.max(a.y,b.y)+1e-8;
+     const segmentsCross=(a,b,c,d)=>{const ab=ccw(a,b,c),ad=ccw(a,b,d),ca=ccw(c,d,a),cb=ccw(c,d,b);
+       if(ab*ad<0&&ca*cb<0)return true;
+       return (Math.abs(ab)<1e-8&&on(a,b,c))||(Math.abs(ad)<1e-8&&on(a,b,d))||(Math.abs(ca)<1e-8&&on(c,d,a))||(Math.abs(cb)<1e-8&&on(c,d,b));
+     };
+     const n=nodes.length;
+     for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+       if(j===i+1||(i===0&&j===n-1))continue;
+       if(segmentsCross(nodes[i],nodes[(i+1)%n],nodes[j],nodes[(j+1)%n]))fail('Polygone auto-croisé : refuse la modification.');
+     }
+   }else fail(`Type de géométrie non pris en charge : ${g.type}.`);
+   if(nodes.length<3)fail('Une forme fermée doit contenir au moins trois nœuds.');
+   const temp=refresh({nodes:clone(nodes),closed:true});
+   const b=bbox([temp]);
+   if(b.x0<-1e-5||b.y0<-1e-5||b.x1>stock.width+1e-5||b.y1>stock.height+1e-5)
+     fail(`La forme ${g.type} dépasse du brut ${stock.width} × ${stock.height} mm.`);
+   if(!(b.w>.001&&b.h>.001))fail('Forme de dimensions nulles.');
+   return nodes;
+ }
+ function measuredMatch(actual,expected){
+   if(actual.length!==expected.length)return false;
+   return actual.every((n,i)=>{
+     const q=expected[i];
+     if(Math.abs(n.x-q.x)>1e-4||Math.abs(n.y-q.y)>1e-4)return false;
+     for(const k of ['i','o']){const a=n[k],b=q[k];if(!!a!==!!b)return false;
+       if(a&&(!Number.isFinite(a[0])||!Number.isFinite(a[1])||Math.abs(a[0]-b[0])>1e-4||Math.abs(a[1]-b[1])>1e-4))return false;}
+     return true;
+   });
+ }
+ function current(){
+   if(typeof S==='undefined'||typeof mkShape!=='function'||typeof snapState!=='function')fail('COPO n’est pas prêt.');
+   const m=meta();
+   if(!m)return null;
+   if(m.version!==1||!Array.isArray(m.items)||m.items.length>150)fail('Métadonnées de formes COPO-IA incompatibles.');
+   const seen=new Set(),shapeIds=new Set();
+   for(const f of m.items){
+     idCheck(f.id);
+     if(seen.has(f.id)||shapeIds.has(f.shapeId))fail('Éléments COPO-IA dupliqués.');
+     seen.add(f.id);shapeIds.add(f.shapeId);
+     const sh=shapeBy(f.shapeId);
+     if(!sh||!sh.closed)fail('Une forme COPO-IA a été supprimée ou modifiée hors de la passerelle.');
+     const target=geometryNodes(f.geometry,{width:S.stock.w,height:S.stock.h});
+     if(!measuredMatch(sh.nodes,target))fail('Une forme COPO-IA a été modifiée manuellement. Sauvegarde une copie et rétablis-la avant une édition automatique.');
+   }
+   if(S.shapes.length!==m.items.length)fail('Le dessin contient des formes non gérées : modification automatique refusée.');
+   return clone(m.items);
+ }
+ function state(){
+   const m=meta();
+   let items=[],editable=false,reason='';
+   try{const currentItems=current();items=currentItems||[];
+     editable=!S.tps.length&&!S.dims.length&&!S.images.length&&(!S.relief||!S.relief.items.length)&&(!S.stock.rotary||!S.stock.rotary.on)&&(!S.shapes.length||!!m);
+     if(!editable)reason='Projet avec éléments non gérés, relief, cotes ou parcours : édition libre désactivée.';
+   }catch(e){reason=e.message;}
+   return {version:1,editable,reason,items:items.map(f=>({id:f.id,name:f.name,role:f.role,geometry:f.geometry}))};
+ }
+ function analyze(plan){
+   if(!isObj(plan)||!Array.isArray(plan.operations)||plan.operations.length<1||plan.operations.length>50)
+     fail('Plan de formes : 1 à 50 opérations sont requises.');
+   if(S.tps.length||S.dims.length||S.images.length||(S.relief&&S.relief.items.length)||S.stock.rotary?.on)
+     fail('Projet avec parcours, cotes, image, relief ou mode rotatif : édition de géométrie refusée.');
+   const old=current();
+   if(!old&&S.shapes.length)fail('Le projet contient des formes antérieures. Pour la géométrie libre, commence un projet vide.');
+   let stock={width:Number(S.stock.w),height:Number(S.stock.h),thickness:Number(S.stock.t)};
+   if(plan.stock!==undefined){
+     if(!isObj(plan.stock))fail('stock doit contenir width, height et thickness.');
+     stock={width:v(plan.stock.width,'Largeur du brut'),height:v(plan.stock.height,'Hauteur du brut'),thickness:v(plan.stock.thickness,'Épaisseur du brut',.1,1000)};
+   }
+   let items=old?clone(old):[];
+   const idMap=()=>new Map(items.map((f,i)=>[f.id,i]));
+   const labels=[];
+   for(const op of plan.operations){
+     if(!isObj(op)||!['add','edit','remove'].includes(op.action))fail('Action de forme inconnue.');
+     idCheck(op.id);
+     if(op.action==='remove'){
+       const pos=idMap().get(op.id);if(pos===undefined)fail(`Élément ${op.id} absent.`);
+       items.splice(pos,1);labels.push(`Supprimer ${op.id}`);continue;
+     }
+     if(op.action==='add'&&isObj(op.geometry)&&op.geometry.type==='circle_pattern'){
+       if(op.role!=='hole')fail('Un motif de perçages circulaires doit avoir role="hole".');
+       const g=op.geometry,count=g.count;
+       if(!Number.isInteger(count)||count<2||count>32)fail('Un motif doit comporter entre 2 et 32 cercles.');
+       const cx=v(g.cx,'X du centre motif',0),cy=v(g.cy,'Y du centre motif',0),pcd=v(g.pcd,'Diamètre du cercle primitif'),dia=v(g.diameter,'Diamètre des trous');
+       const start=g.start_angle_deg===undefined?0:g.start_angle_deg;
+       if(typeof start!=='number'||!Number.isFinite(start)||Math.abs(start)>3600)fail('Angle de départ non valide.');
+       for(let j=0;j<count;j++){
+         const id=`${op.id}-${String(j+1).padStart(2,'0')}`;idCheck(id);
+         if(idMap().has(id))fail(`Identifiant ${id} déjà présent.`);
+         const ang=(start+j*360/count)*Math.PI/180;
+         const geom={type:'circle',cx:round(cx+pcd/2*Math.cos(ang)),cy:round(cy+pcd/2*Math.sin(ang)),diameter:dia};
+         geometryNodes(geom,stock);
+         items.push({id,name:(op.name||op.id)+` ${j+1}`,role:'hole',geometry:geom,shapeId:null});
+       }
+       labels.push(`Créer motif ${op.id} (${count} cercles)`);continue;
+     }
+     const pos=idMap().get(op.id);
+     if(op.action==='add'&&pos!==undefined)fail(`Identifiant ${op.id} déjà présent.`);
+     if(op.action==='edit'&&pos===undefined)fail(`Élément ${op.id} inexistant : impossible de le modifier.`);
+     const prev=pos===undefined?null:items[pos];
+     const geometry=op.geometry===undefined?(prev?clone(prev.geometry):null):clone(op.geometry);
+     if(!geometry)fail(`Géométrie manquante pour ${op.id}.`);
+     geometryNodes(geometry,stock);
+     const name=op.name===undefined?(prev?prev.name:op.id):op.name;
+     if(typeof name!=='string'||!name.trim()||name.length>100)fail('Nom de forme invalide.');
+     const role=roleCheck(op.role===undefined?(prev?prev.role:'geometry'):op.role);
+     if(role==='pocket'&&op.depth!==undefined) v(op.depth,'Profondeur de poche',.01,1000);
+     const depth=role==='pocket'?(op.depth===undefined?(prev?.depth??null):op.depth):null;
+     if(depth!==null&&!(depth<stock.thickness))fail('La profondeur de poche doit rester inférieure à l’épaisseur du brut.');
+     const item={id:op.id,name:name.trim(),role,geometry,depth,shapeId:prev?.shapeId||null};
+     if(op.action==='add')items.push(item);else items[pos]=item;
+     labels.push((op.action==='add'?'Créer ':'Modifier ')+op.id);
+   }
+   if(items.length>150)fail('Nombre maximal de formes COPO-IA : 150.');
+   for(const it of items){geometryNodes(it.geometry,stock);if(it.role==='pocket'&&it.depth!=null&&it.depth>=stock.thickness)fail('La poche dépasse l’épaisseur du brut.');}
+   return {stock,items,summary:`Brut : ${stock.width} × ${stock.height} × ${stock.thickness} mm.\n${labels.join('\n')}\nTotal après confirmation : ${items.length} forme(s).\nLes profondeurs de poche sont des notes ; AUCUNE FAO générée.`,snapshot:snapState()};
+ }
+ function apply(checked){
+   if(!checked||checked.snapshot!==snapState())fail('Projet modifié depuis la vérification. Relance la vérification.');
+   const before=snapState();
+   try{
+     current();
+     const keep=new Set(checked.items.filter(i=>i.shapeId).map(i=>i.shapeId));
+     S.shapes=S.shapes.filter(s=>keep.has(s.id));
+     S.sel.clear();
+     for(const item of checked.items){
+       const nodes=geometryNodes(item.geometry,checked.stock);
+       let shape=item.shapeId&&shapeBy(item.shapeId);
+       if(shape){shape.nodes=nodes;shape.closed=true;refresh(shape);}
+       else{shape=mkShape(nodes,true);if(!shape)fail('COPO a refusé la création d’une forme.');item.shapeId=shape.id;}
+       S.sel.add(shape.id);
+     }
+     S.stock.w=checked.stock.width;S.stock.h=checked.stock.height;S.stock.t=checked.stock.thickness;
+     S.meta=S.meta||{};S.meta.copoIAFeatures={version:1,items:clone(checked.items)};
+     if(typeof syncStock==='function')syncStock();
+     if(typeof pjSummary==='function')pjSummary();
+     if(typeof setTool==='function')setTool('select');
+     if(typeof renderSel==='function')renderSel();
+     commit();fit();draw();
+     return checked.items.length;
+   }catch(e){restore(before);throw e;}
+ }
+ window.COPO_IA_FEATURES={version:'0.8 BÊTA',analyze,apply,state,geometryNodes};
+})();
+
+</script>
+<script data-copo-ia-module="copo-fao-libre.js">
+/* COPO-IA 0.9 bêta — FAO circulaire par identifiants de géométrie.
+ * GPL-3.0-or-later. Simulation exclusivement. Aucune génération / émission de G-code.
+ * Opérations en poches fermées, à fond plat, sur des cercles natifs identifiés.
+ */
+(() => {
+  'use strict';
+  const X=window.COPO_IA_FEATURES;
+  const fail=t=>{throw Error(t);};
+  const finite=(n,label,min,max)=>{
+    if(typeof n!=='number'||!Number.isFinite(n)||n<min||n>max)fail(`${label} : nombre requis entre ${min} et ${max}.`);
+    return n;
+  };
+  const state=()=>{
+    if(!X||typeof S==='undefined'||typeof computeTP!=='function'||typeof snapState!=='function')fail('Le moteur COPO ou les formes libres ne sont pas chargés.');
+    const data=X.state();
+    if(data.reason && !data.items.length)fail('Formes libres non reconnues : '+data.reason);
+    const m=S.meta?.copoIAFeatures;
+    if(!m||!Array.isArray(m.items)||!data.items.length||m.items.length!==S.shapes.length)fail('Le dessin ne contient pas exclusivement des formes libres COPO-IA validées.');
+    if(S.dims.length||S.images.length||S.relief?.items?.length||S.stock.rotary?.on)fail('Les cotes, images, reliefs et le mode rotatif ne sont pas gérés.');
+    if(S.stock.originZ!=='top')fail('Règle obligatoire : zéro Z sur le dessus du brut.');
+    if(!(Number(S.machine.safeZ)>Number(S.machine.clearZ)&&Number(S.machine.clearZ)>0))fail('Hauteurs de dégagement et de sécurité invalides.');
+    if(!(Number(S.stock.t)>0))fail('Épaisseur de brut invalide.');
+    return {m,items:data.items};
+  };
+  const hasOwned=()=>S.tps.every(t=>t?.type==='pocket'&&/^COPO-IA 0\.9 ·/.test(t.name||'')&&Array.isArray(t.shapeIds)&&t.shapeIds.length===1);
+  const intoPath=(o,tool,it,shapeId)=>{
+    const p={...newForm(),type:'pocket',depth:o.depth,pass:o.pass,toolId:tool.id,allow:0,finish:'last',dir:'climb',entry:'rampzz',rampLen:20,strategy:'rings',rest:false,vstart:0,zrel:1};
+    return {id:uid(),name:`COPO-IA 0.9 · ${it.name} (${it.id}) · SIMULATION`,type:'pocket',toolId:tool.id,shapeIds:[shapeId],relIds:[],p,visible:true,face:1};
+  };
+  function analyze(plan){
+    const s=state();
+    if(!plan||typeof plan!=='object'||Array.isArray(plan))fail('Paramètres de FAO libre manquants.');
+    if(!Array.isArray(plan.operations)||plan.operations.length<1||plan.operations.length>20)fail('De 1 à 20 opérations circulaires sont autorisées par demande.');
+    if(S.tps.length&&!hasOwned())fail('Parcours non produits par COPO-IA 0.9 : remplacement automatique interdit.');
+    if(S.tps.length&&plan.replaceExisting!==true)fail('Des parcours existent. Pour les remplacer, demande explicitement replaceExisting:true et inclus toutes les opérations à conserver.');
+    if(!S.tps.length&&plan.replaceExisting===true)fail('Aucun parcours existant à remplacer : utilise replaceExisting:false.');
+    const selected=new Set(),paths=[],summary=[],diameters=[];
+    for(const o of plan.operations){
+      if(!o||typeof o!=='object'||Array.isArray(o)||o.strategy!=='pocket')fail('Stratégie autorisée : pocket uniquement (fraisage intérieur).');
+      if(typeof o.id!=='string'||!/^[A-Za-z][\w-]{0,39}$/.test(o.id)||selected.has(o.id))fail('Identifiant de forme absent, invalide ou répété.');
+      selected.add(o.id);
+      const item=s.items.find(it=>it.id===o.id),raw=s.m.items.find(it=>it.id===o.id);
+      if(!item||!raw||!raw.shapeId)fail(`Forme ${o.id} absente ou non reconnue.`);
+      if(item.geometry.type!=='circle'||item.role!=='hole')fail(`La forme ${o.id} n'est pas un trou circulaire. Seuls les cercles sont gérés en 0.9.`);
+      if(o.through!==false)fail(`Profondeur traversante refusée pour ${o.id} : la 0.9 nécessite une profondeur borgne explicite et through:false.`);
+      const depth=finite(o.depth,`Profondeur ${o.id}`,0.01,Number(S.stock.t)-0.01);
+      const pass=finite(o.pass,`Passe ${o.id}`,0.1,5);
+      if(pass>depth)fail(`La passe de ${o.id} dépasse la profondeur demandée.`);
+      const toolDiameter=finite(o.toolDiameter,`Diamètre de fraise ${o.id}`,0.1,50);
+      const matching=S.tools.filter(t=>t.type==='flat'&&Math.abs(Number(t.dia)-toolDiameter)<.0001);
+      if(matching.length!==1)fail(`Une fraise droite Ø${toolDiameter} mm doit exister exactement une fois dans la bibliothèque COPO.`);
+      const tool=matching[0];
+      if(![tool.feed,tool.plunge,tool.rpm].every(n=>Number.isFinite(+n)&&+n>0))fail(`Conditions de coupe incomplètes pour la fraise Ø${toolDiameter}.`);
+      const circleDiameter=Number(item.geometry.diameter);
+      if(circleDiameter<=toolDiameter+0.05)fail(`La fraise Ø${toolDiameter} est trop grande pour le trou ${o.id} (Ø${circleDiameter}).`);
+      const cx=Number(item.geometry.cx),cy=Number(item.geometry.cy),r=circleDiameter/2,toolR=toolDiameter/2;
+      // Les coordonnées XY du centre de fraise doivent rester à l'intérieur de la forme avec compensation de rayon.
+      if(cx-r<0||cy-r<0||cx+r>S.stock.w||cy+r>S.stock.h)fail(`Le cercle ${o.id} dépasse du brut.`);
+      const tp=intoPath(o,tool,item,raw.shapeId);
+      computeTP(tp);
+      if(tp.err)fail(`${o.id} : erreur du moteur COPO : ${tp.err}`);
+      if(tp.warns?.length)fail(`${o.id} : avertissement du moteur COPO : ${tp.warns.join(' ; ')}`);
+      if(!Array.isArray(tp.moves)||tp.moves.length<2||tp.moves.length>35000)fail(`${o.id} : parcours absent ou trop complexe.`);
+      let bottom=0,cutCount=0;
+      for(const move of tp.moves){
+        if(!Number.isFinite(move.x)||!Number.isFinite(move.y)||!Number.isFinite(move.z))fail(`${o.id} : coordonnées non finies.`);
+        bottom=Math.min(bottom,move.z);
+        if(move.z<-.015){
+          cutCount++;
+          const d=Math.hypot(move.x-cx,move.y-cy);
+          if(d>r-toolR+0.2)fail(`${o.id} : une trajectoire de fraise sort de la zone circulaire. Calcul refusé.`);
+          if(move.z < -depth-.02)fail(`${o.id} : mouvement sous la profondeur maximale.`);
+        }
+      }
+      if(!cutCount||Math.abs(bottom+depth)>.02)fail(`${o.id} : profondeur calculée incohérente (${bottom}).`);
+      paths.push(tp);diameters.push(circleDiameter);
+      summary.push(`${item.name} [${o.id}] : Ø${circleDiameter} mm, profondeur ${depth} mm, fraise Ø${toolDiameter} mm, passes ${pass} mm, ${tp.moves.length} mouvements.`);
+    }
+    const existing=S.tps.length;
+    if(existing&&plan.replaceExisting===true){
+      const old=new Set(S.tps.flatMap(t=>t.shapeIds||[]));
+      const next=new Set(paths.flatMap(t=>t.shapeIds||[]));
+      if(old.size!==next.size||[...old].some(x=>!next.has(x)))fail('Le remplacement supprimerait une opération existante. Fournis toutes les géométries déjà usinées.');
+    }
+    return {snapshot:snapState(),paths,replaceExisting:!!plan.replaceExisting,summary:`${summary.length} parcours circulaire(s) vérifié(s) :\n${summary.join('\n')}\n${existing?'Remplacement total des anciens parcours COPO-IA 0.9.\n':''}Simulation uniquement, conditions de coupe non validées. Aucun G-code envoyé ou exporté.`};
+  }
+  function apply(draft){
+    if(!draft||draft.snapshot!==snapState())fail('Le projet a changé depuis la vérification. Relance l’analyse.');
+    const before=snapState();
+    try{
+      state();
+      if(S.tps.length&&(!draft.replaceExisting||!hasOwned()))fail('Le projet possède désormais des parcours incompatibles.');
+      if(draft.replaceExisting){S.tps=[];S.activeTp=null;S.editTp=null;}
+      else if(S.tps.length)fail('Création refusée sur des parcours existants.');
+      S.tps.push(...draft.paths);
+      S.activeTp=draft.paths[0].id;S.editTp=null;S.sel.clear();
+      commit(false);gcDirty=true;renderTpList();setTab('parcours');draw();
+      return {count:draft.paths.length,moves:draft.paths.map(tp=>tp.moves.length)};
+    }catch(e){restore(before);throw e;}
+  }
+  window.COPO_IA_FREE_CAM={version:'0.9 BÊTA',analyze,apply};
+})();
+
+</script>
+<script data-copo-ia-module="copo-fao-multiformes.js">
+/* COPO-IA 1.0 BÊTA — Multi-FAO sur géométries libres identifiées.
+ * GNU GPL-3.0-or-later — basé sur le logiciel COPO libre.
+ * Simulation UNIQUEMENT ; aucune validation machine ni génération de G-code par l'extension.
+ * Les profils extérieurs sont limités à des passes borgnes SANS découpe traversante.
+ */
+(()=>{
+ 'use strict';
+ const X=window.COPO_IA_FEATURES;
+ const fail=m=>{throw Error(m);};
+ const finite=(n,label,lo,hi)=>{
+  if(typeof n!=='number'||!Number.isFinite(n)||n<lo||n>hi)fail(`${label} : valeur numérique entre ${lo} et ${hi} requise.`);
+  return n;
+ };
+ const allowedTypes=new Set(['rectangle','rounded_rectangle','slot','circle','polygon']);
+ const bboxGeom=(g,sh)=>{
+  const pts=sh.pts||[];
+  if(!pts.length)fail('Géométrie sans contour calculable.');
+  return {x0:Math.min(...pts.map(p=>p[0])),x1:Math.max(...pts.map(p=>p[0])),
+          y0:Math.min(...pts.map(p=>p[1])),y1:Math.max(...pts.map(p=>p[1]))};
+ };
+ function current(){
+  if(!X||typeof S==='undefined'||typeof computeTP!=='function'||typeof snapState!=='function')fail('Moteur COPO indisponible.');
+  const fs=X.state(),meta=S.meta?.copoIAFeatures;
+  if(fs.reason && !fs.items.length)fail('Métadonnées géométriques indisponibles : '+fs.reason);
+  if(!meta||meta.version!==1||!Array.isArray(meta.items)||!fs.items.length||meta.items.length!==S.shapes.length)
+   fail('Ce projet n’est pas une géométrie libre entièrement reconnue par COPO-IA.');
+  if(S.dims.length||S.images.length||S.relief?.items?.length||S.stock.rotary?.on)fail('Reliefs, cotes, images et mode rotatif non pris en charge.');
+  if(S.stock.originZ!=='top')fail('Zéro Z obligatoire sur le dessus du brut.');
+  if(!(Number(S.machine.safeZ)>Number(S.machine.clearZ)&&Number(S.machine.clearZ)>0))fail('Dégagement Z invalide.');
+  if(!(Number(S.stock.t)>.1))fail('Épaisseur de brut invalide.');
+  return {items:fs.items,meta};
+ }
+ const owned=t=>{
+  const name=t?.name||'';
+  return (t?.type==='pocket'||t?.type==='profile')&&
+   (/^COPO-IA 1\.0 ·/.test(name)||/^COPO-IA 0\.9 ·/.test(name))&&
+   Array.isArray(t.shapeIds)&&t.shapeIds.length===1&&t.shapeIds[0];
+ };
+ function newTP(o,it,raw,tool){
+  const profile=o.strategy==='profile';
+  const p={...newForm(),type:profile?'profile':'pocket',depth:o.depth,pass:o.pass,toolId:tool.id,
+    side:profile?o.side:'in',tabs:false,allow:0,finish:'last',dir:'climb',entry:'rampzz',rampLen:20,
+    strategy:'rings',rest:false,vstart:0,zrel:1,proj:false,npass:1};
+  return {id:uid(),name:`COPO-IA 1.0 · ${profile?(o.side==='in'?'Profil intérieur':'Profil extérieur'):'Poche'} · ${it.name} [${it.id}] · SIMULATION`,
+    type:profile?'profile':'pocket',toolId:tool.id,shapeIds:[raw.shapeId],relIds:[],p,visible:true,face:1};
+ }
+ function analyze(plan){
+  const s=current();
+  if(!plan||typeof plan!=='object'||Array.isArray(plan))fail('Commande multi-FAO manquante.');
+  if(!Array.isArray(plan.operations)||plan.operations.length<1||plan.operations.length>12)fail('Il faut entre 1 et 12 opérations d’usinage.');
+  if(typeof plan.replaceExisting!=='boolean')fail('replaceExisting doit être explicitement true ou false.');
+  const prior=S.tps;
+  if(prior.length){
+   if(!prior.every(owned))fail('Le projet possède des parcours non gérés par COPO-IA : remplacement interdit.');
+   if(!plan.replaceExisting)fail('Des parcours existent : utilise replaceExisting:true et réinclus toutes les opérations à conserver.');
+  } else if(plan.replaceExisting)fail('Aucun parcours à remplacer : utilise replaceExisting:false.');
+  const seen=new Set(),paths=[],messages=[];
+  for(const o of plan.operations){
+   if(!o||typeof o!=='object'||Array.isArray(o)||!['pocket','profile'].includes(o.strategy))fail('Stratégie permise : pocket ou profile.');
+   if(typeof o.id!=='string'||!/^[A-Za-z][\w-]{0,39}$/.test(o.id)||seen.has(o.id))fail('Identifiant absent, invalide ou répété.');
+   seen.add(o.id);
+   const item=s.items.find(x=>x.id===o.id),raw=s.meta.items.find(x=>x.id===o.id);
+   if(!item||!raw?.shapeId)fail(`Forme ${o.id} introuvable.`);
+   const shape=S.shapes.find(x=>x.id===raw.shapeId);
+   if(!shape||!shape.closed||!allowedTypes.has(item.geometry?.type))fail(`Contour fermé inconnu pour ${o.id}.`);
+   const g=item.geometry,kind=g.type,profile=o.strategy==='profile';
+   if(profile){
+    if(o.side==='out'){
+      if(item.role!=='contour'||!['rectangle','rounded_rectangle','polygon'].includes(kind))
+       fail(`${o.id} : profil extérieur autorisé uniquement sur contour rectangle, rectangle arrondi ou polygone.`);
+    }else if(o.side==='in'){
+      if(!['hole','geometry'].includes(item.role))fail(`${o.id} : profil intérieur réservé aux formes de rôle hole ou geometry.`);
+    }else fail(`${o.id} : side doit être "in" ou "out" pour un profil.`);
+   } else {
+    if(!['hole','pocket'].includes(item.role)||!['circle','rectangle','rounded_rectangle','slot'].includes(kind))
+     fail(`${o.id} : poche autorisée sur cercle, rectangle, rectangle arrondi ou oblong de rôle hole/pocket.`);
+    if(o.side!==undefined)fail(`${o.id} : « side » réservé aux profils.`);
+   }
+   if(o.through!==false)fail(`${o.id} : through:false obligatoire ; aucun usinage traversant automatique.`);
+   const depth=finite(o.depth,`Profondeur ${o.id}`,.01,Number(S.stock.t)-.01);
+   const pass=finite(o.pass,`Passe ${o.id}`,.1,5);
+   if(pass>depth)fail(`${o.id} : passe plus profonde que l’usinage.`);
+   const toolDia=finite(o.toolDiameter,`Diamètre de fraise ${o.id}`,.1,50);
+   const tools=S.tools.filter(t=>t.type==='flat'&&Math.abs(Number(t.dia)-toolDia)<1e-4);
+   if(tools.length!==1)fail(`${o.id} : fraise droite Ø${toolDia} absente ou ambiguë dans la bibliothèque.`);
+   const tool=tools[0];
+   if(![tool.feed,tool.plunge,tool.rpm].every(n=>Number.isFinite(+n)&&+n>0))fail(`${o.id} : conditions de coupe de la bibliothèque incomplètes.`);
+   const bb=bboxGeom(g,shape),r=toolDia/2;
+   if(profile&&o.side==='out'){
+    if(bb.x0<r+.5||bb.y0<r+.5||bb.x1>S.stock.w-r-.5||bb.y1>S.stock.h-r-.5)
+     fail(`${o.id} : espace insuffisant entre contour et limites du brut pour le rayon de la fraise.`);
+   }else{
+    const narrow=kind==='circle'?Number(g.diameter):kind==='slot'?Number(g.width):Math.min(bb.x1-bb.x0,bb.y1-bb.y0);
+    if(!Number.isFinite(narrow)||toolDia>=narrow-.05)fail(`${o.id} : fraise Ø${toolDia} trop grande pour la largeur minimale ${narrow} mm.`);
+    if(bb.x0<-.01||bb.y0<-.01||bb.x1>S.stock.w+.01||bb.y1>S.stock.h+.01)fail(`${o.id} : forme hors brut.`);
+   }
+   const tp=newTP(o,item,raw,tool);
+   computeTP(tp);
+   if(tp.err)fail(`${o.id} : erreur native COPO : ${tp.err}`);
+   if(tp.warns?.length)fail(`${o.id} : avertissement natif : ${tp.warns.join(' ; ')}`);
+   if(!Array.isArray(tp.moves)||tp.moves.length<3||tp.moves.length>50000)fail(`${o.id} : trajectoire absente ou trop complexe.`);
+   let bottom=0, cuts=0;
+   for(const m of tp.moves){
+    if(!Number.isFinite(m.x)||!Number.isFinite(m.y)||!Number.isFinite(m.z))fail(`${o.id} : mouvement avec coordonnées non finies.`);
+    bottom=Math.min(bottom,m.z);
+    if(m.z<-.015){
+     if(m.z<-depth-.02)fail(`${o.id} : trajectoire sous la profondeur demandée.`);
+     if(m.g===1){
+      cuts++;
+      if(m.x-r<-.20||m.y-r<-.20||m.x+r>S.stock.w+.20||m.y+r>S.stock.h+.20)
+       fail(`${o.id} : la fraise sortirait du brut ; parcours refusé.`);
+     }
+    }
+   }
+   if(!cuts||Math.abs(bottom+depth)>.02)fail(`${o.id} : profondeur finale ou coupe non conforme (${bottom}).`);
+   paths.push(tp);
+   messages.push(`${item.name} [${o.id}] · ${profile?(o.side==='in'?'Profil intérieur':'Profil extérieur'):'Poche'} ${kind} · profondeur ${depth} mm · fraise Ø${toolDia} mm · passe ${pass} mm · ${tp.moves.length} mouvements.`);
+  }
+  if(prior.length){
+   const old=new Set(prior.map(t=>t.shapeIds[0])),next=new Set(paths.map(t=>t.shapeIds[0]));
+   if(old.size!==next.size||[...old].some(x=>!next.has(x)))fail('Le remplacement supprimerait un parcours existant. Réinclus toutes les formes déjà usinées.');
+  }
+  return {snapshot:snapState(),paths,replaceExisting:plan.replaceExisting,
+   summary:`${paths.length} parcours natif(s) préparé(s) :\n${messages.join('\n')}\n${prior.length?'Tous les parcours existants seront remplacés après confirmation.\n':''}Aucune trajectoire appliquée avant confirmation. Simulation uniquement. Aucun usinage traversant ni G-code machine validé.`};
+ }
+ function apply(draft){
+  if(!draft||draft.snapshot!==snapState())fail('Le projet a changé depuis la vérification : recommence l’export.');
+  const before=snapState();
+  try{
+   current();
+   if(S.tps.length&&(!draft.replaceExisting||!S.tps.every(owned)))fail('Parcours existants incompatibles.');
+   if(draft.replaceExisting){S.tps=[];S.activeTp=null;S.editTp=null;}
+   else if(S.tps.length)fail('Des parcours ont été ajoutés : recommence la vérification.');
+   S.tps.push(...draft.paths);
+   S.activeTp=draft.paths[0].id;S.editTp=null;S.sel.clear();
+   commit(false);gcDirty=true;renderTpList();setTab('parcours');draw();
+   return {count:draft.paths.length,moves:draft.paths.map(t=>t.moves.length)};
+  }catch(e){restore(before);throw e;}
+ }
+ window.COPO_IA_MULTI_CAM={version:'1.0 BÊTA',analyze,apply};
+})();
+
+</script>
+<script data-copo-ia-module="copo-ia11.js">
+/* COPO-IA 1.1 BÊTA — édition transactionnelle, CAO+FAO, aperçu, ordre des parcours.
+ * GNU GPL-3.0-or-later. Simulation uniquement. Aucune connexion ni instruction machine.
+ * Les six axes de développement sont accessibles via l'action project_11.
+ */
+(()=>{
+ 'use strict';
+ const X=window.COPO_IA_FEATURES, M=window.COPO_IA_MULTI_CAM;
+ const fail=s=>{throw Error(s);}, copy=x=>JSON.parse(JSON.stringify(x)), obj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+ const validId=id=>typeof id==='string'&&/^[A-Za-z][\w-]{0,39}$/.test(id);
+ const compatiblePath=t=>t&&['pocket','profile'].includes(t.type)&&/^COPO-IA (?:0\.9|1\.0|1\.1) · /.test(t.name||'')&&Array.isArray(t.shapeIds)&&t.shapeIds.length>=1;
+ const toolDia=t=>Number(S.tools.find(x=>x.id===t.toolId)?.dia);
+ const canon=o=>JSON.stringify(o);
+ const stockNow=()=>({width:Number(S.stock.w),height:Number(S.stock.h),thickness:Number(S.stock.t)});
+ const featureState=()=>{
+   const fs=X.state(),mt=S.meta?.copoIAFeatures;
+   if(fs.reason&&!fs.items.length&&S.shapes.length)fail(fs.reason);
+   if(S.shapes.length&&(!mt||mt.version!==1||mt.items.length!==S.shapes.length))fail('Projet non intégralement reconnu par la géométrie libre COPO-IA.');
+   if(S.dims.length||S.images.length||S.relief?.items?.length||S.stock.rotary?.on)fail('Édition automatique limitée aux projets sans cote, image, relief ni mode rotatif.');
+   if(S.stock.originZ!=='top')fail('Le zéro Z doit être sur le dessus du brut.');
+   return mt?.items?copy(mt.items):[];
+ };
+ function nativeCheck(){
+   return {features:!!X?.analyze&&!!X?.geometryNodes,multiCAM:!!M?.analyze,
+     snapshots:typeof snapState==='function'&&typeof restore==='function',
+     nativeGeometry:typeof refresh==='function'&&typeof bbox==='function',
+     nativeCAM:typeof computeTP==='function',
+     persistence:typeof commit==='function'&&typeof tpDef==='function',
+     host:'COPO intégré — APIs vérifiées au chargement ; la numérotation du COPO amont n’est pas une garantie de compatibilité.'};
+ }
+ const requireNative=()=>{const c=nativeCheck();if(Object.values(c).some(x=>x===false))fail('API native COPO manquante : '+Object.keys(c).filter(k=>c[k]===false).join(', '));};
+ function fromPath(t,features){
+   if(!compatiblePath(t))fail('Parcours non géré par COPO-IA ; toute modification automatique est refusée.');
+   if(t.shapeIds.length!==1)fail('Parcours multi-formes sans métadonnées : modification automatique refusée.');
+   const it=features.find(x=>x.shapeId===t.shapeIds[0]);
+   if(!it)fail('Un parcours référence une forme sans identifiant COPO-IA.');
+   const op={id:it.id,strategy:t.type==='profile'?'profile':'pocket',depth:Number(t.p?.depth),pass:Number(t.p?.pass),toolDiameter:toolDia(t),through:false};
+   if(op.strategy==='profile')op.side=t.p?.side||'out';
+   if(!Number.isFinite(op.depth)||!Number.isFinite(op.pass)||!Number.isFinite(op.toolDiameter))fail('Paramètres FAO existants incomplets.');
+   return op;
+ }
+ function normalizeOrder(paths,rule){
+   if(rule===undefined||rule===null||rule==='preserve')return paths;
+   if(rule==='tool')return paths.map((p,i)=>({p,i})).sort((a,b)=>toolDia(a.p)-toolDia(b.p)||a.i-b.i).map(x=>x.p);
+   if(rule==='depth')return paths.map((p,i)=>({p,i})).sort((a,b)=>Number(a.p.p.depth)-Number(b.p.p.depth)||a.i-b.i).map(x=>x.p);
+   if(obj(rule)&&rule.mode==='explicit'){
+     if(!Array.isArray(rule.ids)||rule.ids.length!==paths.length||new Set(rule.ids).size!==paths.length)fail('Ordre explicite : exactement un identifiant pour chaque parcours.');
+     const byShape=new Map(paths.map(t=>[t.copoIAId,t]));
+     if(rule.ids.some(id=>!byShape.has(id)))fail('Ordre explicite : identifiant de parcours inconnu.');
+     return rule.ids.map(id=>byShape.get(id));
+   }
+   fail('Ordre des parcours inconnu : preserve, tool, depth ou {mode:"explicit",ids:[...]}.');
+ }
+ // Informations de prévisualisation indépendantes : aucune mutation d'un parcours en place.
+ function pathPreview(t,id,status){
+   const moves=Array.isArray(t.moves)?t.moves:[],segments=[];
+   let previous=null,eligible=0;
+   for(const m of moves){
+     if(m&&Number.isFinite(m.x)&&Number.isFinite(m.y)&&Number.isFinite(m.z)){
+       if(m.g===1&&m.z<-.01&&previous&&previous.z<-.01&&
+          (Math.abs(previous.x-m.x)>1e-6||Math.abs(previous.y-m.y)>1e-6)){
+         eligible++;
+         // Prélèvement plafonné pour ne pas bloquer une fenêtre sur les grosses FAO.
+         if(segments.length<900)segments.push([previous.x,previous.y,m.x,m.y]);
+       }
+       previous=m;
+     }else previous=null;
+   }
+   return {id,status,type:t.type||'?',side:t.p?.side||'',depth:Number(t.p?.depth),
+     pass:Number(t.p?.pass),diameter:toolDia(t),moveCount:moves.length,
+     segments,displayLimited:eligible>segments.length};
+ }
+ function analyze(plan){
+   requireNative();
+   if(!obj(plan))fail('project_11 doit être un objet.');
+   if(!plan.features&&!plan.cam&&!plan.order)fail('Commande 1.1 sans géométrie, FAO ni réorganisation.');
+   const snapshot=snapState(),oldItems=featureState(),oldStock=stockNow();
+   if(!S.tps.every(compatiblePath))fail('Le projet contient des parcours extérieurs à COPO-IA : opération refusée.');
+   if(S.tps.length>30)fail('Limite de 30 parcours identifiés pour cette commande.');
+   const oldTps=S.tps.slice(), oldStockRef=S.stock, oldShapes=S.shapes, oldMeta=S.meta;
+   const oldById=new Map(),oldToolpaths=new Map();
+   for(const p of oldTps){
+     const op=fromPath(p,oldItems);
+     if(oldById.has(op.id))fail('Plusieurs parcours sur une même forme : gestion sélective non disponible.');
+     oldById.set(op.id,op);oldToolpaths.set(op.id,p);
+   }
+   let checked=null,items,stock,generated=[],paths,summary=[],preview;
+   // Première validation sans aucun changement persistant : le module 0.8 est utilisé tel quel.
+   try{
+     S.tps=[];
+     checked=plan.features?X.analyze(plan.features):null;
+   }finally{S.tps=oldTps;}
+   items=checked?copy(checked.items):copy(oldItems);
+   stock=checked?copy(checked.stock):oldStock;
+   const newIDs=new Set(items.map(x=>x.id));
+   const oldMap=new Map(oldItems.map(x=>[x.id,x]));
+   const changed=new Set(items.filter(x=>!oldMap.has(x.id)||canon({name:x.name,role:x.role,depth:x.depth,geometry:x.geometry})!==canon({name:oldMap.get(x.id).name,role:oldMap.get(x.id).role,depth:oldMap.get(x.id).depth,geometry:oldMap.get(x.id).geometry})).map(x=>x.id));
+   const deleted=oldItems.filter(x=>!newIDs.has(x.id)).map(x=>x.id);
+   const stockChanged=canon(stock)!==canon(oldStock);
+   const targets=new Map(oldById);
+   for(const id of deleted)targets.delete(id);
+   const cam=plan.cam||{},changedCAM=new Set();
+   if(!obj(cam))fail('Champ cam invalide.');
+   if(cam.removeIds!==undefined){
+     if(!Array.isArray(cam.removeIds)||new Set(cam.removeIds).size!==cam.removeIds.length)fail('removeIds doit être une liste sans doublons.');
+     for(const id of cam.removeIds){if(!validId(id)||!targets.has(id))fail('Parcours à supprimer inconnu : '+id);targets.delete(id);}
+   }
+   if(cam.operations!==undefined){
+     if(!Array.isArray(cam.operations)||cam.operations.length>30)fail('cam.operations : liste de 0 à 30 opérations.');
+     const seen=new Set();
+     for(const op of cam.operations){
+       if(!obj(op)||!validId(op.id)||!newIDs.has(op.id)||seen.has(op.id))fail('Opération FAO invalide, dupliquée ou forme inexistante.');
+       if(cam.removeIds?.includes(op.id))fail('Une opération ne peut pas être modifiée et supprimée simultanément.');
+       seen.add(op.id);changedCAM.add(op.id);targets.set(op.id,copy(op));
+     }
+   }
+   if(targets.size>30)fail('Maximum de 30 parcours.');
+   if(stockChanged)for(const id of targets.keys())changed.add(id);
+   for(const id of deleted)summary.push('Supprimer forme et parcours associé : '+id);
+   for(const id of changed)summary.push((oldMap.has(id)?'Modifier forme : ':'Créer forme : ')+id);
+   for(const id of changedCAM)summary.push((oldById.has(id)?'Actualiser FAO : ':'Créer FAO : ')+id);
+   for(const id of cam.removeIds||[])summary.push('Supprimer parcours FAO : '+id);
+   if(stockChanged)summary.push(`Changer brut : ${oldStock.width}×${oldStock.height}×${oldStock.thickness} → ${stock.width}×${stock.height}×${stock.thickness} mm (tous les parcours recalculés)`);
+   const needBuild=[...targets.values()].filter(op=>changed.has(op.id)||changedCAM.has(op.id)||!oldToolpaths.has(op.id));
+   // Mise en scène temporaire et calcul NATIF des trajets ; restauration des références dans finally.
+   try{
+     S.stock={...oldStockRef,w:stock.width,h:stock.height,t:stock.thickness};
+     S.shapes=[];
+     for(const it of items){
+       const original=oldShapes.find(s=>s.id===it.shapeId);
+       const nodes=X.geometryNodes(it.geometry,stock);
+       const sh=refresh({...original,id:original?.id||uid(),layer:original?.layer||S.layerActive,
+         nodes,closed:true,g:original?.g||null});
+       it.shapeId=sh.id;S.shapes.push(sh);
+     }
+     S.meta={...oldMeta,copoIAFeatures:{version:1,items:copy(items)}};
+     S.tps=[];
+     // Le calcul multi-FAO historique limite chaque demande à 12 opérations : lots indépendants.
+     for(let i=0;i<needBuild.length;i+=12){
+       const chunk=needBuild.slice(i,i+12);
+       const d=M.analyze({replaceExisting:false,operations:chunk});
+       for(let j=0;j<chunk.length;j++){const tp=d.paths[j];tp.name=tp.name.replace('COPO-IA 1.0 ·','COPO-IA 1.1 ·');
+         // Le champ n'est PAS persistant dans COPO ; le lien fiable est shapeIds[0].
+         tp.copoIAId=chunk[j].id;generated.push(tp);
+       }
+     }
+     // Préserver STRICTEMENT les parcours non concernés (mêmes objets, ID, outil, params et mouvements).
+     const genById=new Map(generated.map(t=>[t.copoIAId,t]));
+     paths=[...targets.keys()].map(id=>{
+       const t=genById.get(id)||{...oldToolpaths.get(id)};
+       if(!t)fail('Parcours manquant après calcul : '+id);
+       if(!t.copoIAId)t.copoIAId=id;
+       return t;
+     });
+     paths=normalizeOrder(paths,plan.order);
+     const oldOrder=new Map(oldTps.map((t,i)=>[fromPath(t,oldItems).id,i]));
+     preview={
+       before:{stock:oldStock,items:oldItems,paths:oldTps.map(t=>{
+         const id=fromPath(t,oldItems).id;
+         return pathPreview(t,id,targets.has(id)?'existant':'supprimé');
+       })},
+       after:{stock,items,paths:paths.map((t,i)=>{
+         const id=t.copoIAId;
+         return pathPreview(t,id,!oldToolpaths.has(id)?'créé':genById.has(id)?'recalculé':oldOrder.get(id)!==i?'réordonné':'conservé');
+       })}
+     };
+   }finally{
+     S.stock=oldStockRef;S.shapes=oldShapes;S.meta=oldMeta;S.tps=oldTps;
+   }
+   const keeps=[...targets.keys()].filter(id=>!changed.has(id)&&!changedCAM.has(id)&&oldToolpaths.has(id));
+   summary.push(`${generated.length} parcours recalculé(s) par COPO ; ${keeps.length} parcours conservé(s) sans recalcul.`);
+   if(plan.order&&plan.order!=='preserve')summary.push('Ordre des parcours modifié selon : '+(typeof plan.order==='string'?plan.order:'séquence explicite'));
+   if(!summary.length)fail('Aucune modification à appliquer.');
+   return {snapshot,items:copy(items),stock,paths,preview,generated:generated.length,
+     preserved:keeps.length,summary:summary.join('\n')+'\nSimulation exclusivement. Vérifie le dessin comparatif et confirme avant toute modification.'};
+ }
+ function apply(d){
+   if(!d||d.snapshot!==snapState())fail('Projet modifié depuis le contrôle : commande annulée.');
+   const before=snapState();
+   try{
+     requireNative();featureState();
+     S.stock.w=d.stock.width;S.stock.h=d.stock.height;S.stock.t=d.stock.thickness;
+     const oldMap=new Map(S.shapes.map(s=>[s.id,s]));
+     S.shapes=d.items.map(it=>refresh({...oldMap.get(it.shapeId),id:it.shapeId,
+       layer:oldMap.get(it.shapeId)?.layer||S.layerActive,nodes:X.geometryNodes(it.geometry,d.stock),closed:true}));
+     S.meta={...S.meta,copoIAFeatures:{version:1,items:copy(d.items)},copoIAWork11:{version:1,
+       operations:d.paths.map(t=>({id:t.copoIAId,type:t.type,shapeIds:t.shapeIds.slice(),depth:Number(t.p.depth),toolId:t.toolId}))}};
+     S.tps=d.paths;
+     S.activeTp=d.paths[0]?.id||null;S.editTp=null;S.sel.clear();
+     if(typeof syncStock==='function')syncStock();
+     commit(false);
+     if(typeof gcDirty!=='undefined')gcDirty=true;
+     if(typeof renderTpList==='function')renderTpList();
+     if(typeof setTab==='function'&&S.tps.length)setTab('parcours');
+     if(typeof fit==='function')fit();
+     if(typeof draw==='function')draw();
+     return {forms:d.items.length,paths:d.paths.length,recalculated:d.generated,preserved:d.preserved};
+   }catch(e){restore(before);throw e;}
+ }
+ // Aperçu géométrique SVG local : DOM et primitives numériques, aucun HTML issu du plan.
+ const SVG='http://www.w3.org/2000/svg';
+ function renderPreview(host,p){
+   if(!host||!p)return;
+   host.replaceChildren();host.className='cia11-preview';
+   const previous=new Map(p.before.items.map(it=>[it.id,it]));
+   const next=new Map(p.after.items.map(it=>[it.id,it]));
+   const changed=new Set();
+   for(const id of new Set([...previous.keys(),...next.keys()])){
+     if(canon(previous.get(id)?.geometry)!==canon(next.get(id)?.geometry))changed.add(id);
+   }
+   const header=document.createElement('div');header.className='cia11-title';
+   header.textContent='État actuel à gauche · proposition à droite (aucune modification encore appliquée)';host.appendChild(header);
+   const fmt=n=>Number(n).toLocaleString('fr-FR',{maximumFractionDigits:3});
+   const summaries=[];
+   for(const id of changed){
+     const before=previous.get(id)?.geometry,after=next.get(id)?.geometry;
+     if(!before){summaries.push(id+' : nouvelle forme');continue;}
+     if(!after){summaries.push(id+' : forme supprimée');continue;}
+     if(before.type==='slot'&&after.type==='slot'){
+       summaries.push(`${id} : centre X ${fmt(before.cx)} → ${fmt(after.cx)} mm (${fmt(after.cx-before.cx)} mm) ; centre Y ${fmt(before.cy)} → ${fmt(after.cy)} mm`);
+     }else if(['rectangle','rounded_rectangle'].includes(before.type)&&before.type===after.type){
+       summaries.push(`${id} : X ${fmt(before.x)} → ${fmt(after.x)} mm ; Y ${fmt(before.y)} → ${fmt(after.y)} mm ; dimensions ${fmt(before.width)}×${fmt(before.height)} → ${fmt(after.width)}×${fmt(after.height)} mm`);
+     }else{summaries.push(id+' : géométrie modifiée');}
+   }
+   const draw=(g,geo,style)=>{
+     const put=(tag,attrs)=>{const el=document.createElementNS(SVG,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));g.appendChild(el);};
+     if(['rectangle','rounded_rectangle'].includes(geo.type))put('rect',{x:geo.x,y:geo.y,width:geo.width,height:geo.height,rx:geo.radius||0,...style});
+     else if(geo.type==='circle')put('circle',{cx:geo.cx,cy:geo.cy,r:geo.diameter/2,...style});
+     else if(geo.type==='polygon')put('polygon',{points:geo.points.map(q=>q.join(',')).join(' '),...style});
+     else if(geo.type==='slot')put('rect',{x:geo.cx-geo.length/2,y:geo.cy-geo.width/2,width:geo.length,height:geo.width,rx:geo.width/2,
+       transform:`rotate(${geo.angle_deg||0} ${geo.cx} ${geo.cy})`,...style});
+   };
+   for(const [label,state] of [['AVANT',p.before],['APRÈS',p.after]]){
+     const section=document.createElement('div');section.className='cia11-panel';
+     const cap=document.createElement('div');cap.textContent=`${label} · Brut ${state.stock.width} × ${state.stock.height} × ${state.stock.thickness} mm`;section.appendChild(cap);
+     const svg=document.createElementNS(SVG,'svg'),w=state.stock.width,h=state.stock.height;
+     svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.setAttribute('role','img');svg.setAttribute('aria-label',`Géométrie ${label}`);
+     const bg=document.createElementNS(SVG,'rect');Object.entries({x:0,y:0,width:w,height:h,fill:'#172a38',stroke:'#b6c3d0','stroke-width':Math.max(w,h)/250}).forEach(([k,v])=>bg.setAttribute(k,v));svg.appendChild(bg);
+     const g=document.createElementNS(SVG,'g');g.setAttribute('transform',`translate(0 ${h}) scale(1 -1)`);svg.appendChild(g);
+     if(label==='APRÈS')for(const id of changed){const it=previous.get(id);if(it){
+       draw(g,it.geometry,{fill:'none',stroke:'#ff9e72','stroke-width':2.2,'stroke-dasharray':'3 2','vector-effect':'non-scaling-stroke',opacity:'.83'});
+     }}
+     for(const it of state.items){
+       const selected=changed.has(it.id),normal=it.role==='contour'?'#76d0d4':it.role==='pocket'?'#f5c06a':'#a4bdf9';
+       draw(g,it.geometry,{fill:'none',stroke:selected?(label==='APRÈS'?'#71f0a5':'#ffbe78'):normal,
+         'stroke-width':selected?2.9:1.6,'vector-effect':'non-scaling-stroke'});
+     }
+     // Superposer les trajectoires XY de coupe existantes/préparées ; aucune rapide ni Z de sécurité.
+     let cutCount=0;
+     for(const path of state.paths||[]){
+       if(!path.segments?.length)continue;
+       const line=document.createElementNS(SVG,'path');
+       const d=path.segments.map(q=>`M${q[0].toFixed(2)} ${q[1].toFixed(2)}L${q[2].toFixed(2)} ${q[3].toFixed(2)}`).join('');
+       line.setAttribute('d',d);line.setAttribute('fill','none');
+       line.setAttribute('stroke',label==='AVANT'?'#ffb97a':path.status==='conservé'||path.status==='réordonné'?'#84c5ec':'#72efac');
+       line.setAttribute('stroke-width','1.1');line.setAttribute('stroke-opacity','.68');
+       line.setAttribute('vector-effect','non-scaling-stroke');
+       g.appendChild(line);cutCount+=path.segments.length;
+     }
+     const hint=document.createElement('div');hint.className='cia11-tool-hint';
+     hint.textContent=cutCount?`${(state.paths||[]).length} opération(s) · ${cutCount} segments XY affichés (centre de fraise, indicatif)`:
+       'Aucun segment de coupe disponible à représenter ; vérifier les paramètres FAO ci-dessous.';
+     section.appendChild(svg);section.appendChild(hint);host.appendChild(section);
+   }
+   // Affichage des opérations AVANT / APRÈS, y compris lorsque les formes ne bougent pas.
+   const report=document.createElement('div');report.className='cia11-tool-report';
+   const heading=document.createElement('div');heading.className='cia11-tool-heading';
+   heading.textContent='Comparaison des opérations FAO — ordre, profondeur, fraise et passes';report.appendChild(heading);
+   const priorPaths=new Map((p.before.paths||[]).map(t=>[t.id,t]));
+   const afterPaths=new Map((p.after.paths||[]).map(t=>[t.id,t]));
+   const number=n=>Number.isFinite(n)?fmt(n):'—';
+   for(const [label,state] of [['AVANT',p.before],['APRÈS',p.after]]){
+     const panel=document.createElement('div');panel.className='cia11-tool-panel';
+     const title=document.createElement('div');title.className='cia11-tool-title';title.textContent=label+' · '+(state.paths?.length||0)+' parcours';panel.appendChild(title);
+     if(!state.paths?.length){const none=document.createElement('div');none.textContent='Aucun parcours FAO';panel.appendChild(none);}
+     for(const [i,tp] of (state.paths||[]).entries()){
+       const other=(label==='AVANT'?afterPaths:priorPaths).get(tp.id);
+       const status=label==='AVANT'&&!other?'sera supprimé':tp.status;
+       const line=document.createElement('div');line.className='cia11-tool-line';
+       const primary=document.createElement('strong');primary.textContent=(i+1)+'. '+tp.id+' · '+(tp.type==='pocket'?'Poche':tp.type==='profile'?'Profil':'Opération')+' · '+status;line.appendChild(primary);
+       const details=document.createElement('span');details.textContent='Profondeur '+number(tp.depth)+' mm · fraise Ø'+number(tp.diameter)+' mm · passe '+number(tp.pass)+' mm';line.appendChild(details);
+       const pathStats=document.createElement('span');pathStats.textContent=tp.moveCount?tp.moveCount+' mouvements'+(tp.displayLimited?' · aperçu XY limité':''):'Trajectoire XY non disponible dans cet aperçu';line.appendChild(pathStats);
+       panel.appendChild(line);
+     }
+     report.appendChild(panel);
+   }
+   host.appendChild(report);
+   const change=document.createElement('div');change.className='cia11-changes';
+   change.textContent=summaries.length?'Modifications géométriques :\n'+summaries.join('\n'):'Aucune modification géométrique ; seuls les paramètres FAO ou l’ordre des opérations changent.';
+   host.appendChild(change);
+ }
+ window.COPO_IA_11={version:'1.1.4 BÊTA',analyze,apply,renderPreview,nativeCheck,pathPreview};
+})();
+
+</script>
+<script data-copo-ia-module="copo-dialogue.js">
+/* COPO-IA 0.6 PASSERELLE — dialogue à plan structuré, contrôles et confirmation obligatoire.
+ * GNU GPL-3.0-or-later. Aucun envoi de G-code ni connexion machine.
+ */
+(() => {
+ 'use strict';
+ const G=window.COPO_IA_TEST, F=window.COPO_IA_FAO_TEST, X=window.COPO_IA_FEATURES, H=window.COPO_IA_FREE_CAM, M=window.COPO_IA_MULTI_CAM, V=window.COPO_IA_11;
+ const root=document.getElementById('cia-root');
+ if(!G||!F||!root)return;
+ const section=document.createElement('section');section.className='cia-dialogue';
+ section.innerHTML=`<details id="cia-dialogue-details">
+  <summary>✦ Démonstrations et vérification FAO (facultatif)</summary>
+  <p>Utilise les deux démonstrations ou importe une proposition préparée avec ChatGPT. <b>Rien ne change sans ton accord</b>.</p>
+  <label for="cia-chat-text">Texte de démonstration (non envoyé automatiquement à ChatGPT)</label>
+  <textarea id="cia-chat-text" rows="4" spellcheck="true" aria-label="Texte de démonstration, vide par défaut"></textarea>
+  <div class="cia-actions">
+    <button type="button" id="cia-chat-read">Lire le projet</button>
+    <button type="button" id="cia-chat-demo-cam">Démo : 2 parcours</button>
+    <button type="button" id="cia-chat-demo-revise">Démo : modifier + recalculer</button>
+    <button type="button" id="cia-chat-clear">Vider tous les champs</button>
+  </div>
+  <div class="cia-actions">
+    <button type="button" id="cia-chat-apply" class="cia-primary" disabled>Confirmer dans COPO</button>
+  </div>
+  <div id="cia-chat-status" class="cia-note">Aucun service API : les propositions de ChatGPT sont importées explicitement dans « Passerelle ChatGPT » ci-dessous.</div>
+  <div id="cia-chat-report" class="cia-report" role="status" aria-live="polite">Commence par « Lire le projet ». Les démonstrations restent disponibles gratuitement.</div>
+  <p class="cia-note"><b>SIMULATION UNIQUEMENT.</b> Les parcours ne sont pas validés pour une machine réelle. Seuls les projets COPO-IA reconnus sont modifiables automatiquement.</p>
+ </details>`;
+ root.querySelector('.cia-body').insertBefore(section,root.querySelector('.cia-body').firstChild);
+ const style=document.createElement('style');style.textContent=`#cia-root .cia-dialogue details>summary{cursor:pointer;font-size:14px;font-weight:700;color:#cbe5ff;padding:3px 0 8px}#cia-root .cia-dialogue p{margin:4px 0 9px}#cia-root .cia-dialogue label{display:block;margin-bottom:6px}#cia-root .cia-dialogue textarea{margin-bottom:8px;min-height:105px}#cia-root .cia-dialogue .cia-report{margin-top:7px}#cia-root .cia-dialogue .cia-note{margin-top:7px}`;document.head.appendChild(style);
+ const $=id=>document.getElementById(id),field=$('cia-chat-text'),report=$('cia-chat-report'),approve=$('cia-chat-apply');
+ let draft=null;
+ const fail=m=>{throw new Error(m);};
+ const nice=x=>String(Number(Number(x).toFixed(3))).replace('.',',');
+ const abs=n=>Number.isFinite(Number(n))?Number(n):null;
+ function msg(s,err=false){report.textContent=s;report.classList.toggle('cia-error',!!err);}
+ function invalidate(){
+   draft=null;approve.disabled=true;
+   for(const id of ['cia11-current-preview','cia11-preview-overlay']){const el=document.getElementById(id);if(el)el.remove();}
+ }
+ const previewCSS=document.createElement('style');previewCSS.textContent=`
+ #cia11-preview-overlay{position:fixed;inset:0;z-index:2147482000;background:rgba(6,13,23,.88);display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;font:14px/1.5 system-ui,sans-serif;color:#e9f2fc}
+ #cia11-preview-overlay *{box-sizing:border-box}
+ #cia11-preview-overlay .cia11-window{width:min(1080px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:#182636;border:2px solid #7db6ea;border-radius:14px;box-shadow:0 22px 75px #000b;padding:18px 22px 20px}
+ #cia11-preview-overlay h2{font-size:22px;margin:0 0 8px;color:#fff}
+ #cia11-preview-overlay p{margin:8px 0;color:#dae6f5}
+ #cia11-preview-overlay .cia11-summary{white-space:pre-line;background:#22364c;border:1px solid #486680;padding:9px 12px;border-radius:8px;max-height:105px;overflow-y:auto;font-size:12px}
+ #cia11-preview-overlay .cia11-preview{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0}
+ #cia11-preview-overlay .cia11-title{grid-column:1/-1;font-weight:700;color:#badcff}
+ #cia11-preview-overlay .cia11-panel{min-width:0;background:#203247;border:1px solid #56718b;border-radius:9px;padding:8px;color:#f0f7ff}
+ #cia11-preview-overlay .cia11-panel svg{display:block;width:100%;height:clamp(240px,39vh,380px);background:#172a38;margin-top:7px;border-radius:4px}
+ #cia11-preview-overlay .cia11-tool-hint{font-size:11px;line-height:1.5;color:#c7d5e7;padding-top:5px}
+ #cia11-preview-overlay .cia11-tool-report{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+ #cia11-preview-overlay .cia11-tool-heading{grid-column:1/-1;color:#cce5ff;font-weight:700}
+ #cia11-preview-overlay .cia11-tool-panel{min-width:0;padding:9px;background:#22364b;border:1px solid #587791;border-radius:8px;font-size:12px}
+ #cia11-preview-overlay .cia11-tool-title{font-size:13px;font-weight:700;margin-bottom:7px}
+ #cia11-preview-overlay .cia11-tool-line{display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px solid #425a71}
+ #cia11-preview-overlay .cia11-tool-line span{color:#c6d7e6}
+ #cia11-preview-overlay .cia11-changes{grid-column:1/-1;border-left:3px solid #ffc46b;background:#27394c;padding:8px 10px;font-size:13px;white-space:pre-line}
+ #cia11-preview-overlay .cia11-actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}
+ #cia11-preview-overlay button{border:1px solid #7399bd;border-radius:8px;background:#38516b;color:#fff;padding:11px 16px;font:600 14px system-ui,sans-serif;cursor:pointer}
+ #cia11-preview-overlay button.cia11-proceed{background:#1c649f;border-color:#81c7ff}
+ #cia11-preview-overlay button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+ @media(max-width:680px){#cia11-preview-overlay{padding:7px}#cia11-preview-overlay .cia11-window{padding:12px;max-height:calc(100vh - 14px)}#cia11-preview-overlay .cia11-preview,#cia11-preview-overlay .cia11-tool-report{grid-template-columns:1fr}#cia11-preview-overlay .cia11-panel svg{height:220px}}
+ `;document.head.appendChild(previewCSS);
+ function showReview(checked){
+   // Grand aperçu volontairement hors du panneau latéral, pour ne jamais rester masqué par son défilement.
+   const overlay=document.createElement('div');overlay.id='cia11-preview-overlay';overlay.setAttribute('role','dialog');
+   overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','cia11-preview-heading');overlay.tabIndex=-1;
+   const frame=document.createElement('div');frame.className='cia11-window';overlay.appendChild(frame);
+   const title=document.createElement('h2');title.id='cia11-preview-heading';title.textContent='Avant / après — commande COPO-IA 1.1.4';frame.appendChild(title);
+   const note=document.createElement('p');note.textContent='Le projet original est toujours intact. Examine les deux dessins avant d’autoriser la confirmation.';frame.appendChild(note);
+   const diagrams=document.createElement('div');frame.appendChild(diagrams);V.renderPreview(diagrams,checked.preview);
+   const summary=document.createElement('div');summary.className='cia11-summary';summary.textContent=checked.summary;frame.appendChild(summary);
+   const actions=document.createElement('div');actions.className='cia11-actions';frame.appendChild(actions);
+   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Annuler — ne rien modifier';actions.appendChild(cancel);
+   const proceed=document.createElement('button');proceed.type='button';proceed.className='cia11-proceed';proceed.textContent='J’ai vérifié l’aperçu — revenir à la confirmation';actions.appendChild(proceed);
+   const abort=()=>{invalidate();msg('Aperçu annulé. Aucun changement appliqué. Tu peux revérifier le JSON si nécessaire.');
+     const phase=document.getElementById('cia-bridge-phase');if(phase)phase.textContent='Aucune commande vérifiée : confirmation désactivée.';};
+   cancel.addEventListener('click',abort);
+   overlay.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();abort();}});
+   proceed.addEventListener('click',()=>{
+     if(!draft||draft.signature!==snapState()){abort();msg('Le projet a changé pendant l’aperçu. Nouvelle vérification obligatoire.',true);return;}
+     approve.disabled=false;overlay.remove();
+     const phase=document.getElementById('cia-bridge-phase');if(phase)phase.textContent='✓ Comparaison avant/après examinée. La confirmation est maintenant disponible.';
+     approve.scrollIntoView({block:'center',behavior:'smooth'});approve.focus();
+   });
+   document.body.appendChild(overlay);proceed.focus();
+ }
+
+ field.addEventListener('input',()=>{invalidate();msg('Instruction modifiée. Relance l’analyse avant de confirmer.');});
+ function checkProject(){if(typeof S==='undefined'||typeof snapState!=='function')fail('COPO n’est pas encore chargé.');}
+ function ownedToolpaths(){return S.tps.every(t=>t&&t.type==='pocket'&&/^COPO-IA 0\.[3457] · /.test(t.name||'')&&Array.isArray(t.shapeIds));}
+ function state(){
+   checkProject();const c=G.context();return {...c,features:X?X.state():null,
+     toolLibrary:S.tools.filter(t=>t.type==='flat').map(t=>({diameter:t.dia,name:t.name})),
+     paths:S.tps.map(t=>({id:S.meta?.copoIAFeatures?.items?.find(it=>it.shapeId===t.shapeIds?.[0])?.id??null,
+       name:t.name,strategy:t.type,side:t.p?.side??null,depth:t.p?.depth??null,pass:t.p?.pass??null,
+       diameter:S.tools.find(v=>v.id===t.toolId)?.dia??null,shapes:t.shapeIds?.length||0})),
+     workflow11:{supported:!!V,action:'project_11',selectiveEdit:!!V&&S.tps.every(t=>/^COPO-IA (?:0\.9|1\.0|1\.1) · /.test(t.name||'')),
+       explanation:'La commande project_11 permet de modifier les formes et leurs parcours COPO-IA 0.9/1.0/1.1 avec recalcul sélectif ; les commandes anciennes gardent leurs restrictions.'},
+     editability:ownedToolpaths()?'Commandes historiques COPO-IA autorisées':'Pour formes libres et parcours reconnus, utilise project_11 ; parcours manuels non pris en charge'
+   };
+ }
+ function desc(){let text=G.describe();if(X){const fs=X.state();if(fs.items.length)text+='\n\nFormes libres COPO-IA 0.8 : '+fs.items.length+' élément(s).'+fs.items.map(f=>'\n• '+f.id+' ('+f.role+') : '+f.geometry.type).join('');} if(S.tps.length&&V&&S.tps.every(t=>/^COPO-IA (?:0\.9|1\.0|1\.1) · /.test(t.name||'')))text=text.replace('⚠ Édition IA interdite tant que des parcours ou éléments liés existent.','⚠ COPO-IA 1.1 permet une modification ciblée des formes et des parcours via project_11. Les anciennes commandes restent limitées.');return text+`\n\nParcours d'outil : ${S.tps.length}.`+
+   S.tps.map(t=>`\n• ${t.name} — profondeur ${nice(t.p.depth)} mm ; fraise Ø${nice(S.tools.find(v=>v.id===t.toolId)?.dia||0)} mm.`).join('')+
+   `\nFraises droites disponibles : ${S.tools.filter(t=>t.type==='flat').map(t=>'Ø'+nice(t.dia)).join(', ')} mm.`;
+ }
+ function stripPaths(fn){const paths=S.tps;S.tps=[];try{return fn();}finally{S.tps=paths;}}
+ function geometryPlan(p){
+  if(!p||typeof p!=='object'||!['create','edit'].includes(p.action))fail('Plan géométrique invalide.');
+  if(p.action==='edit'&&(!G.managed()))fail('Seuls les dessins reconnus COPO-IA sont éditables.');
+  let geom={action:p.action,contour:p.contour||null,stock_thickness:p.stock_thickness??null,stockFull:!!p.stockFull,
+    holes:p.holes||null,pocket:p.pocket||null};
+  const m=G.managed();
+  if(p.pocket_width_delta!=null||p.pocket_height_delta!=null){
+    if(!m?.pocket)fail('Aucune poche existante pour une modification relative.');
+    if(p.pocket?.mode==='remove')fail('Une poche supprimée ne peut pas être agrandie.');
+    geom.pocket={mode:'change',width:m.pocket.width+Number(p.pocket_width_delta||0),height:m.pocket.height+Number(p.pocket_height_delta||0),depth:p.pocket?.depth??m.pocket.depth};
+  }
+  return stripPaths(()=>G.validateTarget(geom));
+ }
+ function normalizedCam(c,geo){
+  if(!c||typeof c!=='object')fail('Aucune instruction FAO structurée.');
+  const m=G.managed(),old=S.tps;
+  const pocket=c.pocket===true,slots=c.slots===true;
+  if(!pocket&&!slots)fail('Aucune opération FAO sélectionnée.');
+  const source=old.find(t=>t?.p?.depth!=null);
+  const tool=S.tools.find(t=>t.id===source?.toolId);
+  const defaultDepth=geo?.pocket?.depth??m?.pocket?.depth;
+  const pocketDepth=c.pocketDepth??defaultDepth;
+  const dia=c.toolDiameter??tool?.dia;
+  const pass=c.pass??source?.p?.pass;
+  if(pocket&&!(Number(pocketDepth)>0))fail('Indique explicitement la profondeur de poche dans le dessin.');
+  if(!(Number(dia)>0))fail('Indique le diamètre de fraise, par exemple Ø6 mm.');
+  if(!S.tools.some(t=>t.type==='flat'&&Math.abs(Number(t.dia)-Number(dia))<.01))fail('La fraise Ø'+nice(dia)+' mm est absente de la bibliothèque COPO. Ajoute-la avant de recalculer.');
+  if(old.length){const containsPocket=old.some(t=>t.shapeIds?.length===1),containsSlots=old.some(t=>t.shapeIds?.length===4);
+   if((containsPocket&&!pocket)||(containsSlots&&!slots))fail('Le projet contient des parcours qui seraient supprimés par ce remplacement. Demande explicitement le recalcul de toutes les opérations existantes.');}
+  if(!(Number(pass)>0))fail('Indique la profondeur par passe, par exemple 1 mm.');
+  const oldSlots=old.find(t=>t?.shapeIds?.length===4);
+  let through=c.slotsThrough===true;
+  let depth=c.slotsDepth;
+  if(slots&&!through&&depth==null&&oldSlots){
+    if(Math.abs(Number(oldSlots.p.depth)-Number(S.stock.t))<.01)through=true;
+    else depth=oldSlots.p.depth;
+  }
+  if(slots&&!through&&!(Number(depth)>0))fail('Précise la profondeur des oblongs ou demande « traversants ».');
+  if(slots&&c.slotsThrough===true&&c.slotsDepth!=null)fail('Oblongs à la fois traversants et profondeur fixe : ambigu.');
+  return {pocket,slots,pocketDepth:Number(pocketDepth),slotsDepth:depth==null?null:Number(depth),slotsThrough:through,toolDiameter:Number(dia),pass:Number(pass)};
+ }
+ function camSummary(c,geo){
+  const thickness=geo?.thickness??Number(S.stock.t), depth=c.slotsThrough?thickness:c.slotsDepth;
+  return `${c.pocket?'Poche centrale : profondeur '+nice(c.pocketDepth)+' mm.\n':''}${c.slots?'Quatre oblongs : '+(c.slotsThrough?'traversants':'profondeur '+nice(depth)+' mm')+'.\n':''}Fraise Ø${nice(c.toolDiameter)} mm ; passes de ${nice(c.pass)} mm.\nConditions de coupe de la bibliothèque COPO NON validées pour la machine.`;
+ }
+ function analyze(plan,source){
+  invalidate();checkProject();
+  if(!plan||typeof plan!=='object'||!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam','project_11'].includes(plan.action))fail('Type de demande non reconnu : aucun changement.');
+  if(plan.action==='read'){msg(desc());return;}
+  if(plan.action==='clarify'){msg('Précision nécessaire : '+(plan.message||'La demande doit être reformulée.'));return;}
+  if(plan.action==='project_11'){
+    if(!V)fail('Module COPO-IA 1.1 absent.');
+    const vChecked=V.analyze(plan.project_11);
+    draft={signature:snapState(),plan,vChecked,source};
+    // Pour project_11, seule l'acceptation explicite de l'aperçu rend la confirmation possible.
+    approve.disabled=true;
+    msg('Proposition intégrée CAO + FAO, vérifiée dans COPO :\n'+vChecked.summary+'\n\nAUCUNE modification avant confirmation.');
+    showReview(vChecked);
+    return;
+  }
+  if(plan.action==='multi_cam'){
+    if(!M)fail('Module multi-FAO 1.0 indisponible.');
+    const multiChecked=M.analyze(plan.multi_cam);
+    draft={signature:snapState(),plan,multiChecked,source};
+    approve.disabled=false;
+    msg('Proposition de FAO multi-géométrique vérifiée par COPO :\n'+multiChecked.summary+'\n\nAucun parcours ajouté avant confirmation.');
+    return;
+  }
+  if(plan.action==='feature_cam'){
+    if(!H)fail('Module FAO des formes libres non chargé.');
+    const camChecked=H.analyze(plan.feature_cam);
+    draft={signature:snapState(),plan,camChecked,source};
+    approve.disabled=false;
+    msg('Proposition de FAO libre vérifiée par COPO :\n'+camChecked.summary+'\n\nAucun parcours ajouté avant confirmation.');
+    return;
+  }
+  if(plan.action==='features'){
+    if(!X)fail('Module de formes libres indisponible.');
+    const featureChecked=X.analyze(plan.features);
+    draft={signature:snapState(),plan,featureChecked,source};
+    approve.disabled=false;
+    msg('Proposition de géométrie libre contrôlée par COPO :\n'+featureChecked.summary+'\n\nAucune modification avant confirmation. Aucun parcours FAO créé.');
+    return;
+  }
+  if(['geometry','revise'].includes(plan.action)&&!plan.geometry)fail('La proposition ne contient aucune géométrie exploitable.');
+  if(['fao','revise'].includes(plan.action)&&!plan.cam)fail('La proposition ne contient aucun paramètre FAO exploitable.');
+  const hasPaths=S.tps.length>0;
+  if(hasPaths&&!ownedToolpaths())fail('Le projet contient un parcours non créé par COPO-IA. Remplacement automatique interdit.');
+  if(hasPaths&&plan.action==='geometry')fail('Ce projet possède des parcours. Pour modifier les formes, il faut explicitement demander leur recalcul en même temps.');
+  if(plan.action==='revise'&&S.tps.length===0)fail('Pour un premier dessin, utilise une instruction de dessin puis une préparation FAO, séparément.');
+  const geo=['geometry','revise'].includes(plan.action)?geometryPlan(plan.geometry):null;
+  const cam=['fao','revise'].includes(plan.action)?normalizedCam(plan.cam,geo):null;
+  const wasPaths=hasPaths;
+  let checked=null;
+  if(cam&&!geo){checked=stripPaths(()=>F.calcStructured(cam));}
+  const txt=(geo?G.summary(geo).split('\n\n⚠')[0]+'\n\n':'')+
+    (cam?'FAO à calculer / remplacer :\n'+camSummary(cam,geo)+'\n':'')+
+    (checked?`Parcours calculés en prévisualisation : ${checked.paths.map(p=>p.moves.length).join(' + ')} mouvements.\n`:'Le calcul définitif des parcours se fera après la modification de la géométrie.\n')+
+    (wasPaths?'⚠ Les anciens parcours COPO-IA seront SUPPRIMÉS et remplacés, après confirmation.\n':'')+
+    'AUCUN G-code envoyé ni exporté. Clique sur « Confirmer dans COPO » pour appliquer.';
+  draft={signature:snapState(),plan,geo,cam,checked,wasPaths,source};
+  approve.disabled=false;msg((source==='ChatGPT'?'Proposition ChatGPT contrôlée par COPO :\n':'Proposition de démonstration vérifiée localement :\n')+txt);
+ }
+ function commitDraft(){
+   if(!draft)fail('Commence par analyser la demande.');
+   if(draft.signature!==snapState())fail('Le projet a changé depuis la vérification. Relance l’analyse.');
+   const d=draft,before=snapState();
+   if(d.vChecked){
+     try{const result=V.apply(d.vChecked);invalidate();msg(`✓ COPO-IA 1.1 : ${result.forms} forme(s), ${result.paths} parcours ; ${result.recalculated} recalculé(s), ${result.preserved} conservé(s).\nEnregistre le projet en .copo. Simulation uniquement, aucune validation CNC réelle.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Transaction annulée : '+(e.message||String(e)));}
+   }
+  if(d.multiChecked){
+     try{const result=M.apply(d.multiChecked);invalidate();msg(`✓ ${result.count} parcours multi-géométriques enregistrés dans COPO (${result.moves.join(' + ')} mouvements).\nEnregistre en .copo pour conserver les parcours.\nSIMULATION UNIQUEMENT — G-code non validé.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
+   if(d.camChecked){
+     try{const result=H.apply(d.camChecked);invalidate();msg(`✓ ${result.count} parcours circulaire(s) enregistré(s) dans COPO (${result.moves.join(' + ')} mouvements).\nEnregistre en .copo pour conserver les parcours.\nSIMULATION UNIQUEMENT — G-code non validé.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
+   if(d.featureChecked){
+     try{const n=X.apply(d.featureChecked);invalidate();msg('✓ '+n+' formes indépendantes enregistrées dans COPO.\nEnregistre le fichier .copo pour conserver le résultat.\nAucune FAO automatique pour ces nouvelles formes.');return;}
+     catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+   }
+   if(d.wasPaths&&!ownedToolpaths())fail('Parcours non reconnus : refus.');
+   try{
+     if(d.wasPaths){S.tps=[];S.activeTp=null;S.editTp=null;}
+     if(d.geo){
+       const p={...d.geo,snapshot:snapState()};
+       G.apply(p);
+     }
+     let summary='';
+     if(d.cam){const calc=F.calcStructured(d.cam);F.applyStructured(calc);
+       summary=`\n${calc.paths.length} parcours natif(s) créé(s) : ${calc.paths.map(t=>t.moves.length).join(' + ')} mouvements.`;}
+     invalidate();
+     msg(`✓ Modifications enregistrées dans le projet COPO. ${d.geo?'Géométrie actualisée.':''}${summary}\nClique sur « Enregistrer .copo » pour conserver le résultat.\n⚠ Simulation uniquement — NE PAS exécuter le G-code sur une CNC.`);
+   }catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
+ }
+ const doDemo=(mode)=>{
+   checkProject();const m=G.managed();if(!m)fail('Ouvre le fichier Exemple-plaque-COPO-IA.copo avant de tester la FAO.');
+   if(mode==='cam'){
+     field.value='Usine la poche centrale sur 5 mm, puis les quatre oblongs traversants. Fraise Ø6 mm, passes de 1 mm. Simulation.';
+     analyze({action:'fao',geometry:null,cam:{pocket:true,slots:true,pocketDepth:5,slotsDepth:null,slotsThrough:true,toolDiameter:6,pass:1}},'démo');
+   }else{
+     field.value='Agrandis la poche centrale à 90 × 50 mm, puis recalcule la poche et les oblongs avec une fraise Ø3,175 mm et des passes de 1 mm.';
+     analyze({action:'revise',geometry:{action:'edit',contour:null,stock_thickness:null,stockFull:false,holes:null,pocket:{mode:'change',width:90,height:50,depth:5},pocket_width_delta:null,pocket_height_delta:null},
+       cam:{pocket:true,slots:true,pocketDepth:5,slotsDepth:null,slotsThrough:true,toolDiameter:3.175,pass:1}},'démo');
+   }
+ };
+ $('cia-chat-read').onclick=()=>{invalidate();try{msg(desc());}catch(e){msg(e.message,true);}};
+ $('cia-chat-clear').onclick=()=>{if(typeof window.COPO_IA_CLEAR_FIELDS==='function')window.COPO_IA_CLEAR_FIELDS();else resetFields();};
+ $('cia-chat-demo-cam').onclick=()=>{try{doDemo('cam');}catch(e){invalidate();msg(e.message,true);}};
+ $('cia-chat-demo-revise').onclick=()=>{try{doDemo('revise');}catch(e){invalidate();msg(e.message,true);}};
+ $('cia-chat-apply').onclick=()=>{try{commitDraft();}catch(e){invalidate();msg(e.message,true);}};
+ function resetFields(){invalidate();field.value='';msg('Aucune commande en attente. Le projet COPO reste intact.');}
+ window.COPO_IA_DIALOGUE_TEST={version:'1.1 BÊTA PASSERELLE',state,analyze,commitDraft,normalizedCam,geometryPlan,desc,doDemo,resetFields};
+})();
+
+</script>
+<script data-copo-ia-module="copo-passerelle.js">
+/* COPO-IA 0.8 PASSERELLE — échange contrôlé avec ChatGPT. GNU GPL-3.0-or-later.
+ * Aucune requête réseau, clé API, exécution de code fourni par le modèle, ou commande CNC.
+ */
+(() => {
+ 'use strict';
+ const D=window.COPO_IA_DIALOGUE_TEST;
+ const G=window.COPO_IA_TEST;
+ const root=document.getElementById('cia-root');
+ if(!D||!G||!root)return;
+ const sec=document.createElement('section');
+ sec.className='cia-bridge';
+ sec.innerHTML=`<details id="cia-bridge-details" open>
+  <summary>↔ Passerelle ChatGPT · gratuite</summary>
+  <p><b>1.</b> Saisis ici ta demande en français (champ vide = aucune demande). <b>2.</b> Copie le dossier dans ChatGPT. <b>3.</b> Colle ici le JSON reçu, vérifie puis confirme.</p>
+  <label for="cia-bridge-request">Ce que tu souhaites demander à ChatGPT</label>
+  <textarea id="cia-bridge-request" rows="3" spellcheck="true" aria-label="Demande à ChatGPT, vide par défaut"></textarea>
+  <div class="cia-actions"><button type="button" id="cia-bridge-copy" class="cia-primary">Copier le projet pour ChatGPT</button><button type="button" id="cia-bridge-preview">Afficher le texte à copier</button></div>
+  <textarea id="cia-bridge-export" rows="4" readonly spellcheck="false" hidden aria-label="Dossier du projet à copier"></textarea>
+  <div class="cia-divider"></div>
+  <label for="cia-bridge-import">Commande JSON préparée par ChatGPT</label>
+  <textarea id="cia-bridge-import" rows="6" spellcheck="false" aria-label="Commande JSON ChatGPT, vide par défaut"></textarea>
+  <div class="cia-actions cia-main-actions"><button type="button" id="cia-bridge-verify" class="cia-primary">1 · Vérifier la commande</button><button type="button" id="cia-bridge-reset">Vider tous les champs</button></div>
+  <div id="cia-bridge-phase" class="cia-note" role="status" aria-live="polite">Aucune commande vérifiée. La confirmation sera disponible ici après validation.</div>
+  <div id="cia-bridge-status" class="cia-report" role="status" aria-live="polite">Aucune donnée envoyée automatiquement : tu décides ce que tu copies dans ChatGPT. Vérification et confirmation obligatoires.</div>
+  <div class="cia-divider"></div>
+  <div class="cia-save-header">Sauvegarde du projet COPO</div>
+  <div id="cia-file-state" class="cia-note" aria-live="polite">Fichier actif : à vérifier</div>
+  <div class="cia-actions"><button type="button" id="cia-save-current" class="cia-primary">Enregistrer le projet</button><button type="button" id="cia-save-copy">Enregistrer une copie sous…</button></div>
+  <div id="cia-save-feedback" class="cia-note" role="status" aria-live="polite">La copie permet de choisir un nom et un dossier sans écraser l’original. Extension .copo obligatoire.</div>
+  <p class="cia-note">La commande doit correspondre à l'état exact du projet. Si le projet change, recopie son état et demande une nouvelle commande. Simulation uniquement ; aucun G-code validé pour la machine.</p>
+ </details>`;
+ root.querySelector('.cia-dialogue').before(sec);
+ const style=document.createElement('style');style.textContent=`
+ #cia-root .cia-bridge details>summary{font-size:14px;font-weight:700;cursor:pointer;color:#cbe5ff;padding:3px 0 9px}
+ #cia-root .cia-bridge p{margin:5px 0 10px}
+ #cia-root .cia-bridge label{display:block;margin:8px 0 5px}
+ #cia-root #cia-bridge-export{max-height:180px;min-height:90px}
+ #cia-root #cia-bridge-import{min-height:116px;max-height:235px}
+ #cia-root .cia-bridge .cia-report{margin-top:8px}
+ #cia-root .cia-save-header{font-size:13px;font-weight:700;color:#e0f3ff;margin-top:9px}
+ #cia-root #cia-file-state{font-weight:600}
+ #cia-root #cia-save-feedback{min-height:18px}
+ `;document.head.appendChild(style);
+ const io=window.COPO_IA_PROJECT_IO;
+ const ioName=()=>{if(!io)return;const v=io.current(),e=document.getElementById('cia-file-state');if(e)e.textContent='Fichier actif : '+(v.name||'sans titre')+(v.linked?' · accès direct':' · aucun accès direct confirmé')+(v.dirty?' · modifications non enregistrées':'');};
+ async function saveViaIA(copy){
+   const feedback=document.getElementById('cia-save-feedback');
+   if(!io){feedback.textContent='Interface de sauvegarde native indisponible.';return;}
+   const btns=['cia-save-current','cia-save-copy'].map(x=>document.getElementById(x));
+   btns.forEach(b=>b.disabled=true);
+   try{
+     const r=await (copy?io.saveCopy():io.save());
+     feedback.textContent=r?.saved?(r.method==='direct'?'✓ Projet écrit : ':'Téléchargement demandé : ')+r.name+(copy?' (copie indépendante)':''):
+       r?.reason==='cancel'?'Sauvegarde annulée : aucun fichier modifié.':
+       r?.reason==='extension'?'Nom invalide : termine le nom par .copo et recommence.':
+       'Sauvegarde non confirmée. Vérifie le message de COPO.';
+     feedback.style.color=r?.saved?'#a0e4b5':'#f1c783';
+   }catch(e){feedback.textContent='Échec de l’enregistrement : '+(e.message||String(e));feedback.style.color='#f1c783';}
+   finally{btns.forEach(b=>b.disabled=false);ioName();}
+ }
+ document.getElementById('cia-save-current').onclick=()=>saveViaIA(false);
+ document.getElementById('cia-save-copy').onclick=()=>saveViaIA(true);
+ ioName();
+ // La lecture de l'état du fichier n'est pas destructive ; elle est rafraîchie à l'ouverture de l'assistant.
+ document.getElementById('cia-root').addEventListener('click',()=>{ioName();});
+ const pvStyle=document.createElement('style');pvStyle.textContent=`
+ #cia-root .cia11-preview{border:1px solid #6183a0;border-radius:9px;margin:11px 0;padding:10px;background:#101c2b;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ #cia-root .cia11-preview .cia11-title{grid-column:1/-1;font-size:13px;font-weight:700;color:#cbe5ff}
+ #cia-root .cia11-panel{min-width:0;font-size:12px;color:#dce7f3}
+ #cia-root .cia11-panel svg{display:block;width:100%;height:150px;background:#172a38;margin-top:5px}
+ `;document.head.appendChild(pvStyle);
+ const $=id=>document.getElementById(id),request=$('cia-bridge-request'),exportField=$('cia-bridge-export'),inField=$('cia-bridge-import'),status=$('cia-bridge-status');
+ // Déplacer le VRAI bouton de confirmation du module historique, sans dupliquer sa logique ni son événement.
+ const confirm=$('cia-chat-apply'),actions=$('cia-bridge-verify').parentElement,phase=$('cia-bridge-phase');
+ if(!confirm)throw Error('Bouton natif de confirmation indisponible.');
+ actions.insertBefore(confirm,$('cia-bridge-reset'));
+ confirm.textContent='2 · Confirmer dans COPO';
+ const setPhase=(value,bad=false)=>{phase.textContent=value;phase.classList.toggle('cia-error',!!bad);};
+ confirm.addEventListener('click',()=>{ // L'implémentation du module Dialogue effectue toute mutation et désactive elle-même le bouton.
+   const result=$('cia-chat-report')?.textContent||'';
+   if(confirm.disabled){const ok=result.trim().startsWith('✓');setPhase(ok?'✓ Commande appliquée. Enregistre le fichier .copo pour conserver le résultat.':'Confirmation terminée : vérifie le message de COPO ci-dessous.',!ok);info(result,!ok);}
+ });
+
+ const fail=m=>{throw Error(m);};
+ const info=(message,bad=false)=>{status.textContent=message;status.classList.toggle('cia-error',!!bad);};
+ // Fingerprint of full COPO project data without leaking full internal state.
+ function signature(){const src=G.snapshot();if(typeof src!=='string')fail('État interne COPO indisponible.');
+  let a=2166136261,b=0x811c9dc5;for(let i=0;i<src.length;i++){
+   const c=src.charCodeAt(i);a=Math.imul(a^c,16777619)>>>0;b=Math.imul(b^(c+(i&255)),2246822519)>>>0;
+  }return a.toString(16).padStart(8,'0')+b.toString(16).padStart(8,'0');
+ }
+ const finite=(x)=>typeof x==='number'&&Number.isFinite(x);
+ function currentContext(){const p=D.state();if(!p||!p.stock)fail('Le projet COPO n’est pas lisible.');return p;}
+ function exportText(){const requestText=request.value.trim();if(!requestText)fail('La demande en français est vide. Écris ton instruction dans « Ce que tu souhaites demander à ChatGPT », puis copie le projet.');const project=currentContext(),s=signature();
+  const context={bridge:'COPO_CHATGPT_PROJECT_V1',project_signature:s,request:requestText,project,description:D.desc()};
+  return `COPO-IA — DEMANDE À CHATGPT (copiée volontairement par l’utilisateur)\n\n${JSON.stringify(context,null,2)}\n\n`+
+`INSTRUCTIONS POUR LA RÉPONSE :\n`+
+`Analyse la demande en tenant compte uniquement des caractéristiques du projet ci-dessus. Les opérations prises en charge sont : lecture (read), création ou modification d'une plaque (geometry), préparation de FAO historique (fao), modification suivie d'un recalcul complet (revise), ou formes libres indépendantes (features), FAO sur formes circulaires (feature_cam), FAO multi-géométrique (multi_cam), édition intégrée COPO-IA 1.1 (project_11), ou demande de précision (clarify).\n`+
+`Si tu n'es pas certain de la sécurité ou des dimensions, utilise clarify et ne propose aucune modification. Ne crée ni G-code, ni code JavaScript.\n`+
+`Réponds avec UN SEUL bloc JSON, selon ce contrat :\n`+
+`{ "bridge": "COPO_CHATGPT_PLAN_V1", "project_signature": "${s}", "plan": { "action": "read", "message": "Description du projet" } }\n`+
+`Pour geometry : plan.geometry = {action:"create"|"edit", contour:{width,height}|null, stock_thickness:number|null, stockFull:boolean, holes:{mode:"round"|"slot"|"remove",diameter?,length?,width?,margin?}|null, pocket:{mode:"add"|"change"|"remove",width?,height?,depth?}|null}.\n`+
+`Pour fao : plan.cam = {pocket:boolean,slots:boolean,pocketDepth:number|null,slotsDepth:number|null,slotsThrough:boolean,toolDiameter:number,pass:number}.\n`+
+`Pour features : plan.features = {stock?:{width,height,thickness},operations:[{action:"add"|"edit"|"remove",id:"IdentifiantStable",name?:"Nom",role?:"contour"|"hole"|"pocket"|"geometry",depth?:number,geometry?:{type:"rectangle",x,y,width,height}|{type:"rounded_rectangle",x,y,width,height,radius}|{type:"circle",cx,cy,diameter}|{type:"slot",cx,cy,length,width,angle_deg?}|{type:"polygon",points:[[x,y],...]}|{type:"circle_pattern",cx,cy,pcd,count,diameter,start_angle_deg?}}]}.\n`+
+`Les opérations features utilisent des coordonnées absolues XY en mm depuis le coin inférieur gauche du brut. Les identifiants sont uniques et stables ; pour modifier, reprendre l'identifiant de l'état exporté. circle_pattern est autorisé uniquement avec action add et role hole ; il crée des identifiants suffixés -01, -02, etc. Aucun parcours FAO n'est automatiquement créé pour les formes libres. Ne pas mélanger features et geometry/fao/revise dans une même commande.\n`+
+`Pour feature_cam (FAO libre 0.9) : plan.feature_cam = {replaceExisting:false,operations:[{id:"identifiant d'une forme circulaire de rôle hole",strategy:"pocket",depth:number,through:false,toolDiameter:number,pass:number}]}. Chaque profondeur est une valeur explicite, strictement inférieure à l'épaisseur du brut. Fraise droite obligatoirement présente dans toolLibrary et plus petite que le trou. Un parcours distinct par trou ; simulation uniquement. Si des parcours COPO-IA 0.9 existent, replaceExisting:true exige de réinclure TOUS les identifiants déjà usinés. Aucune FAO pour profils, polygones ou contours en 0.9.\n`+
+`Pour multi_cam (FAO multi-géométrique 1.0) : plan.multi_cam = {replaceExisting:false,operations:[{id:"Identifiant de forme COPO-IA 0.8",strategy:"pocket"|"profile",depth:number,through:false,toolDiameter:number,pass:number,side?:"out"}]}. Pocket autorisé pour cercles, rectangles, rectangles arrondis et oblongs avec role hole/pocket ; profile autorisé seulement sur les contours rectangles, rectangles arrondis et polygones avec role contour et side:"out". Chaque profondeur DOIT rester strictement inférieure à l'épaisseur du brut ; profil extérieur uniquement en passe borgne, jamais traversant, avec une marge suffisante autour de la pièce. La fraise doit exister en bibliothèque. Aucun usinage de machine réelle. S'il existe des parcours COPO-IA, remplacer exige replaceExisting:true ET toutes les formes déjà usinées ; autrement refus. Ne mélange pas multi_cam avec les autres actions.\n`+
+`NOUVEAU, préfère project_11 pour toute création/édition d'un projet en 1.1, notamment si des parcours existent : plan.project_11 = {features?:{stock?:{width,height,thickness},operations:[{action:"add"|"edit"|"remove",id,name?,role?,geometry?,depth?}]},cam?:{operations?:[{id,strategy:"pocket"|"profile",depth,pass,through:false,toolDiameter,side?:"in"|"out"}],removeIds?:["id"]},order?:"preserve"|"tool"|"depth"|{mode:"explicit",ids:["id1","id2"]}}. Les valeurs de la FAO sont explicites. Omets features si tu ne touches qu'à la FAO ; omets cam si tu ne touches qu'au dessin. Les parcours non modifiés sont conservés. Les parcours des formes modifiées sont recalculés automatiquement avec leurs réglages antérieurs, après contrôle natif. Les formes supprimées perdent leurs propres parcours. Pour les profils borgnes intérieurs, utilise strategy:"profile",side:"in" sur une géométrie de rôle hole/geometry ; pour les profils extérieurs, side:"out" avec role contour. Pas de profils traversants, pas de chemins d'usinage réels validés. Un motif de cercles utilise circle_pattern en géométrie. L'aperçu avant/après est affiché après « Vérifier ». Ne propose pas de poche avec îlot tant qu'une validation spécifique de la géométrie n'est pas prise en charge.\n`+
+`Pour revise : plan.geometry ET plan.cam sont obligatoires ; recalculer TOUTES les opérations déjà présentes. Pour clarify : plan.message contient la question.\n`+
+`Important : ne suppose pas qu'une fraise absente de la bibliothèque est disponible. Ne propose jamais une opération d'usinage non définie ou une profondeur traversante par défaut.`;
+ }
+ async function copyOut(){const text=exportText();exportField.value=text;exportField.hidden=false;
+  try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);info('✓ Dossier copié. Reviens dans cette conversation ChatGPT et colle-le avec ⌘V.');return;}}
+  catch(e){}exportField.focus();exportField.select();let copied=false;
+  try{copied=document.execCommand('copy');}catch(e){}
+  info(copied?'✓ Dossier copié. Colle-le dans ChatGPT avec ⌘V.':'Le texte est affiché et sélectionné : appuie sur ⌘C, puis colle-le dans ChatGPT.');
+ }
+ function parsePlan(raw){if(typeof raw!=='string'||!raw.trim())fail('Colle une commande JSON fournie par ChatGPT.');if(raw.length>50000)fail('Commande trop longue (limite : 50 000 caractères).');
+  let text=raw.trim();const code=text.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);if(code)text=code[1].trim();
+  let obj;try{obj=JSON.parse(text);}catch{fail('Le JSON n’est pas valide. Copie uniquement le bloc JSON donné par ChatGPT, sans explications autour.');}
+  if(!obj||typeof obj!=='object'||Array.isArray(obj)||obj.bridge!=='COPO_CHATGPT_PLAN_V1')fail('Ce texte n’est pas une commande COPO-IA compatible.');
+  if(typeof obj.project_signature!=='string'||!/^[0-9a-f]{16}$/.test(obj.project_signature))fail('Signature du projet manquante ou incorrecte.');
+  if(obj.project_signature!==signature())fail('Le projet a changé depuis son export. Copie de nouveau son état dans ChatGPT et demande une nouvelle commande.');
+  if(!obj.plan||typeof obj.plan!=='object'||Array.isArray(obj.plan))fail('Le plan de modification est absent.');
+  if(!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam','project_11'].includes(obj.plan.action))fail('Action inconnue. Aucun changement appliqué.');
+  if(obj.plan.action==='clarify'){if(typeof obj.plan.message!=='string'||!obj.plan.message.trim())fail('La question de précision manque.');return obj.plan;}
+  // No evaluation, direct DOM operations or G-code support; native validators are authoritative.
+  return obj.plan;
+ }
+ $('cia-bridge-copy').addEventListener('click',async()=>{try{await copyOut();}catch(e){info(e.message,true);}});
+ $('cia-bridge-preview').addEventListener('click',()=>{try{exportField.value=exportText();exportField.hidden=false;info('Dossier affiché. Utilise « Copier le projet pour ChatGPT » ou sélectionne et copie manuellement ce texte.');}catch(e){info(e.message,true);}});
+ $('cia-bridge-verify').addEventListener('click',()=>{try{
+  const plan=parsePlan(inField.value);D.analyze(plan,'ChatGPT');
+  const mainReport=$('cia-chat-report');const isReadOnly=['read','clarify'].includes(plan.action);
+  const message=mainReport?.textContent||'';
+  info((isReadOnly?'✓ Lecture vérifiée : aucun changement à appliquer.':'✓ Proposition contrôlée. Lis les détails, puis utilise le bouton « 2 · Confirmer dans COPO » placé juste à côté de « Vérifier ».')+'\n\n'+message);
+  setPhase(isReadOnly?'✓ Aucune confirmation nécessaire.':'✓ Commande vérifiée. Tu peux confirmer dans COPO si la proposition est correcte.');
+ }catch(e){if(D.resetFields)D.resetFields();info('Commande refusée : '+(e.message||String(e)),true);setPhase('Commande refusée : aucune confirmation possible.',true);}});
+ function clearFields(){
+  // Ne modifie jamais les formes, le brut, la bibliothèque ni les parcours dans COPO.
+  request.value='';inField.value='';exportField.value='';exportField.hidden=true;
+  if(G.resetFields)G.resetFields();
+  if(D.resetFields)D.resetFields();
+  info('Tous les champs sont vides. Aucune commande en attente. Le projet COPO est intact.');setPhase('Aucune commande vérifiée. Le dessin est intact.');
+ }
+ window.COPO_IA_CLEAR_FIELDS=clearFields;
+ $('cia-bridge-reset').addEventListener('click',clearFields);
+ inField.addEventListener('input',()=>{if(D.resetFields)D.resetFields();setPhase('JSON modifié. Vérifie à nouveau avant toute confirmation.');});
+ request.addEventListener('input',()=>{
+  // Toute nouvelle demande invalide la réponse JSON éventuellement préparée précédemment.
+  inField.value='';exportField.value='';exportField.hidden=true;
+  if(D.resetFields)D.resetFields();
+  info('Demande modifiée : exporte de nouveau le projet vers ChatGPT. L’ancienne réponse JSON a été effacée.');setPhase('Demande modifiée. Nouvelle vérification nécessaire.');
+ });
+ // Exposed for browser regression tests only: keeps the same verified path as UI.
+ window.COPO_IA_BRIDGE_TEST={signature,exportText,parsePlan,clearFields};
+})();
+
+</script>
+<script data-copo-ia-startup-guard>
+/* COPO-IA 1.1.4 : assistance de démarrage, jamais de mutation du projet. */
+(function(){
+  function check(){
+    if(document.getElementById('cia-launch'))return;
+    if(document.getElementById('cia-startup-diagnostic'))return;
+    const b=document.createElement('button');b.id='cia-startup-diagnostic';b.type='button';
+    b.textContent='⚠ Assistant COPO-IA indisponible — diagnostic';
+    b.style.cssText='position:fixed!important;right:18px!important;bottom:18px!important;z-index:2147483000!important;background:#912e35!important;color:#fff!important;border:2px solid white!important;border-radius:10px!important;padding:12px!important;font:600 13px sans-serif!important;cursor:pointer!important';
+    b.onclick=()=>window.alert('COPO-IA 1.1.4 : le module principal ne s’est pas initialisé. Vérifie l’ouverture du fichier index.html depuis le dossier complet, puis recharge Chrome (⌘R). Aucune commande n’a été exécutée.');
+    document.body.appendChild(b);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(check,300));
+  else setTimeout(check,300);
+})();
+</script>
 </body>
 </html>

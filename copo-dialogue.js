@@ -3,7 +3,7 @@
  */
 (() => {
  'use strict';
- const G=window.COPO_IA_TEST, F=window.COPO_IA_FAO_TEST, X=window.COPO_IA_FEATURES, H=window.COPO_IA_FREE_CAM, M=window.COPO_IA_MULTI_CAM;
+ const G=window.COPO_IA_TEST, F=window.COPO_IA_FAO_TEST, X=window.COPO_IA_FEATURES, H=window.COPO_IA_FREE_CAM, M=window.COPO_IA_MULTI_CAM, V=window.COPO_IA_11;
  const root=document.getElementById('cia-root');
  if(!G||!F||!root)return;
  const section=document.createElement('section');section.className='cia-dialogue';
@@ -33,18 +33,75 @@
  const nice=x=>String(Number(Number(x).toFixed(3))).replace('.',',');
  const abs=n=>Number.isFinite(Number(n))?Number(n):null;
  function msg(s,err=false){report.textContent=s;report.classList.toggle('cia-error',!!err);}
- function invalidate(){draft=null;approve.disabled=true;}
+ function invalidate(){
+   draft=null;approve.disabled=true;
+   for(const id of ['cia11-current-preview','cia11-preview-overlay']){const el=document.getElementById(id);if(el)el.remove();}
+ }
+ const previewCSS=document.createElement('style');previewCSS.textContent=`
+ #cia11-preview-overlay{position:fixed;inset:0;z-index:2147482000;background:rgba(6,13,23,.88);display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;font:14px/1.5 system-ui,sans-serif;color:#e9f2fc}
+ #cia11-preview-overlay *{box-sizing:border-box}
+ #cia11-preview-overlay .cia11-window{width:min(1080px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:#182636;border:2px solid #7db6ea;border-radius:14px;box-shadow:0 22px 75px #000b;padding:18px 22px 20px}
+ #cia11-preview-overlay h2{font-size:22px;margin:0 0 8px;color:#fff}
+ #cia11-preview-overlay p{margin:8px 0;color:#dae6f5}
+ #cia11-preview-overlay .cia11-summary{white-space:pre-line;background:#22364c;border:1px solid #486680;padding:9px 12px;border-radius:8px;max-height:105px;overflow-y:auto;font-size:12px}
+ #cia11-preview-overlay .cia11-preview{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0}
+ #cia11-preview-overlay .cia11-title{grid-column:1/-1;font-weight:700;color:#badcff}
+ #cia11-preview-overlay .cia11-panel{min-width:0;background:#203247;border:1px solid #56718b;border-radius:9px;padding:8px;color:#f0f7ff}
+ #cia11-preview-overlay .cia11-panel svg{display:block;width:100%;height:clamp(240px,39vh,380px);background:#172a38;margin-top:7px;border-radius:4px}
+ #cia11-preview-overlay .cia11-tool-hint{font-size:11px;line-height:1.5;color:#c7d5e7;padding-top:5px}
+ #cia11-preview-overlay .cia11-tool-report{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+ #cia11-preview-overlay .cia11-tool-heading{grid-column:1/-1;color:#cce5ff;font-weight:700}
+ #cia11-preview-overlay .cia11-tool-panel{min-width:0;padding:9px;background:#22364b;border:1px solid #587791;border-radius:8px;font-size:12px}
+ #cia11-preview-overlay .cia11-tool-title{font-size:13px;font-weight:700;margin-bottom:7px}
+ #cia11-preview-overlay .cia11-tool-line{display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px solid #425a71}
+ #cia11-preview-overlay .cia11-tool-line span{color:#c6d7e6}
+ #cia11-preview-overlay .cia11-changes{grid-column:1/-1;border-left:3px solid #ffc46b;background:#27394c;padding:8px 10px;font-size:13px;white-space:pre-line}
+ #cia11-preview-overlay .cia11-actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}
+ #cia11-preview-overlay button{border:1px solid #7399bd;border-radius:8px;background:#38516b;color:#fff;padding:11px 16px;font:600 14px system-ui,sans-serif;cursor:pointer}
+ #cia11-preview-overlay button.cia11-proceed{background:#1c649f;border-color:#81c7ff}
+ #cia11-preview-overlay button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+ @media(max-width:680px){#cia11-preview-overlay{padding:7px}#cia11-preview-overlay .cia11-window{padding:12px;max-height:calc(100vh - 14px)}#cia11-preview-overlay .cia11-preview,#cia11-preview-overlay .cia11-tool-report{grid-template-columns:1fr}#cia11-preview-overlay .cia11-panel svg{height:220px}}
+ `;document.head.appendChild(previewCSS);
+ function showReview(checked){
+   // Grand aperçu volontairement hors du panneau latéral, pour ne jamais rester masqué par son défilement.
+   const overlay=document.createElement('div');overlay.id='cia11-preview-overlay';overlay.setAttribute('role','dialog');
+   overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','cia11-preview-heading');overlay.tabIndex=-1;
+   const frame=document.createElement('div');frame.className='cia11-window';overlay.appendChild(frame);
+   const title=document.createElement('h2');title.id='cia11-preview-heading';title.textContent='Avant / après — commande COPO-IA 1.1.4';frame.appendChild(title);
+   const note=document.createElement('p');note.textContent='Le projet original est toujours intact. Examine les deux dessins avant d’autoriser la confirmation.';frame.appendChild(note);
+   const diagrams=document.createElement('div');frame.appendChild(diagrams);V.renderPreview(diagrams,checked.preview);
+   const summary=document.createElement('div');summary.className='cia11-summary';summary.textContent=checked.summary;frame.appendChild(summary);
+   const actions=document.createElement('div');actions.className='cia11-actions';frame.appendChild(actions);
+   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Annuler — ne rien modifier';actions.appendChild(cancel);
+   const proceed=document.createElement('button');proceed.type='button';proceed.className='cia11-proceed';proceed.textContent='J’ai vérifié l’aperçu — revenir à la confirmation';actions.appendChild(proceed);
+   const abort=()=>{invalidate();msg('Aperçu annulé. Aucun changement appliqué. Tu peux revérifier le JSON si nécessaire.');
+     const phase=document.getElementById('cia-bridge-phase');if(phase)phase.textContent='Aucune commande vérifiée : confirmation désactivée.';};
+   cancel.addEventListener('click',abort);
+   overlay.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();abort();}});
+   proceed.addEventListener('click',()=>{
+     if(!draft||draft.signature!==snapState()){abort();msg('Le projet a changé pendant l’aperçu. Nouvelle vérification obligatoire.',true);return;}
+     approve.disabled=false;overlay.remove();
+     const phase=document.getElementById('cia-bridge-phase');if(phase)phase.textContent='✓ Comparaison avant/après examinée. La confirmation est maintenant disponible.';
+     approve.scrollIntoView({block:'center',behavior:'smooth'});approve.focus();
+   });
+   document.body.appendChild(overlay);proceed.focus();
+ }
+
  field.addEventListener('input',()=>{invalidate();msg('Instruction modifiée. Relance l’analyse avant de confirmer.');});
  function checkProject(){if(typeof S==='undefined'||typeof snapState!=='function')fail('COPO n’est pas encore chargé.');}
  function ownedToolpaths(){return S.tps.every(t=>t&&t.type==='pocket'&&/^COPO-IA 0\.[3457] · /.test(t.name||'')&&Array.isArray(t.shapeIds));}
  function state(){
    checkProject();const c=G.context();return {...c,features:X?X.state():null,
      toolLibrary:S.tools.filter(t=>t.type==='flat').map(t=>({diameter:t.dia,name:t.name})),
-     paths:S.tps.map(t=>({name:t.name,depth:t.p?.depth??null,pass:t.p?.pass??null,diameter:S.tools.find(v=>v.id===t.toolId)?.dia??null,shapes:t.shapeIds?.length||0})),
-     editability:ownedToolpaths()?'Parcours COPO-IA uniquement':'Parcours étrangers ou manuels : modification automatique interdite'
+     paths:S.tps.map(t=>({id:S.meta?.copoIAFeatures?.items?.find(it=>it.shapeId===t.shapeIds?.[0])?.id??null,
+       name:t.name,strategy:t.type,side:t.p?.side??null,depth:t.p?.depth??null,pass:t.p?.pass??null,
+       diameter:S.tools.find(v=>v.id===t.toolId)?.dia??null,shapes:t.shapeIds?.length||0})),
+     workflow11:{supported:!!V,action:'project_11',selectiveEdit:!!V&&S.tps.every(t=>/^COPO-IA (?:0\.9|1\.0|1\.1) · /.test(t.name||'')),
+       explanation:'La commande project_11 permet de modifier les formes et leurs parcours COPO-IA 0.9/1.0/1.1 avec recalcul sélectif ; les commandes anciennes gardent leurs restrictions.'},
+     editability:ownedToolpaths()?'Commandes historiques COPO-IA autorisées':'Pour formes libres et parcours reconnus, utilise project_11 ; parcours manuels non pris en charge'
    };
  }
- function desc(){let text=G.describe();if(X){const fs=X.state();if(fs.items.length)text+='\n\nFormes libres COPO-IA 0.8 : '+fs.items.length+' élément(s).'+fs.items.map(f=>'\n• '+f.id+' ('+f.role+') : '+f.geometry.type).join('');} if(S.tps.length&&ownedToolpaths()&&!S.dims.length&&!S.images.length)text=text.replace('⚠ Édition IA interdite tant que des parcours ou éléments liés existent.','⚠ Les commandes de dessin classiques sont verrouillées ; la passerelle peut remplacer les parcours COPO-IA après confirmation.');return text+`\n\nParcours d'outil : ${S.tps.length}.`+
+ function desc(){let text=G.describe();if(X){const fs=X.state();if(fs.items.length)text+='\n\nFormes libres COPO-IA 0.8 : '+fs.items.length+' élément(s).'+fs.items.map(f=>'\n• '+f.id+' ('+f.role+') : '+f.geometry.type).join('');} if(S.tps.length&&V&&S.tps.every(t=>/^COPO-IA (?:0\.9|1\.0|1\.1) · /.test(t.name||'')))text=text.replace('⚠ Édition IA interdite tant que des parcours ou éléments liés existent.','⚠ COPO-IA 1.1 permet une modification ciblée des formes et des parcours via project_11. Les anciennes commandes restent limitées.');return text+`\n\nParcours d'outil : ${S.tps.length}.`+
    S.tps.map(t=>`\n• ${t.name} — profondeur ${nice(t.p.depth)} mm ; fraise Ø${nice(S.tools.find(v=>v.id===t.toolId)?.dia||0)} mm.`).join('')+
    `\nFraises droites disponibles : ${S.tools.filter(t=>t.type==='flat').map(t=>'Ø'+nice(t.dia)).join(', ')} mm.`;
  }
@@ -96,9 +153,19 @@
  }
  function analyze(plan,source){
   invalidate();checkProject();
-  if(!plan||typeof plan!=='object'||!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam'].includes(plan.action))fail('Type de demande non reconnu : aucun changement.');
+  if(!plan||typeof plan!=='object'||!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam','project_11'].includes(plan.action))fail('Type de demande non reconnu : aucun changement.');
   if(plan.action==='read'){msg(desc());return;}
   if(plan.action==='clarify'){msg('Précision nécessaire : '+(plan.message||'La demande doit être reformulée.'));return;}
+  if(plan.action==='project_11'){
+    if(!V)fail('Module COPO-IA 1.1 absent.');
+    const vChecked=V.analyze(plan.project_11);
+    draft={signature:snapState(),plan,vChecked,source};
+    // Pour project_11, seule l'acceptation explicite de l'aperçu rend la confirmation possible.
+    approve.disabled=true;
+    msg('Proposition intégrée CAO + FAO, vérifiée dans COPO :\n'+vChecked.summary+'\n\nAUCUNE modification avant confirmation.');
+    showReview(vChecked);
+    return;
+  }
   if(plan.action==='multi_cam'){
     if(!M)fail('Module multi-FAO 1.0 indisponible.');
     const multiChecked=M.analyze(plan.multi_cam);
@@ -146,7 +213,11 @@
    if(!draft)fail('Commence par analyser la demande.');
    if(draft.signature!==snapState())fail('Le projet a changé depuis la vérification. Relance l’analyse.');
    const d=draft,before=snapState();
-   if(d.multiChecked){
+   if(d.vChecked){
+     try{const result=V.apply(d.vChecked);invalidate();msg(`✓ COPO-IA 1.1 : ${result.forms} forme(s), ${result.paths} parcours ; ${result.recalculated} recalculé(s), ${result.preserved} conservé(s).\nEnregistre le projet en .copo. Simulation uniquement, aucune validation CNC réelle.`);return;}
+     catch(e){restore(before);invalidate();throw Error('Transaction annulée : '+(e.message||String(e)));}
+   }
+  if(d.multiChecked){
      try{const result=M.apply(d.multiChecked);invalidate();msg(`✓ ${result.count} parcours multi-géométriques enregistrés dans COPO (${result.moves.join(' + ')} mouvements).\nEnregistre en .copo pour conserver les parcours.\nSIMULATION UNIQUEMENT — G-code non validé.`);return;}
      catch(e){restore(before);invalidate();throw Error('Aucune modification conservée : '+(e.message||String(e)));}
    }
@@ -189,5 +260,5 @@
  $('cia-chat-demo-revise').onclick=()=>{try{doDemo('revise');}catch(e){invalidate();msg(e.message,true);}};
  $('cia-chat-apply').onclick=()=>{try{commitDraft();}catch(e){invalidate();msg(e.message,true);}};
  function resetFields(){invalidate();field.value='';msg('Aucune commande en attente. Le projet COPO reste intact.');}
- window.COPO_IA_DIALOGUE_TEST={version:'1.0 BÊTA PASSERELLE',state,analyze,commitDraft,normalizedCam,geometryPlan,desc,doDemo,resetFields};
+ window.COPO_IA_DIALOGUE_TEST={version:'1.1 BÊTA PASSERELLE',state,analyze,commitDraft,normalizedCam,geometryPlan,desc,doDemo,resetFields};
 })();

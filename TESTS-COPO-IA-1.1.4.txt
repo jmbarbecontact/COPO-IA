@@ -1,0 +1,17 @@
+COPO-IA 1.1.4 BÊTA — RAPPORT DE TESTS — 23 novembre 2026
+
+Tests de développement (Node.js) :
+  - 12/12 : transactions CAO/FAO, recalcul sélectif, contrôles de sécurité, aperçus.
+  -  6/6 : sauvegarde directe, copie indépendante, annulation, extension, erreurs, repli téléchargement.
+  -  7/7 : base COPO 1.418, filetage, API, injection des 8 modules, syntaxe JS et contrat project_11.
+
+Tests utilisateur sur Mac / Chrome :
+  - Bouton flottant et VERSION 1.1.4 BÊTA : OK.
+  - Projet à huit géométries et six parcours : chargement, présentation et simulation : OK.
+  - Enregistrer une copie sous… : copie créée et ouverte : OK.
+  - Prévisualisation avant/après des six opérations : OK.
+  - Modification de la profondeur de la poche circulaire 3→5 mm : parcours recalculé, cinq parcours conservés : OK.
+  - Simulation après application : OK.
+
+Limites : pas d'essai d'usinage réel, aucun G-code validé pour machine CNC.
+Les tests Node utilisent des objets simulés et ne couvrent pas toutes les fonctions natives de COPO.

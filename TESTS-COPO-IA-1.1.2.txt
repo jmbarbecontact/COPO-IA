@@ -1,0 +1,10 @@
+COPO-IA 1.1.2 BÊTA — Bouton flottant / superposition
+
+Vérifications :
+- Syntaxe JS de tous les modules COPO-IA via node --check.
+- Création effective du bouton #cia-launch dans Chromium.
+- Affichage au-dessus de la fenêtre native « Welcome to COPO » au démarrage.
+- Panneau #cia-root superposé aux fenêtres natives.
+- Prévisualisation COPO-IA 1.1.1 avec z-index 100010, donc encore prioritaire sur le panneau.
+
+Aucune validation CNC réelle ; simulation logicielle uniquement.

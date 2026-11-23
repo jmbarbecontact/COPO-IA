@@ -1,0 +1,51 @@
+COPO-IA 1.1 BÊTA — PROCÈS-VERBAL TECHNIQUE DE PRÉVALIDATION
+Date : 23 novembre 2026
+
+BASE : archive complète COPO-IA 1.0 BÊTA ; reprise manuelle des évolutions natives
+COPO 1.418 (filetage : jeu radial, initialisation, édition et affichage, traductions
+ciblées et guide FR/EN). Les APIs et scripts de la passerelle 1.0 sont conservés.
+
+MODULE 1.1 : copo-ia11.js
+Commande : project_11 / analyse transactionnelle / confirmation distincte.
+
+TESTS UNITAIRES AVEC DOUBLURES DES APIs NATIVES (Node.js) : 9/9 réussis.
+- Création de deux géométries avec deux parcours en une commande.
+- Absence de modification persistante avant confirmation.
+- Édition d'une forme et recalcul d'un seul parcours.
+- Conservation des identifiants et données d'un parcours non affecté.
+- Mise à jour ciblée de la profondeur d'une opération.
+- Suppression ciblée forme et parcours associé.
+- Classement des parcours par diamètre de fraise.
+- Refus de confirmer une instruction devenue périmée.
+- Refus des parcours extérieurs à COPO-IA.
+- Refus des profondeurs traversantes, sans mutation.
+- Refus d'un classement explicite incomplet.
+(Nombre total de scénarios du banc : 9, plusieurs assertions par scénario.)
+
+TESTS STATIQUES : 7/7 réussis.
+- Marqueur 1.418, paramètres de jeu radial.
+- Présence des fonctions essentielles de l'API COPO.
+- Ordre de chargement des modules COPO-IA.
+- Syntaxe JS des modules de l'extension et scripts natifs inline.
+- Contrat d'import/export 1.1 dans la passerelle et le dialogue.
+
+LIMITATION DE LA SESSION DE DÉVELOPPEMENT :
+Le navigateur Chromium de l'environnement de test refuse les navigations avec
+ERR_BLOCKED_BY_ADMINISTRATOR, y compris les pages locales. La création de
+trajectoires réelles via le moteur COPO et leur affichage 3D dans un navigateur
+ne sont donc PAS confirmés pour cette version. Les essais de simulation
+réalisés sur Mac par l'utilisateur concernaient la version 1.0, pas la 1.1.
+
+VALIDATION DEMANDÉE À L'UTILISATEUR AVANT TOUTE PUBLICATION 1.1 :
+1. Ouvrir la 1.1 sous Chrome sur Mac ; vérifier qu'aucune erreur n'apparait.
+2. Importer Exemple-multiformes-COPO-IA-1.0.copo.
+3. Créer trois parcours 1.1 : contour (profil borgne), poche-rect et oblong.
+4. Modifier seulement poche-rect et vérifier que 1 seul parcours est recalculé.
+5. Modifier la profondeur d'oblong et vérifier que seuls ses paramètres changent.
+6. Vérifier la vue AVANT / APRÈS, puis confirmer.
+7. Sauvegarder, fermer, rouvrir ; vérifier les formes et parcours et leur simulation.
+8. Essayer l'ordre par outil et le refus d'une commande périmée.
+9. Vérifier les fonctions 1.0 de façon indépendante (non-régression).
+10. Tester l'écran COPO de filetage (nouveau champ « Jeu radial » natif 1.418).
+
+Aucun G-code validé pour une CNC réelle. Aucune garantie de non-collision.

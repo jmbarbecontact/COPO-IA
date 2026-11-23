@@ -39,9 +39,9 @@
  function newTP(o,it,raw,tool){
   const profile=o.strategy==='profile';
   const p={...newForm(),type:profile?'profile':'pocket',depth:o.depth,pass:o.pass,toolId:tool.id,
-    side:profile?'out':'in',tabs:false,allow:0,finish:'last',dir:'climb',entry:'rampzz',rampLen:20,
+    side:profile?o.side:'in',tabs:false,allow:0,finish:'last',dir:'climb',entry:'rampzz',rampLen:20,
     strategy:'rings',rest:false,vstart:0,zrel:1,proj:false,npass:1};
-  return {id:uid(),name:`COPO-IA 1.0 · ${profile?'Profil extérieur':'Poche'} · ${it.name} [${it.id}] · SIMULATION`,
+  return {id:uid(),name:`COPO-IA 1.0 · ${profile?(o.side==='in'?'Profil intérieur':'Profil extérieur'):'Poche'} · ${it.name} [${it.id}] · SIMULATION`,
     type:profile?'profile':'pocket',toolId:tool.id,shapeIds:[raw.shapeId],relIds:[],p,visible:true,face:1};
  }
  function analyze(plan){
@@ -65,9 +65,12 @@
    if(!shape||!shape.closed||!allowedTypes.has(item.geometry?.type))fail(`Contour fermé inconnu pour ${o.id}.`);
    const g=item.geometry,kind=g.type,profile=o.strategy==='profile';
    if(profile){
-    if(item.role!=='contour'||!['rectangle','rounded_rectangle','polygon'].includes(kind))
-     fail(`${o.id} : profil extérieur autorisé uniquement sur contour rectangle, rectangle arrondi ou polygone.`);
-    if(o.side!=='out')fail(`${o.id} : le profil extérieur exige side:"out".`);
+    if(o.side==='out'){
+      if(item.role!=='contour'||!['rectangle','rounded_rectangle','polygon'].includes(kind))
+       fail(`${o.id} : profil extérieur autorisé uniquement sur contour rectangle, rectangle arrondi ou polygone.`);
+    }else if(o.side==='in'){
+      if(!['hole','geometry'].includes(item.role))fail(`${o.id} : profil intérieur réservé aux formes de rôle hole ou geometry.`);
+    }else fail(`${o.id} : side doit être "in" ou "out" pour un profil.`);
    } else {
     if(!['hole','pocket'].includes(item.role)||!['circle','rectangle','rounded_rectangle','slot'].includes(kind))
      fail(`${o.id} : poche autorisée sur cercle, rectangle, rectangle arrondi ou oblong de rôle hole/pocket.`);
@@ -83,7 +86,7 @@
    const tool=tools[0];
    if(![tool.feed,tool.plunge,tool.rpm].every(n=>Number.isFinite(+n)&&+n>0))fail(`${o.id} : conditions de coupe de la bibliothèque incomplètes.`);
    const bb=bboxGeom(g,shape),r=toolDia/2;
-   if(profile){
+   if(profile&&o.side==='out'){
     if(bb.x0<r+.5||bb.y0<r+.5||bb.x1>S.stock.w-r-.5||bb.y1>S.stock.h-r-.5)
      fail(`${o.id} : espace insuffisant entre contour et limites du brut pour le rayon de la fraise.`);
    }else{
@@ -111,7 +114,7 @@
    }
    if(!cuts||Math.abs(bottom+depth)>.02)fail(`${o.id} : profondeur finale ou coupe non conforme (${bottom}).`);
    paths.push(tp);
-   messages.push(`${item.name} [${o.id}] · ${profile?'Profil extérieur':'Poche'} ${kind} · profondeur ${depth} mm · fraise Ø${toolDia} mm · passe ${pass} mm · ${tp.moves.length} mouvements.`);
+   messages.push(`${item.name} [${o.id}] · ${profile?(o.side==='in'?'Profil intérieur':'Profil extérieur'):'Poche'} ${kind} · profondeur ${depth} mm · fraise Ø${toolDia} mm · passe ${pass} mm · ${tp.moves.length} mouvements.`);
   }
   if(prior.length){
    const old=new Set(prior.map(t=>t.shapeIds[0])),next=new Set(paths.map(t=>t.shapeIds[0]));

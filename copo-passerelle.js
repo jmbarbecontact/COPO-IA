@@ -22,6 +22,11 @@
   <div class="cia-actions cia-main-actions"><button type="button" id="cia-bridge-verify" class="cia-primary">1 · Vérifier la commande</button><button type="button" id="cia-bridge-reset">Vider tous les champs</button></div>
   <div id="cia-bridge-phase" class="cia-note" role="status" aria-live="polite">Aucune commande vérifiée. La confirmation sera disponible ici après validation.</div>
   <div id="cia-bridge-status" class="cia-report" role="status" aria-live="polite">Aucune donnée envoyée automatiquement : tu décides ce que tu copies dans ChatGPT. Vérification et confirmation obligatoires.</div>
+  <div class="cia-divider"></div>
+  <div class="cia-save-header">Sauvegarde du projet COPO</div>
+  <div id="cia-file-state" class="cia-note" aria-live="polite">Fichier actif : à vérifier</div>
+  <div class="cia-actions"><button type="button" id="cia-save-current" class="cia-primary">Enregistrer le projet</button><button type="button" id="cia-save-copy">Enregistrer une copie sous…</button></div>
+  <div id="cia-save-feedback" class="cia-note" role="status" aria-live="polite">La copie permet de choisir un nom et un dossier sans écraser l’original. Extension .copo obligatoire.</div>
   <p class="cia-note">La commande doit correspondre à l'état exact du projet. Si le projet change, recopie son état et demande une nouvelle commande. Simulation uniquement ; aucun G-code validé pour la machine.</p>
  </details>`;
  root.querySelector('.cia-dialogue').before(sec);
@@ -32,7 +37,38 @@
  #cia-root #cia-bridge-export{max-height:180px;min-height:90px}
  #cia-root #cia-bridge-import{min-height:116px;max-height:235px}
  #cia-root .cia-bridge .cia-report{margin-top:8px}
+ #cia-root .cia-save-header{font-size:13px;font-weight:700;color:#e0f3ff;margin-top:9px}
+ #cia-root #cia-file-state{font-weight:600}
+ #cia-root #cia-save-feedback{min-height:18px}
  `;document.head.appendChild(style);
+ const io=window.COPO_IA_PROJECT_IO;
+ const ioName=()=>{if(!io)return;const v=io.current(),e=document.getElementById('cia-file-state');if(e)e.textContent='Fichier actif : '+(v.name||'sans titre')+(v.linked?' · accès direct':' · aucun accès direct confirmé')+(v.dirty?' · modifications non enregistrées':'');};
+ async function saveViaIA(copy){
+   const feedback=document.getElementById('cia-save-feedback');
+   if(!io){feedback.textContent='Interface de sauvegarde native indisponible.';return;}
+   const btns=['cia-save-current','cia-save-copy'].map(x=>document.getElementById(x));
+   btns.forEach(b=>b.disabled=true);
+   try{
+     const r=await (copy?io.saveCopy():io.save());
+     feedback.textContent=r?.saved?(r.method==='direct'?'✓ Projet écrit : ':'Téléchargement demandé : ')+r.name+(copy?' (copie indépendante)':''):
+       r?.reason==='cancel'?'Sauvegarde annulée : aucun fichier modifié.':
+       r?.reason==='extension'?'Nom invalide : termine le nom par .copo et recommence.':
+       'Sauvegarde non confirmée. Vérifie le message de COPO.';
+     feedback.style.color=r?.saved?'#a0e4b5':'#f1c783';
+   }catch(e){feedback.textContent='Échec de l’enregistrement : '+(e.message||String(e));feedback.style.color='#f1c783';}
+   finally{btns.forEach(b=>b.disabled=false);ioName();}
+ }
+ document.getElementById('cia-save-current').onclick=()=>saveViaIA(false);
+ document.getElementById('cia-save-copy').onclick=()=>saveViaIA(true);
+ ioName();
+ // La lecture de l'état du fichier n'est pas destructive ; elle est rafraîchie à l'ouverture de l'assistant.
+ document.getElementById('cia-root').addEventListener('click',()=>{ioName();});
+ const pvStyle=document.createElement('style');pvStyle.textContent=`
+ #cia-root .cia11-preview{border:1px solid #6183a0;border-radius:9px;margin:11px 0;padding:10px;background:#101c2b;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ #cia-root .cia11-preview .cia11-title{grid-column:1/-1;font-size:13px;font-weight:700;color:#cbe5ff}
+ #cia-root .cia11-panel{min-width:0;font-size:12px;color:#dce7f3}
+ #cia-root .cia11-panel svg{display:block;width:100%;height:150px;background:#172a38;margin-top:5px}
+ `;document.head.appendChild(pvStyle);
  const $=id=>document.getElementById(id),request=$('cia-bridge-request'),exportField=$('cia-bridge-export'),inField=$('cia-bridge-import'),status=$('cia-bridge-status');
  // Déplacer le VRAI bouton de confirmation du module historique, sans dupliquer sa logique ni son événement.
  const confirm=$('cia-chat-apply'),actions=$('cia-bridge-verify').parentElement,phase=$('cia-bridge-phase');
@@ -59,7 +95,7 @@
   const context={bridge:'COPO_CHATGPT_PROJECT_V1',project_signature:s,request:requestText,project,description:D.desc()};
   return `COPO-IA — DEMANDE À CHATGPT (copiée volontairement par l’utilisateur)\n\n${JSON.stringify(context,null,2)}\n\n`+
 `INSTRUCTIONS POUR LA RÉPONSE :\n`+
-`Analyse la demande en tenant compte uniquement des caractéristiques du projet ci-dessus. Les opérations prises en charge sont : lecture (read), création ou modification d'une plaque (geometry), préparation de FAO historique (fao), modification suivie d'un recalcul complet (revise), ou formes libres indépendantes (features), FAO sur formes circulaires (feature_cam), FAO multi-géométrique (multi_cam), ou demande de précision (clarify).\n`+
+`Analyse la demande en tenant compte uniquement des caractéristiques du projet ci-dessus. Les opérations prises en charge sont : lecture (read), création ou modification d'une plaque (geometry), préparation de FAO historique (fao), modification suivie d'un recalcul complet (revise), ou formes libres indépendantes (features), FAO sur formes circulaires (feature_cam), FAO multi-géométrique (multi_cam), édition intégrée COPO-IA 1.1 (project_11), ou demande de précision (clarify).\n`+
 `Si tu n'es pas certain de la sécurité ou des dimensions, utilise clarify et ne propose aucune modification. Ne crée ni G-code, ni code JavaScript.\n`+
 `Réponds avec UN SEUL bloc JSON, selon ce contrat :\n`+
 `{ "bridge": "COPO_CHATGPT_PLAN_V1", "project_signature": "${s}", "plan": { "action": "read", "message": "Description du projet" } }\n`+
@@ -69,6 +105,7 @@
 `Les opérations features utilisent des coordonnées absolues XY en mm depuis le coin inférieur gauche du brut. Les identifiants sont uniques et stables ; pour modifier, reprendre l'identifiant de l'état exporté. circle_pattern est autorisé uniquement avec action add et role hole ; il crée des identifiants suffixés -01, -02, etc. Aucun parcours FAO n'est automatiquement créé pour les formes libres. Ne pas mélanger features et geometry/fao/revise dans une même commande.\n`+
 `Pour feature_cam (FAO libre 0.9) : plan.feature_cam = {replaceExisting:false,operations:[{id:"identifiant d'une forme circulaire de rôle hole",strategy:"pocket",depth:number,through:false,toolDiameter:number,pass:number}]}. Chaque profondeur est une valeur explicite, strictement inférieure à l'épaisseur du brut. Fraise droite obligatoirement présente dans toolLibrary et plus petite que le trou. Un parcours distinct par trou ; simulation uniquement. Si des parcours COPO-IA 0.9 existent, replaceExisting:true exige de réinclure TOUS les identifiants déjà usinés. Aucune FAO pour profils, polygones ou contours en 0.9.\n`+
 `Pour multi_cam (FAO multi-géométrique 1.0) : plan.multi_cam = {replaceExisting:false,operations:[{id:"Identifiant de forme COPO-IA 0.8",strategy:"pocket"|"profile",depth:number,through:false,toolDiameter:number,pass:number,side?:"out"}]}. Pocket autorisé pour cercles, rectangles, rectangles arrondis et oblongs avec role hole/pocket ; profile autorisé seulement sur les contours rectangles, rectangles arrondis et polygones avec role contour et side:"out". Chaque profondeur DOIT rester strictement inférieure à l'épaisseur du brut ; profil extérieur uniquement en passe borgne, jamais traversant, avec une marge suffisante autour de la pièce. La fraise doit exister en bibliothèque. Aucun usinage de machine réelle. S'il existe des parcours COPO-IA, remplacer exige replaceExisting:true ET toutes les formes déjà usinées ; autrement refus. Ne mélange pas multi_cam avec les autres actions.\n`+
+`NOUVEAU, préfère project_11 pour toute création/édition d'un projet en 1.1, notamment si des parcours existent : plan.project_11 = {features?:{stock?:{width,height,thickness},operations:[{action:"add"|"edit"|"remove",id,name?,role?,geometry?,depth?}]},cam?:{operations?:[{id,strategy:"pocket"|"profile",depth,pass,through:false,toolDiameter,side?:"in"|"out"}],removeIds?:["id"]},order?:"preserve"|"tool"|"depth"|{mode:"explicit",ids:["id1","id2"]}}. Les valeurs de la FAO sont explicites. Omets features si tu ne touches qu'à la FAO ; omets cam si tu ne touches qu'au dessin. Les parcours non modifiés sont conservés. Les parcours des formes modifiées sont recalculés automatiquement avec leurs réglages antérieurs, après contrôle natif. Les formes supprimées perdent leurs propres parcours. Pour les profils borgnes intérieurs, utilise strategy:"profile",side:"in" sur une géométrie de rôle hole/geometry ; pour les profils extérieurs, side:"out" avec role contour. Pas de profils traversants, pas de chemins d'usinage réels validés. Un motif de cercles utilise circle_pattern en géométrie. L'aperçu avant/après est affiché après « Vérifier ». Ne propose pas de poche avec îlot tant qu'une validation spécifique de la géométrie n'est pas prise en charge.\n`+
 `Pour revise : plan.geometry ET plan.cam sont obligatoires ; recalculer TOUTES les opérations déjà présentes. Pour clarify : plan.message contient la question.\n`+
 `Important : ne suppose pas qu'une fraise absente de la bibliothèque est disponible. Ne propose jamais une opération d'usinage non définie ou une profondeur traversante par défaut.`;
  }
@@ -85,7 +122,7 @@
   if(typeof obj.project_signature!=='string'||!/^[0-9a-f]{16}$/.test(obj.project_signature))fail('Signature du projet manquante ou incorrecte.');
   if(obj.project_signature!==signature())fail('Le projet a changé depuis son export. Copie de nouveau son état dans ChatGPT et demande une nouvelle commande.');
   if(!obj.plan||typeof obj.plan!=='object'||Array.isArray(obj.plan))fail('Le plan de modification est absent.');
-  if(!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam'].includes(obj.plan.action))fail('Action inconnue. Aucun changement appliqué.');
+  if(!['read','geometry','fao','revise','clarify','features','feature_cam','multi_cam','project_11'].includes(obj.plan.action))fail('Action inconnue. Aucun changement appliqué.');
   if(obj.plan.action==='clarify'){if(typeof obj.plan.message!=='string'||!obj.plan.message.trim())fail('La question de précision manque.');return obj.plan;}
   // No evaluation, direct DOM operations or G-code support; native validators are authoritative.
   return obj.plan;

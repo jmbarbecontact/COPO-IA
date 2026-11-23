@@ -8,8 +8,8 @@
 (() => {
  'use strict';
  const css = `
-#cia-launch{position:fixed;right:19px;bottom:18px;z-index:37;border:1px solid #5d96ed;background:#1d4f86;color:white;box-shadow:0 5px 20px #0005;padding:10px 15px;border-radius:99px;font:600 13px system-ui,sans-serif;cursor:pointer}
-#cia-root{position:fixed;right:18px;bottom:68px;z-index:38;width:min(430px,calc(100vw - 36px));max-height:min(720px,calc(100vh - 105px));display:none;flex-direction:column;border:1px solid #4d6a89;background:#1e2630;color:#f1f6ff;border-radius:12px;box-shadow:0 12px 44px #0008;font:13px/1.45 system-ui,sans-serif;overflow:hidden}
+#cia-launch{position:fixed;right:19px;bottom:18px;z-index:2147481000;border:1px solid #5d96ed;background:#1d4f86;color:white;box-shadow:0 5px 20px #0005;padding:10px 15px;border-radius:99px;font:600 13px system-ui,sans-serif;cursor:pointer}
+#cia-root{position:fixed;right:18px;bottom:68px;z-index:2147481001;width:min(430px,calc(100vw - 36px));max-height:min(720px,calc(100vh - 105px));display:none;flex-direction:column;border:1px solid #4d6a89;background:#1e2630;color:#f1f6ff;border-radius:12px;box-shadow:0 12px 44px #0008;font:13px/1.45 system-ui,sans-serif;overflow:hidden}
 #cia-root.cia-open{display:flex}#cia-root *{box-sizing:border-box}#cia-root .cia-head{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#233851;padding:11px 13px;border-bottom:1px solid #45566d}
 #cia-root .cia-head strong{font-size:15px}#cia-root .cia-flag{font:600 10px system-ui;background:#41536a;color:#d5e6ff;border-radius:12px;padding:3px 7px;white-space:nowrap}
 #cia-root .cia-body{padding:13px;display:grid;grid-auto-rows:max-content;gap:10px;min-height:0;overflow-x:hidden;overflow-y:auto}#cia-root p{margin:0;color:#c5d2e1}#cia-root label{font-weight:600}
@@ -26,7 +26,7 @@
  const wrap=document.createElement('div');wrap.innerHTML=`
 <button id="cia-launch" data-notr type="button" aria-controls="cia-root" aria-expanded="false">✦ Assistant COPO-IA</button>
 <section id="cia-root" data-notr role="region" aria-label="Assistant COPO-IA">
- <header class="cia-head"><strong>COPO-IA · Dessin, modifications & FAO</strong><span class="cia-flag">VERSION 1.0 BÊTA</span><button class="cia-plain" id="cia-close" type="button" aria-label="Fermer">×</button></header>
+ <header class="cia-head"><strong>COPO-IA · Dessin, modifications & FAO</strong><span class="cia-flag">VERSION 1.1.4 BÊTA</span><button class="cia-plain" id="cia-close" type="button" aria-label="Fermer">×</button></header>
  <div class="cia-body">
   <p>Passerelle ChatGPT : crée et modifie des formes <b>indépendantes</b> (contours, cercles, oblongs, polygones). Les démonstrations locales de plaques restent disponibles. Unités : mm.</p>
   <label for="cia-prompt">Ta demande</label>
