@@ -1,0 +1,2230 @@
+{
+ "version": 1,
+ "categories": [
+  {
+   "id": "dessins",
+   "fr": "Dessins 2D",
+   "en": "2D drawings",
+   "sous": [
+    {
+     "id": "boucliers",
+     "fr": "Boucliers",
+     "en": "Shields",
+     "elements": [
+      {
+       "nom": "Bouclier à bouche",
+       "fichier": "dessins/boucliers/bouclier-a-bouche.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-a-bouche.webp",
+       "taille": 237
+      },
+      {
+       "nom": "Bouclier à cornes",
+       "fichier": "dessins/boucliers/bouclier-a-cornes.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-a-cornes.webp",
+       "taille": 267
+      },
+      {
+       "nom": "Bouclier à pans",
+       "fichier": "dessins/boucliers/bouclier-a-pans.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-a-pans.webp",
+       "taille": 230
+      },
+      {
+       "nom": "Bouclier écu en pointe",
+       "fichier": "dessins/boucliers/bouclier-ecu-en-pointe.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-ecu-en-pointe.webp",
+       "taille": 213
+      },
+      {
+       "nom": "Bouclier français moderne",
+       "fichier": "dessins/boucliers/bouclier-francais-moderne.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-francais-moderne.webp",
+       "taille": 250
+      },
+      {
+       "nom": "Bouclier ibérique",
+       "fichier": "dessins/boucliers/bouclier-iberique.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-iberique.webp",
+       "taille": 189
+      },
+      {
+       "nom": "Bouclier losange",
+       "fichier": "dessins/boucliers/bouclier-losange.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-losange.webp",
+       "taille": 185
+      },
+      {
+       "nom": "Bouclier normand",
+       "fichier": "dessins/boucliers/bouclier-normand.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-normand.webp",
+       "taille": 240
+      },
+      {
+       "nom": "Bouclier ovale",
+       "fichier": "dessins/boucliers/bouclier-ovale.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-ovale.webp",
+       "taille": 201
+      },
+      {
+       "nom": "Bouclier rondache",
+       "fichier": "dessins/boucliers/bouclier-rondache.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-rondache.webp",
+       "taille": 201
+      },
+      {
+       "nom": "Bouclier suisse",
+       "fichier": "dessins/boucliers/bouclier-suisse.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-suisse.webp",
+       "taille": 233
+      },
+      {
+       "nom": "Bouclier tête de cheval",
+       "fichier": "dessins/boucliers/bouclier-tete-de-cheval.svg",
+       "apercu": "apercus/dessins/boucliers/bouclier-tete-de-cheval.webp",
+       "taille": 255
+      },
+      {
+       "nom": "Écu à pointe haute",
+       "fichier": "dessins/boucliers/ecu-a-pointe-haute.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-a-pointe-haute.webp",
+       "taille": 2101
+      },
+      {
+       "nom": "Écu à taille",
+       "fichier": "dessins/boucliers/ecu-a-taille.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-a-taille.webp",
+       "taille": 6632
+      },
+      {
+       "nom": "Écu à trois lobes",
+       "fichier": "dessins/boucliers/ecu-a-trois-lobes.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-a-trois-lobes.webp",
+       "taille": 3610
+      },
+      {
+       "nom": "Écu coins coupés",
+       "fichier": "dessins/boucliers/ecu-coins-coupes.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-coins-coupes.webp",
+       "taille": 1358
+      },
+      {
+       "nom": "Écu coins creux",
+       "fichier": "dessins/boucliers/ecu-coins-creux.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-coins-creux.webp",
+       "taille": 2273
+      },
+      {
+       "nom": "Écu dessus creux",
+       "fichier": "dessins/boucliers/ecu-dessus-creux.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-dessus-creux.webp",
+       "taille": 2112
+      },
+      {
+       "nom": "Écu dessus festonné",
+       "fichier": "dessins/boucliers/ecu-dessus-festonne.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-dessus-festonne.webp",
+       "taille": 2841
+      },
+      {
+       "nom": "Écu droit",
+       "fichier": "dessins/boucliers/ecu-droit.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-droit.webp",
+       "taille": 2081
+      },
+      {
+       "nom": "Écu en U",
+       "fichier": "dessins/boucliers/ecu-en-u.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-en-u.webp",
+       "taille": 1341
+      },
+      {
+       "nom": "Écu moderne arrondi",
+       "fichier": "dessins/boucliers/ecu-moderne-arrondi.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-moderne-arrondi.webp",
+       "taille": 4043
+      },
+      {
+       "nom": "Écu orné",
+       "fichier": "dessins/boucliers/ecu-orne.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-orne.webp",
+       "taille": 13957
+      },
+      {
+       "nom": "Écu triangle",
+       "fichier": "dessins/boucliers/ecu-triangle.svg",
+       "apercu": "apercus/dessins/boucliers/ecu-triangle.webp",
+       "taille": 2046
+      }
+     ]
+    },
+    {
+     "id": "coins",
+     "fr": "Coins",
+     "en": "Corners",
+     "elements": [
+      {
+       "nom": "Coin branches fleuries",
+       "fichier": "dessins/coins/coin-branches-fleuries.svg",
+       "apercu": "apercus/dessins/coins/coin-branches-fleuries.webp",
+       "taille": 37934
+      },
+      {
+       "nom": "Coin feuillage",
+       "fichier": "dessins/coins/coin-feuillage.svg",
+       "apercu": "apercus/dessins/coins/coin-feuillage.webp",
+       "taille": 14500
+      },
+      {
+       "nom": "Coin roses",
+       "fichier": "dessins/coins/coin-roses.svg",
+       "apercu": "apercus/dessins/coins/coin-roses.webp",
+       "taille": 15336
+      },
+      {
+       "nom": "Coin spirales de vigne",
+       "fichier": "dessins/coins/coin-spirales-de-vigne.svg",
+       "apercu": "apercus/dessins/coins/coin-spirales-de-vigne.webp",
+       "taille": 44095
+      },
+      {
+       "nom": "Coin volute 1",
+       "fichier": "dessins/coins/coin-volute-1.svg",
+       "apercu": "apercus/dessins/coins/coin-volute-1.webp",
+       "taille": 11083
+      },
+      {
+       "nom": "Coin volute 2",
+       "fichier": "dessins/coins/coin-volute-2.svg",
+       "apercu": "apercus/dessins/coins/coin-volute-2.webp",
+       "taille": 7532
+      }
+     ]
+    },
+    {
+     "id": "enseignes",
+     "fr": "Enseignes et étiquettes",
+     "en": "Signs and labels",
+     "elements": [
+      {
+       "nom": "Enseigne arc et pointe",
+       "fichier": "dessins/enseignes/enseigne-arc-et-pointe.svg",
+       "apercu": "apercus/dessins/enseignes/enseigne-arc-et-pointe.webp",
+       "taille": 6606
+      },
+      {
+       "nom": "Enseigne double cintré",
+       "fichier": "dessins/enseignes/enseigne-double-cintre.svg",
+       "apercu": "apercus/dessins/enseignes/enseigne-double-cintre.webp",
+       "taille": 8796
+      },
+      {
+       "nom": "Enseigne haute à volutes",
+       "fichier": "dessins/enseignes/enseigne-haute-a-volutes.svg",
+       "apercu": "apercus/dessins/enseignes/enseigne-haute-a-volutes.webp",
+       "taille": 6641
+      },
+      {
+       "nom": "Enseigne large à volutes",
+       "fichier": "dessins/enseignes/enseigne-large-a-volutes.svg",
+       "apercu": "apercus/dessins/enseignes/enseigne-large-a-volutes.webp",
+       "taille": 6539
+      },
+      {
+       "nom": "Étiquette à pans coupés",
+       "fichier": "dessins/enseignes/etiquette-a-pans-coupes.svg",
+       "apercu": "apercus/dessins/enseignes/etiquette-a-pans-coupes.webp",
+       "taille": 271
+      },
+      {
+       "nom": "Étiquette flamme",
+       "fichier": "dessins/enseignes/etiquette-flamme.svg",
+       "apercu": "apercus/dessins/enseignes/etiquette-flamme.webp",
+       "taille": 10460
+      },
+      {
+       "nom": "Étiquette hexagonale allongée",
+       "fichier": "dessins/enseignes/etiquette-hexagonale-allongee.svg",
+       "apercu": "apercus/dessins/enseignes/etiquette-hexagonale-allongee.webp",
+       "taille": 245
+      },
+      {
+       "nom": "Étiquette pointes latérales",
+       "fichier": "dessins/enseignes/etiquette-pointes-laterales.svg",
+       "apercu": "apercus/dessins/enseignes/etiquette-pointes-laterales.webp",
+       "taille": 1177
+      },
+      {
+       "nom": "Étiquette ronde à oreilles",
+       "fichier": "dessins/enseignes/etiquette-ronde-a-oreilles.svg",
+       "apercu": "apercus/dessins/enseignes/etiquette-ronde-a-oreilles.webp",
+       "taille": 3811
+      }
+     ]
+    },
+    {
+     "id": "formes",
+     "fr": "Formes",
+     "en": "Shapes",
+     "elements": [
+      {
+       "nom": "Os",
+       "fichier": "dessins/formes/forme-01-os.svg",
+       "apercu": "apercus/dessins/formes/forme-01-os.webp",
+       "taille": 5001
+      },
+      {
+       "nom": "Bouteille",
+       "fichier": "dessins/formes/forme-02-bouteille.svg",
+       "apercu": "apercus/dessins/formes/forme-02-bouteille.webp",
+       "taille": 2196
+      },
+      {
+       "nom": "Maison",
+       "fichier": "dessins/formes/forme-03-maison.svg",
+       "apercu": "apercus/dessins/formes/forme-03-maison.webp",
+       "taille": 316
+      },
+      {
+       "nom": "Pièce de puzzle",
+       "fichier": "dessins/formes/forme-04-piece-de-puzzle.svg",
+       "apercu": "apercus/dessins/formes/forme-04-piece-de-puzzle.webp",
+       "taille": 15427
+      },
+      {
+       "nom": "Trou de serrure",
+       "fichier": "dessins/formes/forme-05-trou-de-serrure.svg",
+       "apercu": "apercus/dessins/formes/forme-05-trou-de-serrure.webp",
+       "taille": 3709
+      },
+      {
+       "nom": "Ampoule",
+       "fichier": "dessins/formes/forme-06-ampoule.svg",
+       "apercu": "apercus/dessins/formes/forme-06-ampoule.webp",
+       "taille": 8239
+      },
+      {
+       "nom": "Oblong",
+       "fichier": "dessins/formes/forme-07-oblong.svg",
+       "apercu": "apercus/dessins/formes/forme-07-oblong.webp",
+       "taille": 2075
+      },
+      {
+       "nom": "Losange arrondi",
+       "fichier": "dessins/formes/forme-08-losange-arrondi.svg",
+       "apercu": "apercus/dessins/formes/forme-08-losange-arrondi.webp",
+       "taille": 1391
+      },
+      {
+       "nom": "Drapeau ondulé",
+       "fichier": "dessins/formes/forme-09-drapeau-ondule.svg",
+       "apercu": "apercus/dessins/formes/forme-09-drapeau-ondule.webp",
+       "taille": 1859
+      },
+      {
+       "nom": "Étoile 4 branches",
+       "fichier": "dessins/formes/forme-10-etoile-4-branches.svg",
+       "apercu": "apercus/dessins/formes/forme-10-etoile-4-branches.webp",
+       "taille": 1589
+      },
+      {
+       "nom": "Fleur 8 lobes",
+       "fichier": "dessins/formes/forme-11-fleur-8-lobes.svg",
+       "apercu": "apercus/dessins/formes/forme-11-fleur-8-lobes.webp",
+       "taille": 10197
+      },
+      {
+       "nom": "Cœur",
+       "fichier": "dessins/formes/forme-12-coeur.svg",
+       "apercu": "apercus/dessins/formes/forme-12-coeur.webp",
+       "taille": 5590
+      },
+      {
+       "nom": "Nuage",
+       "fichier": "dessins/formes/forme-13-nuage.svg",
+       "apercu": "apercus/dessins/formes/forme-13-nuage.webp",
+       "taille": 5732
+      },
+      {
+       "nom": "Quadrilobe",
+       "fichier": "dessins/formes/forme-14-quadrilobe.svg",
+       "apercu": "apercus/dessins/formes/forme-14-quadrilobe.webp",
+       "taille": 4261
+      },
+      {
+       "nom": "Pentagone",
+       "fichier": "dessins/formes/forme-15-pentagone.svg",
+       "apercu": "apercus/dessins/formes/forme-15-pentagone.webp",
+       "taille": 232
+      },
+      {
+       "nom": "Hexagone",
+       "fichier": "dessins/formes/forme-16-hexagone.svg",
+       "apercu": "apercus/dessins/formes/forme-16-hexagone.webp",
+       "taille": 245
+      },
+      {
+       "nom": "Octogone",
+       "fichier": "dessins/formes/forme-17-octogone.svg",
+       "apercu": "apercus/dessins/formes/forme-17-octogone.webp",
+       "taille": 273
+      },
+      {
+       "nom": "Décagone",
+       "fichier": "dessins/formes/forme-18-decagone.svg",
+       "apercu": "apercus/dessins/formes/forme-18-decagone.webp",
+       "taille": 301
+      },
+      {
+       "nom": "Bulle",
+       "fichier": "dessins/formes/forme-19-bulle.svg",
+       "apercu": "apercus/dessins/formes/forme-19-bulle.webp",
+       "taille": 4629
+      },
+      {
+       "nom": "Flèche",
+       "fichier": "dessins/formes/forme-20-fleche.svg",
+       "apercu": "apercus/dessins/formes/forme-20-fleche.webp",
+       "taille": 257
+      },
+      {
+       "nom": "Étoile arrondie",
+       "fichier": "dessins/formes/forme-21-etoile-arrondie.svg",
+       "apercu": "apercus/dessins/formes/forme-21-etoile-arrondie.webp",
+       "taille": 2677
+      },
+      {
+       "nom": "Croix",
+       "fichier": "dessins/formes/forme-22-croix.svg",
+       "apercu": "apercus/dessins/formes/forme-22-croix.webp",
+       "taille": 329
+      },
+      {
+       "nom": "Créneaux",
+       "fichier": "dessins/formes/forme-23-creneaux.svg",
+       "apercu": "apercus/dessins/formes/forme-23-creneaux.webp",
+       "taille": 373
+      },
+      {
+       "nom": "Parchemin déchiré",
+       "fichier": "dessins/formes/forme-24-parchemin-dechire.svg",
+       "apercu": "apercus/dessins/formes/forme-24-parchemin-dechire.webp",
+       "taille": 2725
+      },
+      {
+       "nom": "Rosette rubans",
+       "fichier": "dessins/formes/forme-25-rosette-rubans.svg",
+       "apercu": "apercus/dessins/formes/forme-25-rosette-rubans.webp",
+       "taille": 5618
+      },
+      {
+       "nom": "Clé plate",
+       "fichier": "dessins/formes/forme-26-cle-plate.svg",
+       "apercu": "apercus/dessins/formes/forme-26-cle-plate.webp",
+       "taille": 12554
+      },
+      {
+       "nom": "Palette de peintre",
+       "fichier": "dessins/formes/forme-27-palette-de-peintre.svg",
+       "apercu": "apercus/dessins/formes/forme-27-palette-de-peintre.webp",
+       "taille": 11312
+      },
+      {
+       "nom": "Nœud papillon",
+       "fichier": "dessins/formes/forme-28-noeud-papillon.svg",
+       "apercu": "apercus/dessins/formes/forme-28-noeud-papillon.webp",
+       "taille": 245
+      },
+      {
+       "nom": "Médaillon feston",
+       "fichier": "dessins/formes/forme-29-medaillon-feston.svg",
+       "apercu": "apercus/dessins/formes/forme-29-medaillon-feston.webp",
+       "taille": 10115
+      },
+      {
+       "nom": "Carré à quatre ronds",
+       "fichier": "dessins/formes/forme-30-carre-a-quatre-ronds.svg",
+       "apercu": "apercus/dessins/formes/forme-30-carre-a-quatre-ronds.webp",
+       "taille": 6145
+      }
+     ]
+    },
+    {
+     "id": "lutherie-corps",
+     "fr": "Lutherie – corps",
+     "en": "Lutherie – bodies",
+     "elements": [
+      {
+       "nom": "Corps acoustique type 00",
+       "fichier": "dessins/lutherie-corps/corps-acoustique-00.svg",
+       "apercu": "apercus/dessins/lutherie-corps/corps-acoustique-00.webp",
+       "taille": 11128
+      },
+      {
+       "nom": "Corps acoustique type OM",
+       "fichier": "dessins/lutherie-corps/corps-acoustique-om.svg",
+       "apercu": "apercus/dessins/lutherie-corps/corps-acoustique-om.webp",
+       "taille": 10408
+      },
+      {
+       "nom": "Corps guitare flamenca",
+       "fichier": "dessins/lutherie-corps/corps-guitare-flamenca.svg",
+       "apercu": "apercus/dessins/lutherie-corps/corps-guitare-flamenca.webp",
+       "taille": 10195
+      },
+      {
+       "nom": "Corps ukulélé concert",
+       "fichier": "dessins/lutherie-corps/corps-ukulele-concert.svg",
+       "apercu": "apercus/dessins/lutherie-corps/corps-ukulele-concert.webp",
+       "taille": 6557
+      },
+      {
+       "nom": "Corps ukulélé soprano",
+       "fichier": "dessins/lutherie-corps/corps-ukulele-soprano.svg",
+       "apercu": "apercus/dessins/lutherie-corps/corps-ukulele-soprano.webp",
+       "taille": 6707
+      }
+     ]
+    },
+    {
+     "id": "lutherie-gabarits",
+     "fr": "Lutherie – gabarits",
+     "en": "Lutherie – jigs",
+     "elements": [
+      {
+       "nom": "Gabarit tenon-mortaise D16",
+       "fichier": "dessins/lutherie-gabarits/gabarit-tenon-mortaise-d16.svg",
+       "apercu": "apercus/dessins/lutherie-gabarits/gabarit-tenon-mortaise-d16.webp",
+       "taille": 35426
+      },
+      {
+       "nom": "Gabarit tenon-mortaise D20",
+       "fichier": "dessins/lutherie-gabarits/gabarit-tenon-mortaise-d20.svg",
+       "apercu": "apercus/dessins/lutherie-gabarits/gabarit-tenon-mortaise-d20.webp",
+       "taille": 35970
+      },
+      {
+       "nom": "Gabarit tenon-mortaise queue d’aronde",
+       "fichier": "dessins/lutherie-gabarits/gabarit-tenon-mortaise-queue-d-aronde.svg",
+       "apercu": "apercus/dessins/lutherie-gabarits/gabarit-tenon-mortaise-queue-d-aronde.webp",
+       "taille": 35446
+      },
+      {
+       "nom": "Gabarit tenon-mortaise",
+       "fichier": "dessins/lutherie-gabarits/gabarit-tenon-mortaise.svg",
+       "apercu": "apercus/dessins/lutherie-gabarits/gabarit-tenon-mortaise.webp",
+       "taille": 35426
+      }
+     ]
+    },
+    {
+     "id": "lutherie-micros",
+     "fr": "Lutherie – micros",
+     "en": "Lutherie – pickups",
+     "elements": [
+      {
+       "nom": "Défonce micro double à oreilles",
+       "fichier": "dessins/lutherie-micros/defonce-micro-double-a-oreilles.svg",
+       "apercu": "apercus/dessins/lutherie-micros/defonce-micro-double-a-oreilles.webp",
+       "taille": 2356
+      },
+      {
+       "nom": "Défonce micro double (humbucker)",
+       "fichier": "dessins/lutherie-micros/defonce-micro-double-humbucker.svg",
+       "apercu": "apercus/dessins/lutherie-micros/defonce-micro-double-humbucker.webp",
+       "taille": 874
+      },
+      {
+       "nom": "Défonce micro simple rectangulaire",
+       "fichier": "dessins/lutherie-micros/defonce-micro-simple-rectangulaire.svg",
+       "apercu": "apercus/dessins/lutherie-micros/defonce-micro-simple-rectangulaire.webp",
+       "taille": 284
+      },
+      {
+       "nom": "Défonces micros simples (3 formes)",
+       "fichier": "dessins/lutherie-micros/defonces-micros-simples.svg",
+       "apercu": "apercus/dessins/lutherie-micros/defonces-micros-simples.webp",
+       "taille": 4610
+      },
+      {
+       "nom": "Micro de basse 8 plots",
+       "fichier": "dessins/lutherie-micros/micro-basse-8-plots.svg",
+       "apercu": "apercus/dessins/lutherie-micros/micro-basse-8-plots.webp",
+       "taille": 25853
+      },
+      {
+       "nom": "Plaque de micro à oreilles",
+       "fichier": "dessins/lutherie-micros/plaque-micro-a-oreilles.svg",
+       "apercu": "apercus/dessins/lutherie-micros/plaque-micro-a-oreilles.webp",
+       "taille": 3185
+      }
+     ]
+    },
+    {
+     "id": "noel",
+     "fr": "Noël",
+     "en": "Christmas",
+     "elements": [
+      {
+       "nom": "Sapin à étages",
+       "fichier": "dessins/noel/noel-01-sapin-a-etages.svg",
+       "apercu": "apercus/dessins/noel/noel-01-sapin-a-etages.webp",
+       "taille": 3309
+      },
+      {
+       "nom": "Sapin simple",
+       "fichier": "dessins/noel/noel-02-sapin-simple.svg",
+       "apercu": "apercus/dessins/noel/noel-02-sapin-simple.webp",
+       "taille": 1839
+      },
+      {
+       "nom": "Sapin festonné",
+       "fichier": "dessins/noel/noel-03-sapin-festonne.svg",
+       "apercu": "apercus/dessins/noel/noel-03-sapin-festonne.webp",
+       "taille": 4490
+      },
+      {
+       "nom": "Étoile 5 branches",
+       "fichier": "dessins/noel/noel-04-etoile-5-branches.svg",
+       "apercu": "apercus/dessins/noel/noel-04-etoile-5-branches.webp",
+       "taille": 302
+      },
+      {
+       "nom": "Étoile du berger",
+       "fichier": "dessins/noel/noel-05-etoile-du-berger.svg",
+       "apercu": "apercus/dessins/noel/noel-05-etoile-du-berger.webp",
+       "taille": 389
+      },
+      {
+       "nom": "Flocon 1",
+       "fichier": "dessins/noel/noel-06-flocon-1.svg",
+       "apercu": "apercus/dessins/noel/noel-06-flocon-1.webp",
+       "taille": 8755
+      },
+      {
+       "nom": "Flocon 2",
+       "fichier": "dessins/noel/noel-07-flocon-2.svg",
+       "apercu": "apercus/dessins/noel/noel-07-flocon-2.webp",
+       "taille": 20266
+      },
+      {
+       "nom": "Flocon 3",
+       "fichier": "dessins/noel/noel-08-flocon-3.svg",
+       "apercu": "apercus/dessins/noel/noel-08-flocon-3.webp",
+       "taille": 10574
+      },
+      {
+       "nom": "Boule",
+       "fichier": "dessins/noel/noel-09-boule.svg",
+       "apercu": "apercus/dessins/noel/noel-09-boule.webp",
+       "taille": 5259
+      },
+      {
+       "nom": "Cloche",
+       "fichier": "dessins/noel/noel-10-cloche.svg",
+       "apercu": "apercus/dessins/noel/noel-10-cloche.webp",
+       "taille": 14075
+      },
+      {
+       "nom": "Sucre d’orge",
+       "fichier": "dessins/noel/noel-11-sucre-d-orge.svg",
+       "apercu": "apercus/dessins/noel/noel-11-sucre-d-orge.webp",
+       "taille": 1886
+      },
+      {
+       "nom": "Chaussette",
+       "fichier": "dessins/noel/noel-12-chaussette.svg",
+       "apercu": "apercus/dessins/noel/noel-12-chaussette.webp",
+       "taille": 3161
+      },
+      {
+       "nom": "Houx",
+       "fichier": "dessins/noel/noel-13-houx.svg",
+       "apercu": "apercus/dessins/noel/noel-13-houx.webp",
+       "taille": 11094
+      },
+      {
+       "nom": "Pain d’épice",
+       "fichier": "dessins/noel/noel-14-pain-d-epice.svg",
+       "apercu": "apercus/dessins/noel/noel-14-pain-d-epice.webp",
+       "taille": 7757
+      },
+      {
+       "nom": "Bonhomme de neige",
+       "fichier": "dessins/noel/noel-15-bonhomme-de-neige.svg",
+       "apercu": "apercus/dessins/noel/noel-15-bonhomme-de-neige.webp",
+       "taille": 4702
+      },
+      {
+       "nom": "Cadeau",
+       "fichier": "dessins/noel/noel-16-cadeau.svg",
+       "apercu": "apercus/dessins/noel/noel-16-cadeau.webp",
+       "taille": 1507
+      },
+      {
+       "nom": "Bougie",
+       "fichier": "dessins/noel/noel-17-bougie.svg",
+       "apercu": "apercus/dessins/noel/noel-17-bougie.webp",
+       "taille": 901
+      },
+      {
+       "nom": "Couronne",
+       "fichier": "dessins/noel/noel-18-couronne.svg",
+       "apercu": "apercus/dessins/noel/noel-18-couronne.webp",
+       "taille": 21890
+      },
+      {
+       "nom": "Lune étoile",
+       "fichier": "dessins/noel/noel-19-lune-etoile.svg",
+       "apercu": "apercus/dessins/noel/noel-19-lune-etoile.webp",
+       "taille": 2470
+      },
+      {
+       "nom": "Moufle",
+       "fichier": "dessins/noel/noel-20-moufle.svg",
+       "apercu": "apercus/dessins/noel/noel-20-moufle.webp",
+       "taille": 11601
+      },
+      {
+       "nom": "Ange",
+       "fichier": "dessins/noel/noel-21-ange.svg",
+       "apercu": "apercus/dessins/noel/noel-21-ange.webp",
+       "taille": 15375
+      }
+     ]
+    },
+    {
+     "id": "panneaux",
+     "fr": "Panneaux",
+     "en": "Panels",
+     "elements": [
+      {
+       "nom": "Arc central coins étagés",
+       "fichier": "dessins/panneaux/arc-central-coins-etages.svg",
+       "apercu": "apercus/dessins/panneaux/arc-central-coins-etages.webp",
+       "taille": 1395
+      },
+      {
+       "nom": "Arc épaules arrondies",
+       "fichier": "dessins/panneaux/arc-epaules-arrondies.svg",
+       "apercu": "apercus/dessins/panneaux/arc-epaules-arrondies.webp",
+       "taille": 6234
+      },
+      {
+       "nom": "Arc flancs galbés pointe",
+       "fichier": "dessins/panneaux/arc-flancs-galbes-pointe.svg",
+       "apercu": "apercus/dessins/panneaux/arc-flancs-galbes-pointe.webp",
+       "taille": 16978
+      },
+      {
+       "nom": "Badge 6 lobes",
+       "fichier": "dessins/panneaux/badge-6-lobes.svg",
+       "apercu": "apercus/dessins/panneaux/badge-6-lobes.webp",
+       "taille": 10050
+      },
+      {
+       "nom": "Bandeau courbe",
+       "fichier": "dessins/panneaux/bandeau-courbe.svg",
+       "apercu": "apercus/dessins/panneaux/bandeau-courbe.webp",
+       "taille": 8700
+      },
+      {
+       "nom": "Bannière en S",
+       "fichier": "dessins/panneaux/banniere-en-s.svg",
+       "apercu": "apercus/dessins/panneaux/banniere-en-s.webp",
+       "taille": 8861
+      },
+      {
+       "nom": "Bosse centrale",
+       "fichier": "dessins/panneaux/bosse-centrale.svg",
+       "apercu": "apercus/dessins/panneaux/bosse-centrale.webp",
+       "taille": 2822
+      },
+      {
+       "nom": "Bosse doucine épaules",
+       "fichier": "dessins/panneaux/bosse-doucine-epaules.svg",
+       "apercu": "apercus/dessins/panneaux/bosse-doucine-epaules.webp",
+       "taille": 1477
+      },
+      {
+       "nom": "Cacahuète",
+       "fichier": "dessins/panneaux/cacahuete.svg",
+       "apercu": "apercus/dessins/panneaux/cacahuete.webp",
+       "taille": 3976
+      },
+      {
+       "nom": "Cadre à volutes",
+       "fichier": "dessins/panneaux/cadre-a-volutes.svg",
+       "apercu": "apercus/dessins/panneaux/cadre-a-volutes.webp",
+       "taille": 12317
+      },
+      {
+       "nom": "Cadre rond festonné",
+       "fichier": "dessins/panneaux/cadre-rond-festonne.svg",
+       "apercu": "apercus/dessins/panneaux/cadre-rond-festonne.webp",
+       "taille": 12349
+      },
+      {
+       "nom": "Carré à boutons",
+       "fichier": "dessins/panneaux/carre-a-boutons.svg",
+       "apercu": "apercus/dessins/panneaux/carre-a-boutons.webp",
+       "taille": 6137
+      },
+      {
+       "nom": "Carré encoches médianes",
+       "fichier": "dessins/panneaux/carre-encoches-medianes.svg",
+       "apercu": "apercus/dessins/panneaux/carre-encoches-medianes.webp",
+       "taille": 437
+      },
+      {
+       "nom": "Cartouche à enroulements",
+       "fichier": "dessins/panneaux/cartouche-a-enroulements.svg",
+       "apercu": "apercus/dessins/panneaux/cartouche-a-enroulements.webp",
+       "taille": 27555
+      },
+      {
+       "nom": "Cercle 12 vagues",
+       "fichier": "dessins/panneaux/cercle-12-vagues.svg",
+       "apercu": "apercus/dessins/panneaux/cercle-12-vagues.webp",
+       "taille": 10177
+      },
+      {
+       "nom": "Cercle 4 pointes",
+       "fichier": "dessins/panneaux/cercle-4-pointes.svg",
+       "apercu": "apercus/dessins/panneaux/cercle-4-pointes.webp",
+       "taille": 2069
+      },
+      {
+       "nom": "Cercle à crans",
+       "fichier": "dessins/panneaux/cercle-a-crans.svg",
+       "apercu": "apercus/dessins/panneaux/cercle-a-crans.webp",
+       "taille": 2809
+      },
+      {
+       "nom": "Cercle à oreilles étagées",
+       "fichier": "dessins/panneaux/cercle-a-oreilles-etagees.svg",
+       "apercu": "apercus/dessins/panneaux/cercle-a-oreilles-etagees.webp",
+       "taille": 1917
+      },
+      {
+       "nom": "Cercle à oreilles",
+       "fichier": "dessins/panneaux/cercle-a-oreilles.svg",
+       "apercu": "apercus/dessins/panneaux/cercle-a-oreilles.webp",
+       "taille": 1861
+      },
+      {
+       "nom": "Coins arrondis larges",
+       "fichier": "dessins/panneaux/coins-arrondis-larges.svg",
+       "apercu": "apercus/dessins/panneaux/coins-arrondis-larges.webp",
+       "taille": 2161
+      },
+      {
+       "nom": "Coussin 4 pointes",
+       "fichier": "dessins/panneaux/coussin-4-pointes.svg",
+       "apercu": "apercus/dessins/panneaux/coussin-4-pointes.webp",
+       "taille": 19925
+      },
+      {
+       "nom": "Coussin à boutons",
+       "fichier": "dessins/panneaux/coussin-a-boutons.svg",
+       "apercu": "apercus/dessins/panneaux/coussin-a-boutons.webp",
+       "taille": 22215
+      },
+      {
+       "nom": "Demi dôme coins étagés",
+       "fichier": "dessins/panneaux/demi-dome-coins-etages.svg",
+       "apercu": "apercus/dessins/panneaux/demi-dome-coins-etages.webp",
+       "taille": 1181
+      },
+      {
+       "nom": "Dessus en arc",
+       "fichier": "dessins/panneaux/dessus-en-arc.svg",
+       "apercu": "apercus/dessins/panneaux/dessus-en-arc.webp",
+       "taille": 8827
+      },
+      {
+       "nom": "Dessus en doucine",
+       "fichier": "dessins/panneaux/dessus-en-doucine.svg",
+       "apercu": "apercus/dessins/panneaux/dessus-en-doucine.webp",
+       "taille": 8701
+      },
+      {
+       "nom": "Dodécagone",
+       "fichier": "dessins/panneaux/dodecagone.svg",
+       "apercu": "apercus/dessins/panneaux/dodecagone.webp",
+       "taille": 329
+      },
+      {
+       "nom": "Dôme à épaulements",
+       "fichier": "dessins/panneaux/dome-a-epaulements.svg",
+       "apercu": "apercus/dessins/panneaux/dome-a-epaulements.webp",
+       "taille": 1287
+      },
+      {
+       "nom": "Dôme bas à épaulements",
+       "fichier": "dessins/panneaux/dome-bas-a-epaulements.svg",
+       "apercu": "apercus/dessins/panneaux/dome-bas-a-epaulements.webp",
+       "taille": 3062
+      },
+      {
+       "nom": "Dôme central épaules",
+       "fichier": "dessins/panneaux/dome-central-epaules.svg",
+       "apercu": "apercus/dessins/panneaux/dome-central-epaules.webp",
+       "taille": 1154
+      },
+      {
+       "nom": "Dôme et lobes étagés",
+       "fichier": "dessins/panneaux/dome-et-lobes-etages.svg",
+       "apercu": "apercus/dessins/panneaux/dome-et-lobes-etages.webp",
+       "taille": 3821
+      },
+      {
+       "nom": "Dôme sur socle",
+       "fichier": "dessins/panneaux/dome-sur-socle.svg",
+       "apercu": "apercus/dessins/panneaux/dome-sur-socle.webp",
+       "taille": 3492
+      },
+      {
+       "nom": "Drapeau à deux vagues",
+       "fichier": "dessins/panneaux/drapeau-a-deux-vagues.svg",
+       "apercu": "apercus/dessins/panneaux/drapeau-a-deux-vagues.webp",
+       "taille": 8838
+      },
+      {
+       "nom": "Écu à couronne festonnée",
+       "fichier": "dessins/panneaux/ecu-couronne-festonne.svg",
+       "apercu": "apercus/dessins/panneaux/ecu-couronne-festonne.webp",
+       "taille": 6326
+      },
+      {
+       "nom": "Écu flancs volutes",
+       "fichier": "dessins/panneaux/ecu-flancs-volutes.svg",
+       "apercu": "apercus/dessins/panneaux/ecu-flancs-volutes.webp",
+       "taille": 22123
+      },
+      {
+       "nom": "Étiquette pointue creusée",
+       "fichier": "dessins/panneaux/etiquette-pointue-creusee.svg",
+       "apercu": "apercus/dessins/panneaux/etiquette-pointue-creusee.webp",
+       "taille": 4749
+      },
+      {
+       "nom": "Étoile 4 pointes douces",
+       "fichier": "dessins/panneaux/etoile-4-pointes-douces.svg",
+       "apercu": "apercus/dessins/panneaux/etoile-4-pointes-douces.webp",
+       "taille": 2025
+      },
+      {
+       "nom": "Grand arc haut et bas",
+       "fichier": "dessins/panneaux/grand-arc-haut-et-bas.svg",
+       "apercu": "apercus/dessins/panneaux/grand-arc-haut-et-bas.webp",
+       "taille": 2461
+      },
+      {
+       "nom": "Haut arc bas arc étagé",
+       "fichier": "dessins/panneaux/haut-arc-bas-arc-etage.svg",
+       "apercu": "apercus/dessins/panneaux/haut-arc-bas-arc-etage.webp",
+       "taille": 2503
+      },
+      {
+       "nom": "Hexagone à boules",
+       "fichier": "dessins/panneaux/hexagone-a-boules.svg",
+       "apercu": "apercus/dessins/panneaux/hexagone-a-boules.webp",
+       "taille": 2693
+      },
+      {
+       "nom": "Hexagone à oreilles",
+       "fichier": "dessins/panneaux/hexagone-a-oreilles.svg",
+       "apercu": "apercus/dessins/panneaux/hexagone-a-oreilles.webp",
+       "taille": 325
+      },
+      {
+       "nom": "Hexagone encoches rondes",
+       "fichier": "dessins/panneaux/hexagone-encoches-rondes.svg",
+       "apercu": "apercus/dessins/panneaux/hexagone-encoches-rondes.webp",
+       "taille": 1624
+      },
+      {
+       "nom": "Hexagone encoches",
+       "fichier": "dessins/panneaux/hexagone-encoches.svg",
+       "apercu": "apercus/dessins/panneaux/hexagone-encoches.webp",
+       "taille": 325
+      },
+      {
+       "nom": "Hexagone plat",
+       "fichier": "dessins/panneaux/hexagone-plat.svg",
+       "apercu": "apercus/dessins/panneaux/hexagone-plat.webp",
+       "taille": 245
+      },
+      {
+       "nom": "Lentille encoches",
+       "fichier": "dessins/panneaux/lentille-encoches.svg",
+       "apercu": "apercus/dessins/panneaux/lentille-encoches.webp",
+       "taille": 2097
+      },
+      {
+       "nom": "Losange allongé arrondi",
+       "fichier": "dessins/panneaux/losange-allonge-arrondi.svg",
+       "apercu": "apercus/dessins/panneaux/losange-allonge-arrondi.webp",
+       "taille": 1251
+      },
+      {
+       "nom": "Maison socle étagé",
+       "fichier": "dessins/panneaux/maison-socle-etage.svg",
+       "apercu": "apercus/dessins/panneaux/maison-socle-etage.webp",
+       "taille": 348
+      },
+      {
+       "nom": "Nœud papillon droit",
+       "fichier": "dessins/panneaux/noeud-papillon-droit.svg",
+       "apercu": "apercus/dessins/panneaux/noeud-papillon-droit.webp",
+       "taille": 245
+      },
+      {
+       "nom": "Nœud papillon rond",
+       "fichier": "dessins/panneaux/noeud-papillon-rond.svg",
+       "apercu": "apercus/dessins/panneaux/noeud-papillon-rond.webp",
+       "taille": 1125
+      },
+      {
+       "nom": "Nuage 4 lobes",
+       "fichier": "dessins/panneaux/nuage-4-lobes.svg",
+       "apercu": "apercus/dessins/panneaux/nuage-4-lobes.webp",
+       "taille": 3903
+      },
+      {
+       "nom": "Nuage bosse",
+       "fichier": "dessins/panneaux/nuage-bosse.svg",
+       "apercu": "apercus/dessins/panneaux/nuage-bosse.webp",
+       "taille": 3630
+      },
+      {
+       "nom": "Nuage ovale festonné",
+       "fichier": "dessins/panneaux/nuage-ovale-festonne.svg",
+       "apercu": "apercus/dessins/panneaux/nuage-ovale-festonne.webp",
+       "taille": 10073
+      },
+      {
+       "nom": "Nuage un dôme",
+       "fichier": "dessins/panneaux/nuage-un-dome.svg",
+       "apercu": "apercus/dessins/panneaux/nuage-un-dome.webp",
+       "taille": 3134
+      },
+      {
+       "nom": "Octogone allongé étagé",
+       "fichier": "dessins/panneaux/octogone-allonge-etage.svg",
+       "apercu": "apercus/dessins/panneaux/octogone-allonge-etage.webp",
+       "taille": 377
+      },
+      {
+       "nom": "Os rectangulaire",
+       "fichier": "dessins/panneaux/os-rectangulaire.svg",
+       "apercu": "apercus/dessins/panneaux/os-rectangulaire.webp",
+       "taille": 4199
+      },
+      {
+       "nom": "Ovale à oreilles étagées",
+       "fichier": "dessins/panneaux/ovale-a-oreilles-etagees.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-a-oreilles-etagees.webp",
+       "taille": 2017
+      },
+      {
+       "nom": "Ovale à pointes",
+       "fichier": "dessins/panneaux/ovale-a-pointes.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-a-pointes.webp",
+       "taille": 2337
+      },
+      {
+       "nom": "Ovale encoches étagées",
+       "fichier": "dessins/panneaux/ovale-encoches-etagees.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-encoches-etagees.webp",
+       "taille": 2093
+      },
+      {
+       "nom": "Ovale flancs festonnés",
+       "fichier": "dessins/panneaux/ovale-flancs-festonnes.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-flancs-festonnes.webp",
+       "taille": 9996
+      },
+      {
+       "nom": "Ovale haut à oreilles",
+       "fichier": "dessins/panneaux/ovale-haut-a-oreilles.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-haut-a-oreilles.webp",
+       "taille": 2179
+      },
+      {
+       "nom": "Ovale lobé",
+       "fichier": "dessins/panneaux/ovale-lobe.svg",
+       "apercu": "apercus/dessins/panneaux/ovale-lobe.webp",
+       "taille": 10123
+      },
+      {
+       "nom": "Panneau accolade",
+       "fichier": "dessins/panneaux/panneau-accolade.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-accolade.webp",
+       "taille": 214
+      },
+      {
+       "nom": "Panneau cartouche baroque",
+       "fichier": "dessins/panneaux/panneau-cartouche-baroque.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-cartouche-baroque.webp",
+       "taille": 305
+      },
+      {
+       "nom": "Panneau chapeau de gendarme",
+       "fichier": "dessins/panneaux/panneau-chapeau-de-gendarme.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-chapeau-de-gendarme.webp",
+       "taille": 219
+      },
+      {
+       "nom": "Panneau coins arrondis",
+       "fichier": "dessins/panneaux/panneau-coins-arrondis.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-coins-arrondis.webp",
+       "taille": 257
+      },
+      {
+       "nom": "Panneau coins chanfreinés",
+       "fichier": "dessins/panneaux/panneau-coins-chanfreines.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-coins-chanfreines.webp",
+       "taille": 203
+      },
+      {
+       "nom": "Panneau coins creusés",
+       "fichier": "dessins/panneaux/panneau-coins-creuses.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-coins-creuses.webp",
+       "taille": 257
+      },
+      {
+       "nom": "Panneau dessus cintré",
+       "fichier": "dessins/panneaux/panneau-dessus-cintre.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-dessus-cintre.webp",
+       "taille": 201
+      },
+      {
+       "nom": "Panneau double cintré",
+       "fichier": "dessins/panneaux/panneau-double-cintre.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-double-cintre.webp",
+       "taille": 225
+      },
+      {
+       "nom": "Panneau étiquette",
+       "fichier": "dessins/panneaux/panneau-etiquette.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-etiquette.webp",
+       "taille": 195
+      },
+      {
+       "nom": "Panneau ovale",
+       "fichier": "dessins/panneaux/panneau-ovale.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-ovale.webp",
+       "taille": 203
+      },
+      {
+       "nom": "Panneau porte cintrée",
+       "fichier": "dessins/panneaux/panneau-porte-cintree.svg",
+       "apercu": "apercus/dessins/panneaux/panneau-porte-cintree.webp",
+       "taille": 202
+      },
+      {
+       "nom": "Pierre tombale",
+       "fichier": "dessins/panneaux/pierre-tombale.svg",
+       "apercu": "apercus/dessins/panneaux/pierre-tombale.webp",
+       "taille": 1135
+      },
+      {
+       "nom": "Pignon à épaules",
+       "fichier": "dessins/panneaux/pignon-a-epaules.svg",
+       "apercu": "apercus/dessins/panneaux/pignon-a-epaules.webp",
+       "taille": 313
+      },
+      {
+       "nom": "Pignon",
+       "fichier": "dessins/panneaux/pignon.svg",
+       "apercu": "apercus/dessins/panneaux/pignon.webp",
+       "taille": 232
+      },
+      {
+       "nom": "Pilier étroit",
+       "fichier": "dessins/panneaux/pilier-etroit.svg",
+       "apercu": "apercus/dessins/panneaux/pilier-etroit.webp",
+       "taille": 8629
+      },
+      {
+       "nom": "Pilule courte",
+       "fichier": "dessins/panneaux/pilule-courte.svg",
+       "apercu": "apercus/dessins/panneaux/pilule-courte.webp",
+       "taille": 2079
+      },
+      {
+       "nom": "Pointes et ailes",
+       "fichier": "dessins/panneaux/pointes-et-ailes.svg",
+       "apercu": "apercus/dessins/panneaux/pointes-et-ailes.webp",
+       "taille": 2270
+      },
+      {
+       "nom": "Quadrilobe étagé",
+       "fichier": "dessins/panneaux/quadrilobe-etage.svg",
+       "apercu": "apercus/dessins/panneaux/quadrilobe-etage.webp",
+       "taille": 4041
+      },
+      {
+       "nom": "Rectangle à onglets",
+       "fichier": "dessins/panneaux/rectangle-a-onglets.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-a-onglets.webp",
+       "taille": 2211
+      },
+      {
+       "nom": "Rectangle bords creusés ondulés",
+       "fichier": "dessins/panneaux/rectangle-bords-creuses-ondules.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-bords-creuses-ondules.webp",
+       "taille": 8815
+      },
+      {
+       "nom": "Rectangle coins carrés",
+       "fichier": "dessins/panneaux/rectangle-coins-carres.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-coins-carres.webp",
+       "taille": 329
+      },
+      {
+       "nom": "Rectangle coins à double cran",
+       "fichier": "dessins/panneaux/rectangle-coins-doubles.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-coins-doubles.webp",
+       "taille": 545
+      },
+      {
+       "nom": "Rectangle festons creux",
+       "fichier": "dessins/panneaux/rectangle-festons-creux.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-festons-creux.webp",
+       "taille": 18186
+      },
+      {
+       "nom": "Rectangle ondulé",
+       "fichier": "dessins/panneaux/rectangle-ondule.svg",
+       "apercu": "apercus/dessins/panneaux/rectangle-ondule.webp",
+       "taille": 8900
+      },
+      {
+       "nom": "Roue dentée douce",
+       "fichier": "dessins/panneaux/roue-dentee-douce.svg",
+       "apercu": "apercus/dessins/panneaux/roue-dentee-douce.webp",
+       "taille": 2037
+      },
+      {
+       "nom": "Soucoupe",
+       "fichier": "dessins/panneaux/soucoupe.svg",
+       "apercu": "apercus/dessins/panneaux/soucoupe.webp",
+       "taille": 3366
+      },
+      {
+       "nom": "Ticket coins creux",
+       "fichier": "dessins/panneaux/ticket-coins-creux.svg",
+       "apercu": "apercus/dessins/panneaux/ticket-coins-creux.webp",
+       "taille": 2139
+      },
+      {
+       "nom": "Ticket long",
+       "fichier": "dessins/panneaux/ticket-long.svg",
+       "apercu": "apercus/dessins/panneaux/ticket-long.webp",
+       "taille": 2166
+      },
+      {
+       "nom": "Tonneau",
+       "fichier": "dessins/panneaux/tonneau.svg",
+       "apercu": "apercus/dessins/panneaux/tonneau.webp",
+       "taille": 8791
+      },
+      {
+       "nom": "Trèfle à 4 feuilles",
+       "fichier": "dessins/panneaux/trefle-a-4-feuilles.svg",
+       "apercu": "apercus/dessins/panneaux/trefle-a-4-feuilles.webp",
+       "taille": 6937
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "reliefs",
+   "fr": "Reliefs",
+   "en": "Reliefs",
+   "sous": [
+    {
+     "id": "animaux",
+     "fr": "Animaux",
+     "en": "Animals",
+     "elements": [
+      {
+       "nom": "Aigle ailes déployées",
+       "fichier": "reliefs/animaux/aigle-ailes-deployees.png",
+       "apercu": "apercus/reliefs/animaux/aigle-ailes-deployees.webp",
+       "taille": 707639,
+       "px": [
+        1018,
+        667
+       ]
+      },
+      {
+       "nom": "Aile",
+       "fichier": "reliefs/animaux/aile.png",
+       "apercu": "apercus/reliefs/animaux/aile.webp",
+       "taille": 1089686,
+       "px": [
+        989,
+        918
+       ]
+      },
+      {
+       "nom": "Cheval au galop 1",
+       "fichier": "reliefs/animaux/cheval-au-galop-1.png",
+       "apercu": "apercus/reliefs/animaux/cheval-au-galop-1.webp",
+       "taille": 651298,
+       "px": [
+        1020,
+        732
+       ]
+      },
+      {
+       "nom": "Cheval au galop 2",
+       "fichier": "reliefs/animaux/cheval-au-galop-2.png",
+       "apercu": "apercus/reliefs/animaux/cheval-au-galop-2.webp",
+       "taille": 591528,
+       "px": [
+        997,
+        673
+       ]
+      },
+      {
+       "nom": "Dragon chinois",
+       "fichier": "reliefs/animaux/dragon-chinois.png",
+       "apercu": "apercus/reliefs/animaux/dragon-chinois.webp",
+       "taille": 971038,
+       "px": [
+        899,
+        913
+       ]
+      },
+      {
+       "nom": "Mouette",
+       "fichier": "reliefs/animaux/mouette.png",
+       "apercu": "apercus/reliefs/animaux/mouette.webp",
+       "taille": 524544,
+       "px": [
+        1002,
+        875
+       ]
+      },
+      {
+       "nom": "Oie ailes levées",
+       "fichier": "reliefs/animaux/oie-ailes-levees.png",
+       "apercu": "apercus/reliefs/animaux/oie-ailes-levees.webp",
+       "taille": 993470,
+       "px": [
+        1003,
+        987
+       ]
+      },
+      {
+       "nom": "Poisson bar sautant",
+       "fichier": "reliefs/animaux/poisson-bar-sautant.png",
+       "apercu": "apercus/reliefs/animaux/poisson-bar-sautant.webp",
+       "taille": 906223,
+       "px": [
+        856,
+        869
+       ]
+      },
+      {
+       "nom": "Tête d’aigle",
+       "fichier": "reliefs/animaux/tete-d-aigle.png",
+       "apercu": "apercus/reliefs/animaux/tete-d-aigle.webp",
+       "taille": 1482635,
+       "px": [
+        1001,
+        957
+       ]
+      },
+      {
+       "nom": "Tête de loup",
+       "fichier": "reliefs/animaux/tete-de-loup.png",
+       "apercu": "apercus/reliefs/animaux/tete-de-loup.webp",
+       "taille": 1366441,
+       "px": [
+        809,
+        1013
+       ]
+      }
+     ]
+    },
+    {
+     "id": "architecture",
+     "fr": "Architecture",
+     "en": "Architecture",
+     "elements": [
+      {
+       "nom": "Arc brisé",
+       "fichier": "reliefs/architecture/arc-brise.png",
+       "apercu": "apercus/reliefs/architecture/arc-brise.webp",
+       "taille": 399115,
+       "px": [
+        1505,
+        1903
+       ]
+      },
+      {
+       "nom": "Colonne toscane",
+       "fichier": "reliefs/architecture/colonne-toscane.png",
+       "apercu": "apercus/reliefs/architecture/colonne-toscane.webp",
+       "taille": 1129953,
+       "px": [
+        655,
+        1881
+       ]
+      }
+     ]
+    },
+    {
+     "id": "bordures",
+     "fr": "Bordures",
+     "en": "Borders",
+     "elements": [
+      {
+       "nom": "Cadre éclaboussures",
+       "fichier": "reliefs/bordures/cadre-eclaboussures.png",
+       "apercu": "apercus/reliefs/bordures/cadre-eclaboussures.webp",
+       "taille": 1259620,
+       "px": [
+        982,
+        975
+       ]
+      },
+      {
+       "nom": "Cadre rond à rinceaux",
+       "fichier": "reliefs/bordures/cadre-rond-a-rinceaux.png",
+       "apercu": "apercus/reliefs/bordures/cadre-rond-a-rinceaux.webp",
+       "taille": 1656960,
+       "px": [
+        1024,
+        1024
+       ]
+      },
+      {
+       "nom": "Couronne de corde",
+       "fichier": "reliefs/bordures/couronne-de-corde.png",
+       "apercu": "apercus/reliefs/bordures/couronne-de-corde.webp",
+       "taille": 830021,
+       "px": [
+        1024,
+        1024
+       ]
+      },
+      {
+       "nom": "Couronne de fil barbelé",
+       "fichier": "reliefs/bordures/couronne-de-fil-barbele.png",
+       "apercu": "apercus/reliefs/bordures/couronne-de-fil-barbele.webp",
+       "taille": 528906,
+       "px": [
+        1009,
+        1002
+       ]
+      },
+      {
+       "nom": "Couronne de rinceaux",
+       "fichier": "reliefs/bordures/couronne-de-rinceaux.png",
+       "apercu": "apercus/reliefs/bordures/couronne-de-rinceaux.webp",
+       "taille": 606123,
+       "px": [
+        982,
+        991
+       ]
+      },
+      {
+       "nom": "Couronnes de feuilles",
+       "fichier": "reliefs/bordures/couronnes-de-feuilles.png",
+       "apercu": "apercus/reliefs/bordures/couronnes-de-feuilles.webp",
+       "taille": 1528010,
+       "px": [
+        1024,
+        1024
+       ]
+      }
+     ]
+    },
+    {
+     "id": "decoratif",
+     "fr": "Décoratif",
+     "en": "Decorative",
+     "elements": [
+      {
+       "nom": "Acanthe d’angle",
+       "fichier": "reliefs/decoratif/acanthe-d-angle.png",
+       "apercu": "apercus/reliefs/decoratif/acanthe-d-angle.webp",
+       "taille": 1045219,
+       "px": [
+        862,
+        883
+       ]
+      },
+      {
+       "nom": "Acanthe enroulée",
+       "fichier": "reliefs/decoratif/acanthe-enroulee.png",
+       "apercu": "apercus/reliefs/decoratif/acanthe-enroulee.webp",
+       "taille": 1429678,
+       "px": [
+        908,
+        940
+       ]
+      },
+      {
+       "nom": "Barre à rinceaux",
+       "fichier": "reliefs/decoratif/barre-a-rinceaux.png",
+       "apercu": "apercus/reliefs/decoratif/barre-a-rinceaux.webp",
+       "taille": 725847,
+       "px": [
+        999,
+        473
+       ]
+      },
+      {
+       "nom": "Cartouche à volutes",
+       "fichier": "reliefs/decoratif/cartouche-a-volutes.png",
+       "apercu": "apercus/reliefs/decoratif/cartouche-a-volutes.webp",
+       "taille": 1173573,
+       "px": [
+        1305,
+        1939
+       ]
+      },
+      {
+       "nom": "Coquillage épineux",
+       "fichier": "reliefs/decoratif/coquillage-epineux.png",
+       "apercu": "apercus/reliefs/decoratif/coquillage-epineux.webp",
+       "taille": 4666727,
+       "px": [
+        1665,
+        1729
+       ]
+      },
+      {
+       "nom": "Coquille Saint-Jacques",
+       "fichier": "reliefs/decoratif/coquille-saint-jacques.png",
+       "apercu": "apercus/reliefs/decoratif/coquille-saint-jacques.webp",
+       "taille": 1667709,
+       "px": [
+        1001,
+        971
+       ]
+      },
+      {
+       "nom": "Couronne de laurier",
+       "fichier": "reliefs/decoratif/couronne-de-laurier.png",
+       "apercu": "apercus/reliefs/decoratif/couronne-de-laurier.webp",
+       "taille": 937955,
+       "px": [
+        963,
+        960
+       ]
+      },
+      {
+       "nom": "Fleur de lys",
+       "fichier": "reliefs/decoratif/fleur-de-lys.png",
+       "apercu": "apercus/reliefs/decoratif/fleur-de-lys.webp",
+       "taille": 900759,
+       "px": [
+        895,
+        945
+       ]
+      },
+      {
+       "nom": "Frise fleurie",
+       "fichier": "reliefs/decoratif/frise-fleurie.png",
+       "apercu": "apercus/reliefs/decoratif/frise-fleurie.webp",
+       "taille": 351345,
+       "px": [
+        1005,
+        357
+       ]
+      },
+      {
+       "nom": "Guirlande en V",
+       "fichier": "reliefs/decoratif/guirlande-en-v.png",
+       "apercu": "apercus/reliefs/decoratif/guirlande-en-v.webp",
+       "taille": 759358,
+       "px": [
+        977,
+        907
+       ]
+      },
+      {
+       "nom": "Motif central horizontal",
+       "fichier": "reliefs/decoratif/motif-central-horizontal.png",
+       "apercu": "apercus/reliefs/decoratif/motif-central-horizontal.webp",
+       "taille": 1464494,
+       "px": [
+        2048,
+        931
+       ]
+      },
+      {
+       "nom": "Pendentif d’acanthe",
+       "fichier": "reliefs/decoratif/pendentif-d-acanthe.png",
+       "apercu": "apercus/reliefs/decoratif/pendentif-d-acanthe.webp",
+       "taille": 860316,
+       "px": [
+        587,
+        1001
+       ]
+      },
+      {
+       "nom": "Rinceau en spirale",
+       "fichier": "reliefs/decoratif/rinceau-en-spirale.png",
+       "apercu": "apercus/reliefs/decoratif/rinceau-en-spirale.webp",
+       "taille": 1363791,
+       "px": [
+        983,
+        990
+       ]
+      },
+      {
+       "nom": "Rosace à godrons",
+       "fichier": "reliefs/decoratif/rosace-a-godrons.png",
+       "apercu": "apercus/reliefs/decoratif/rosace-a-godrons.webp",
+       "taille": 1310195,
+       "px": [
+        854,
+        863
+       ]
+      },
+      {
+       "nom": "Rosace de plafond",
+       "fichier": "reliefs/decoratif/rosace-de-plafond.png",
+       "apercu": "apercus/reliefs/decoratif/rosace-de-plafond.webp",
+       "taille": 1761552,
+       "px": [
+        961,
+        961
+       ]
+      },
+      {
+       "nom": "Rosace de plumes",
+       "fichier": "reliefs/decoratif/rosace-de-plumes.png",
+       "apercu": "apercus/reliefs/decoratif/rosace-de-plumes.webp",
+       "taille": 1595741,
+       "px": [
+        990,
+        988
+       ]
+      },
+      {
+       "nom": "Rosace de rinceaux",
+       "fichier": "reliefs/decoratif/rosace-de-rinceaux.png",
+       "apercu": "apercus/reliefs/decoratif/rosace-de-rinceaux.webp",
+       "taille": 1691897,
+       "px": [
+        1024,
+        1024
+       ]
+      },
+      {
+       "nom": "Rosace",
+       "fichier": "reliefs/decoratif/rosace.png",
+       "apercu": "apercus/reliefs/decoratif/rosace.webp",
+       "taille": 2560107,
+       "px": [
+        1528,
+        1528
+       ]
+      }
+     ]
+    },
+    {
+     "id": "entrelacs",
+     "fr": "Entrelacs",
+     "en": "Knots",
+     "elements": [
+      {
+       "nom": "Nœud celtique rond",
+       "fichier": "reliefs/entrelacs/noeud-celtique-rond.png",
+       "apercu": "apercus/reliefs/entrelacs/noeud-celtique-rond.webp",
+       "taille": 1640077,
+       "px": [
+        1024,
+        1024
+       ]
+      }
+     ]
+    },
+    {
+     "id": "noel",
+     "fr": "Noël",
+     "en": "Christmas",
+     "elements": [
+      {
+       "nom": "Couronne de houx",
+       "fichier": "reliefs/noel/couronne-de-houx.png",
+       "apercu": "apercus/reliefs/noel/couronne-de-houx.webp",
+       "taille": 1424115,
+       "px": [
+        1005,
+        990
+       ]
+      },
+      {
+       "nom": "Flocon de feuillage",
+       "fichier": "reliefs/noel/flocon-de-feuillage.png",
+       "apercu": "apercus/reliefs/noel/flocon-de-feuillage.webp",
+       "taille": 1542478,
+       "px": [
+        1024,
+        1024
+       ]
+      }
+     ]
+    },
+    {
+     "id": "objets",
+     "fr": "Objets",
+     "en": "Objects",
+     "elements": [
+      {
+       "nom": "Amphore",
+       "fichier": "reliefs/objets/amphore.png",
+       "apercu": "apercus/reliefs/objets/amphore.webp",
+       "taille": 2039797,
+       "px": [
+        815,
+        1880
+       ]
+      },
+      {
+       "nom": "Ancre héraldique",
+       "fichier": "reliefs/objets/ancre-heraldique.png",
+       "apercu": "apercus/reliefs/objets/ancre-heraldique.webp",
+       "taille": 609368,
+       "px": [
+        1529,
+        1816
+       ]
+      },
+      {
+       "nom": "Ancre marine",
+       "fichier": "reliefs/objets/ancre-marine.png",
+       "apercu": "apercus/reliefs/objets/ancre-marine.webp",
+       "taille": 606505,
+       "px": [
+        819,
+        971
+       ]
+      },
+      {
+       "nom": "Barre de navire",
+       "fichier": "reliefs/objets/barre-de-navire.png",
+       "apercu": "apercus/reliefs/objets/barre-de-navire.webp",
+       "taille": 598548,
+       "px": [
+        773,
+        882
+       ]
+      },
+      {
+       "nom": "Boulon et rondelle",
+       "fichier": "reliefs/objets/boulon-et-rondelle.png",
+       "apercu": "apercus/reliefs/objets/boulon-et-rondelle.webp",
+       "taille": 1634783,
+       "px": [
+        1849,
+        1849
+       ]
+      },
+      {
+       "nom": "Capsule de bouteille",
+       "fichier": "reliefs/objets/capsule-de-bouteille.png",
+       "apercu": "apercus/reliefs/objets/capsule-de-bouteille.webp",
+       "taille": 132487,
+       "px": [
+        313,
+        315
+       ]
+      },
+      {
+       "nom": "Cœurs entrelacés",
+       "fichier": "reliefs/objets/coeurs-entrelaces.png",
+       "apercu": "apercus/reliefs/objets/coeurs-entrelaces.webp",
+       "taille": 1094027,
+       "px": [
+        971,
+        955
+       ]
+      },
+      {
+       "nom": "Coupe kylix",
+       "fichier": "reliefs/objets/coupe-kylix.png",
+       "apercu": "apercus/reliefs/objets/coupe-kylix.webp",
+       "taille": 794174,
+       "px": [
+        1881,
+        771
+       ]
+      },
+      {
+       "nom": "Couteau bowie",
+       "fichier": "reliefs/objets/couteau-bowie.png",
+       "apercu": "apercus/reliefs/objets/couteau-bowie.webp",
+       "taille": 1311168,
+       "px": [
+        1803,
+        1925
+       ]
+      },
+      {
+       "nom": "Croix de pompier",
+       "fichier": "reliefs/objets/croix-de-pompier.png",
+       "apercu": "apercus/reliefs/objets/croix-de-pompier.webp",
+       "taille": 1244281,
+       "px": [
+        1024,
+        1024
+       ]
+      },
+      {
+       "nom": "Cubes de jeu",
+       "fichier": "reliefs/objets/cubes-de-jeu.png",
+       "apercu": "apercus/reliefs/objets/cubes-de-jeu.webp",
+       "taille": 914599,
+       "px": [
+        969,
+        881
+       ]
+      },
+      {
+       "nom": "Glaive pompéien",
+       "fichier": "reliefs/objets/glaive-pompeien.png",
+       "apercu": "apercus/reliefs/objets/glaive-pompeien.webp",
+       "taille": 1464924,
+       "px": [
+        1615,
+        1883
+       ]
+      },
+      {
+       "nom": "Hache labrys",
+       "fichier": "reliefs/objets/hache-labrys.png",
+       "apercu": "apercus/reliefs/objets/hache-labrys.webp",
+       "taille": 2168694,
+       "px": [
+        1713,
+        1874
+       ]
+      },
+      {
+       "nom": "Rosette médaille",
+       "fichier": "reliefs/objets/rosette-medaille.png",
+       "apercu": "apercus/reliefs/objets/rosette-medaille.webp",
+       "taille": 1043646,
+       "px": [
+        694,
+        946
+       ]
+      },
+      {
+       "nom": "Roulement à billes",
+       "fichier": "reliefs/objets/roulement-a-billes.png",
+       "apercu": "apercus/reliefs/objets/roulement-a-billes.webp",
+       "taille": 6546750,
+       "px": [
+        2048,
+        2048
+       ]
+      },
+      {
+       "nom": "Sabre d’abordage",
+       "fichier": "reliefs/objets/sabre-d-abordage.png",
+       "apercu": "apercus/reliefs/objets/sabre-d-abordage.webp",
+       "taille": 993471,
+       "px": [
+        1898,
+        1741
+       ]
+      },
+      {
+       "nom": "Tête de mort et os",
+       "fichier": "reliefs/objets/tete-de-mort-et-os.png",
+       "apercu": "apercus/reliefs/objets/tete-de-mort-et-os.webp",
+       "taille": 1097868,
+       "px": [
+        901,
+        920
+       ]
+      },
+      {
+       "nom": "Vase en poire",
+       "fichier": "reliefs/objets/vase-en-poire.png",
+       "apercu": "apercus/reliefs/objets/vase-en-poire.webp",
+       "taille": 2616639,
+       "px": [
+        1161,
+        1881
+       ]
+      },
+      {
+       "nom": "Vis cruciforme",
+       "fichier": "reliefs/objets/vis-cruciforme.png",
+       "apercu": "apercus/reliefs/objets/vis-cruciforme.webp",
+       "taille": 3906938,
+       "px": [
+        1717,
+        1717
+       ]
+      }
+     ]
+    },
+    {
+     "id": "panneaux",
+     "fr": "Panneaux",
+     "en": "Panels",
+     "elements": [
+      {
+       "nom": "Panneau fronton à volutes",
+       "fichier": "reliefs/panneaux/panneau-fronton-a-volutes.png",
+       "apercu": "apercus/reliefs/panneaux/panneau-fronton-a-volutes.webp",
+       "taille": 1371788,
+       "px": [
+        869,
+        999
+       ]
+      },
+      {
+       "nom": "Panneau moulure coins creusés",
+       "fichier": "reliefs/panneaux/panneau-moulure-coins-creuses.png",
+       "apercu": "apercus/reliefs/panneaux/panneau-moulure-coins-creuses.webp",
+       "taille": 1044692,
+       "px": [
+        1024,
+        623
+       ]
+      }
+     ]
+    },
+    {
+     "id": "personnages",
+     "fr": "Personnages",
+     "en": "Characters",
+     "elements": [
+      {
+       "nom": "Chérubin",
+       "fichier": "reliefs/personnages/cherubin.png",
+       "apercu": "apercus/reliefs/personnages/cherubin.webp",
+       "taille": 941085,
+       "px": [
+        895,
+        831
+       ]
+      },
+      {
+       "nom": "Chien rigolo",
+       "fichier": "reliefs/personnages/chien-rigolo.png",
+       "apercu": "apercus/reliefs/personnages/chien-rigolo.webp",
+       "taille": 862243,
+       "px": [
+        785,
+        816
+       ]
+      },
+      {
+       "nom": "Pouce levé",
+       "fichier": "reliefs/personnages/pouce-leve.png",
+       "apercu": "apercus/reliefs/personnages/pouce-leve.webp",
+       "taille": 1024874,
+       "px": [
+        869,
+        868
+       ]
+      },
+      {
+       "nom": "Vénus de Milo",
+       "fichier": "reliefs/personnages/venus-de-milo.png",
+       "apercu": "apercus/reliefs/personnages/venus-de-milo.webp",
+       "taille": 541271,
+       "px": [
+        363,
+        1024
+       ]
+      }
+     ]
+    },
+    {
+     "id": "plantes",
+     "fr": "Plantes et fruits",
+     "en": "Plants and fruit",
+     "elements": [
+      {
+       "nom": "Branche de chêne",
+       "fichier": "reliefs/plantes/branche-de-chene.png",
+       "apercu": "apercus/reliefs/plantes/branche-de-chene.webp",
+       "taille": 850606,
+       "px": [
+        910,
+        834
+       ]
+      },
+      {
+       "nom": "Feuille d’érable",
+       "fichier": "reliefs/plantes/feuille-d-erable.png",
+       "apercu": "apercus/reliefs/plantes/feuille-d-erable.webp",
+       "taille": 1069892,
+       "px": [
+        986,
+        984
+       ]
+      },
+      {
+       "nom": "Fleur de clématite",
+       "fichier": "reliefs/plantes/fleur-de-clematite.png",
+       "apercu": "apercus/reliefs/plantes/fleur-de-clematite.webp",
+       "taille": 2449957,
+       "px": [
+        1839,
+        1609
+       ]
+      },
+      {
+       "nom": "Grappes de raisin",
+       "fichier": "reliefs/plantes/grappes-de-raisin.png",
+       "apercu": "apercus/reliefs/plantes/grappes-de-raisin.webp",
+       "taille": 1068608,
+       "px": [
+        773,
+        971
+       ]
+      },
+      {
+       "nom": "Marguerite",
+       "fichier": "reliefs/plantes/marguerite.png",
+       "apercu": "apercus/reliefs/plantes/marguerite.webp",
+       "taille": 1177122,
+       "px": [
+        797,
+        1015
+       ]
+      },
+      {
+       "nom": "Massettes",
+       "fichier": "reliefs/plantes/massettes.png",
+       "apercu": "apercus/reliefs/plantes/massettes.webp",
+       "taille": 772265,
+       "px": [
+        759,
+        912
+       ]
+      },
+      {
+       "nom": "Palmier",
+       "fichier": "reliefs/plantes/palmier.png",
+       "apercu": "apercus/reliefs/plantes/palmier.webp",
+       "taille": 1178529,
+       "px": [
+        1013,
+        1019
+       ]
+      },
+      {
+       "nom": "Rose",
+       "fichier": "reliefs/plantes/rose.png",
+       "apercu": "apercus/reliefs/plantes/rose.webp",
+       "taille": 1641861,
+       "px": [
+        960,
+        920
+       ]
+      },
+      {
+       "nom": "Trèfle à trois feuilles",
+       "fichier": "reliefs/plantes/trefle-a-trois-feuilles.png",
+       "apercu": "apercus/reliefs/plantes/trefle-a-trois-feuilles.webp",
+       "taille": 1155865,
+       "px": [
+        934,
+        917
+       ]
+      }
+     ]
+    },
+    {
+     "id": "rubans",
+     "fr": "Rubans",
+     "en": "Ribbons",
+     "elements": [
+      {
+       "nom": "Banderole à volutes",
+       "fichier": "reliefs/rubans/banderole-a-volutes.png",
+       "apercu": "apercus/reliefs/rubans/banderole-a-volutes.webp",
+       "taille": 1813248,
+       "px": [
+        1969,
+        645
+       ]
+      },
+      {
+       "nom": "Banderole en arche",
+       "fichier": "reliefs/rubans/banderole-en-arche.png",
+       "apercu": "apercus/reliefs/rubans/banderole-en-arche.webp",
+       "taille": 935843,
+       "px": [
+        1005,
+        885
+       ]
+      },
+      {
+       "nom": "Banderole roulée",
+       "fichier": "reliefs/rubans/banderole-roulee.png",
+       "apercu": "apercus/reliefs/rubans/banderole-roulee.webp",
+       "taille": 383169,
+       "px": [
+        1024,
+        393
+       ]
+      },
+      {
+       "nom": "Parchemin banderole",
+       "fichier": "reliefs/rubans/parchemin-banderole.png",
+       "apercu": "apercus/reliefs/rubans/parchemin-banderole.webp",
+       "taille": 1055010,
+       "px": [
+        1003,
+        663
+       ]
+      },
+      {
+       "nom": "Parchemin vertical",
+       "fichier": "reliefs/rubans/parchemin-vertical.png",
+       "apercu": "apercus/reliefs/rubans/parchemin-vertical.webp",
+       "taille": 1348141,
+       "px": [
+        804,
+        954
+       ]
+      }
+     ]
+    },
+    {
+     "id": "scenes",
+     "fr": "Scènes",
+     "en": "Scenes",
+     "elements": [
+      {
+       "nom": "Cerf en forêt",
+       "fichier": "reliefs/scenes/cerf-en-foret.png",
+       "apercu": "apercus/reliefs/scenes/cerf-en-foret.webp",
+       "taille": 1448270,
+       "px": [
+        976,
+        980
+       ]
+      }
+     ]
+    },
+    {
+     "id": "symboles",
+     "fr": "Symboles",
+     "en": "Symbols",
+     "elements": [
+      {
+       "nom": "Carreau",
+       "fichier": "reliefs/symboles/carreau.png",
+       "apercu": "apercus/reliefs/symboles/carreau.webp",
+       "taille": 2110617,
+       "px": [
+        1341,
+        1833
+       ]
+      },
+      {
+       "nom": "Cœur",
+       "fichier": "reliefs/symboles/coeur.png",
+       "apercu": "apercus/reliefs/symboles/coeur.webp",
+       "taille": 4058773,
+       "px": [
+        1859,
+        1678
+       ]
+      },
+      {
+       "nom": "Pique",
+       "fichier": "reliefs/symboles/pique.png",
+       "apercu": "apercus/reliefs/symboles/pique.webp",
+       "taille": 2856262,
+       "px": [
+        1491,
+        1820
+       ]
+      },
+      {
+       "nom": "Rose des vents",
+       "fichier": "reliefs/symboles/rose-des-vents.png",
+       "apercu": "apercus/reliefs/symboles/rose-des-vents.webp",
+       "taille": 1506210,
+       "px": [
+        1827,
+        1827
+       ]
+      },
+      {
+       "nom": "Trèfle",
+       "fichier": "reliefs/symboles/trefle.png",
+       "apercu": "apercus/reliefs/symboles/trefle.webp",
+       "taille": 3206468,
+       "px": [
+        1599,
+        1823
+       ]
+      }
+     ]
+    },
+    {
+     "id": "textures",
+     "fr": "Textures",
+     "en": "Textures",
+     "elements": [
+      {
+       "nom": "Bois de bout chêne",
+       "fichier": "reliefs/textures/bois-de-bout-chene.png",
+       "apercu": "apercus/reliefs/textures/bois-de-bout-chene.webp",
+       "taille": 6188049,
+       "px": [
+        2048,
+        2048
+       ]
+      },
+      {
+       "nom": "Peau de crocodile",
+       "fichier": "reliefs/textures/peau-de-crocodile.png",
+       "apercu": "apercus/reliefs/textures/peau-de-crocodile.webp",
+       "taille": 6756471,
+       "px": [
+        2048,
+        2048
+       ]
+      },
+      {
+       "nom": "Tresse diagonale fine",
+       "fichier": "reliefs/textures/tresse-diagonale-fine.png",
+       "apercu": "apercus/reliefs/textures/tresse-diagonale-fine.webp",
+       "taille": 7046757,
+       "px": [
+        2048,
+        2048
+       ]
+      },
+      {
+       "nom": "Tresse diagonale moyenne",
+       "fichier": "reliefs/textures/tresse-diagonale-moyenne.png",
+       "apercu": "apercus/reliefs/textures/tresse-diagonale-moyenne.webp",
+       "taille": 5845886,
+       "px": [
+        2048,
+        2048
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
