@@ -1,0 +1,83 @@
+name: Build complete COPO-IA / COPO 1.453 preview
+on:
+  push:
+    branches: [portage-copo-1.453]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout COPO-IA experimental branch
+        uses: actions/checkout@v4
+
+      - name: Fetch complete COPO 1.453 distribution
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/copo1453.zip \
+            https://codeload.github.com/gbulleryahen-hash/copo/zip/d14d61ae9dbaec65742f7ce639c8ae712c88601b
+          mkdir -p /tmp/copo-native
+          unzip -q /tmp/copo1453.zip -d /tmp/copo-native
+          mkdir -p assembled
+          cp -a /tmp/copo-native/copo-*/. assembled/
+          test -f assembled/index.html
+          test -d assembled/bibliotheque
+          test -d assembled/lib
+          test -d assembled/fonts
+          test -d assembled/img
+
+      - name: Overlay integrated 1.453 code and COPO-IA modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp index.html assembled/index.html
+          for name in copo-ia.js copo-fao.js copo-features.js copo-fao-libre.js copo-fao-multiformes.js copo-ia11.js copo-dialogue.js copo-passerelle.js; do
+            test -s "$name"
+            cp "$name" "assembled/$name"
+          done
+          mkdir -p assembled/tests
+          for t in tests/test-transaction11.cjs tests/test-save113.cjs tests/test-compatibility1453.cjs; do
+            cp "$t" "assembled/$t"
+          done
+          cp LISEZ-MOI-PORTAGE-1453.md assembled/LISEZ-MOI-PORTAGE-1453.md
+          cp LICENSE assembled/LICENSE
+          test -f assembled/lib/acorn.min.js
+
+      - name: Validate JavaScript and integrated modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd assembled
+          node tests/test-compatibility1453.cjs
+          node tests/test-transaction11.cjs
+          node tests/test-save113.cjs
+
+      - name: Verify independent offline directory and package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s assembled/index.html
+          test -s assembled/bibliotheque/bibliotheque-copo.copolib
+          test -f assembled/img/icon-192.png
+          test -f assembled/lib/clipper.js
+          mkdir -p dist
+          cd assembled
+          zip -q -r -9 ../dist/COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL.zip . -x '*.DS_Store'
+          cd ../dist
+          unzip -tq COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL.zip
+          sha256sum COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL.zip > COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL.sha256
+          unzip -Z1 COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL.zip | wc -l
+
+      - name: Upload full zip and SHA-256
+        uses: actions/upload-artifact@v4
+        with:
+          name: COPO-IA-1.1.4-COPO-1.453-COMPLET-EXPERIMENTAL
+          path: dist/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
